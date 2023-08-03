@@ -1,85 +1,65 @@
-CREATE TYPE variant_type AS ENUM (
-    'Color',
-    'Image'
+-- Create Team Members Table
+CREATE TABLE team_members (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  position VARCHAR(50) NOT NULL,
+  bio TEXT NOT NULL,
+  image_url VARCHAR(255) NOT NULL
 );
-
-CREATE TYPE status AS ENUM (
-    'NewIn',
-    'LimitedEdition',
-    'SoldOut',
-    'HalfOff'
+-- Create Blog Categories Table
+CREATE TABLE blog_categories (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(50) NOT NULL
 );
-
-CREATE TABLE product (
-  id SERIAL PRIMARY KEY NOT NULL,
-  ds_name VARCHAR(50) NOT NULL,
-  vi_price FLOAT NOT NULL,
-  ds_image_url VARCHAR(50) NOT NULL,
-  ds_description VARCHAR(200) NOT NULL,
-  ds_category VARCHAR(50) NOT NULL,
-  ar_tags text[] NOT NULL,
-  ds_link VARCHAR(50) NOT NULL,
-  ar_variants text[] NOT NULL,
-  en_variant_type variant_type NOT NULL,
-  ar_sizes text[] NOT NULL,
-  ar_all_of_sizes text[] NOT NULL,
-  en_status status NOT NULL,
-  ds_rating VARCHAR(50) NOT NULL,
-  vi_number_of_reviews INTEGER NOT NULL,
-  dt_created TIMESTAMP DEFAULT now()
+-- Create Blog Posts Table
+CREATE TABLE blog_posts (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  content TEXT NOT NULL,
+  published_at TIMESTAMP NOT NULL,
+  category_id INT NOT NULL REFERENCES blog_categories(id)
 );
-
-INSERT INTO
-  product
-    (ds_name, vi_price, ds_image_url, ds_description, ds_category, ar_tags, ds_link, ar_variants, en_variant_type, ar_sizes, ar_all_of_sizes, en_status, ds_rating, vi_number_of_reviews)
-  values (
-    'Air Jordan I',
-    179.99,
-    'https://i.imgur.com/RShKXkx.jpeg',
-    'The Air Jordan 1 Retro High remakes the classic sneaker, giving you a fresh look with a familiar feel. Premium materials with new colors and textures give modern expression to an all-time favorite.',
-    'shoes',
-    ARRAY['shoes', 'feet', 'Michael Jordan'],
-    'localhost:3000/',
-    ARRAY['green', 'black', 'purple'],
-    'Color',
-    ARRAY['M 13 / W 14.5', 'M 9 / W 10.5'],
-    ARRAY['M 13 / W 14.5', 'M 9 / W 10.5', 'M 10.5 / W 12'],
-    'NewIn',
-    '4.9',
-    37
-  );
-
-INSERT INTO
-  product
-    (ds_name, vi_price, ds_image_url, ds_description, ds_category, ar_tags, ds_link, ar_variants, en_variant_type, ar_sizes, ar_all_of_sizes, en_status, ds_rating, vi_number_of_reviews)
-  values (
-    'Air Jordan III',
-    209.99,
-    'https://i.imgur.com/iXQ4UXH.jpeg',
-    'Elevate your sneaker game with Air Jordan 3. Designed for comfort and style, the iconic silhouette is a must-have for any sneakerhead.',
-    'shoes',
-    ARRAY['shoes', 'feet', 'Michael Jordan'],
-    'localhost:3000/',
-    ARRAY['green', 'black', 'purple'],
-    'Color',
-    ARRAY['M 13 / W 14.5', 'M 9 / W 10.5'],
-    ARRAY['M 13 / W 14.5', 'M 9 / W 10.5', 'M 10.5 / W 12'],
-    'NewIn',
-    '4.9',
-    37
-  );
-
--- TODO: Evetually implement authentication in some way
--- CREATE TABLE api_key (
---   id SERIAL PRIMARY KEY NOT NULL,
---   name VARCHAR(50) NOT NULL,
---   api_key VARCHAR NOT NULL
--- );
-
--- INSERT INTO
---   api_key
---     (name, api_key)
---   VALUES (
---     'Harrison Hemstreet',
---     (SELECT gen_random_uuid())
---   );
+-- Create Job Listings Table
+CREATE TABLE job_listings (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  description TEXT NOT NULL,
+  posted_at TIMESTAMP NOT NULL
+);
+-- Create Product Features Table
+CREATE TABLE product_features (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  description TEXT NOT NULL
+);
+-- Insert Data into Team Members Table
+-- INSERT INTO team_members (name, position, bio, image_url)
+-- VALUES
+--   (‘John Doe’, ‘CEO’, ‘John is the CEO of our company.’, ‘https://example.com/images/john.jpg’),
+--   (‘Jane Smith’, ‘CTO’, ‘Jane is the Chief Technology Officer.’, ‘https://example.com/images/jane.jpg’),
+--   (‘Mike Johnson’, ‘Senior Developer’, ‘Mike is a senior developer on our team.’, ‘https://example.com/images/mike.jpg’);
+-- -- Insert Data into Blog Categories Table
+-- INSERT INTO blog_categories (name)
+-- VALUES
+--   (‘Technology’),
+--   (‘Business’),
+--   (‘Marketing’),
+--   (‘Product Updates’);
+-- -- Insert Data into Blog Posts Table
+-- INSERT INTO blog_posts (title, content, published_at, category_id)
+-- VALUES
+--   (‘Introduction to AI’, ‘In this post, we introduce the basics of artificial intelligence...’, ‘2023-07-15 10:00:00’, 1),
+--   (‘Tips for Effective Marketing’, ‘Learn some valuable marketing tips to grow your business...’, ‘2023-07-20 09:30:00’, 3),
+--   (‘New Product Launch’, ‘We are excited to announce the launch of our new product...’, ‘2023-07-25 14:15:00’, 4);
+-- -- Insert Data into Job Listings Table
+-- INSERT INTO job_listings (title, description, posted_at)
+-- VALUES
+--   (‘Software Engineer’, ‘We are looking for a skilled software engineer to join our team...’, ‘2023-07-10 08:00:00’),
+--   (‘Marketing Specialist’, ‘We need a marketing specialist to help us promote our products...’, ‘2023-07-12 10:30:00’),
+--   (‘Data Analyst’, ‘Join our data team and help us analyze and interpret data...’, ‘2023-07-18 11:45:00’);
+-- -- Insert Data into Product Features Table
+-- INSERT INTO product_features (title, description)
+-- VALUES
+--   (‘Real-time Analytics’, ‘Get instant insights with our real-time analytics feature.’),
+--   (‘Intuitive Interface’, ‘Our product comes with an easy-to-use and intuitive interface.’),
+--   (‘Advanced Security’, ‘We prioritize the security of your data with advanced encryption.’);
