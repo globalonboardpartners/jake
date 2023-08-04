@@ -37,3 +37,6 @@ I chose Jake to be the mascot of this project, because Jake is the most dependab
 
 ## Crates.io
 https://crates.io/crates/jake_the_dog
+
+## PG Admin guide
+Please follow this guide to get PG Admin up and running [here](https://onexlab-io.medium.com/docker-compose-postgres-initdb-ba0021deef76)
