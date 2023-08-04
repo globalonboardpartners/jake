@@ -1,7 +1,7 @@
 use actix_web::{get, post, put, delete, http, web, Responder, dev::HttpServiceFactory, HttpResponse};
 use actix_web::web::Json;
 use crate::action_handler;
-use crate::data_types::structs::{Employee, JobListing, Blog, BlogCategory, ProductFeature, Id, NewEmployee};
+use crate::data_types::structs::{Id, NewEmployee, UpdateColumn};
 
 #[get("/hello/{name}")]
 async fn greet(name: web::Path<String>) -> impl Responder {
@@ -42,12 +42,21 @@ async fn create_employee(employee: Json<NewEmployee>) -> HttpResponse {
         .finish()
 }
 
+#[put("/employee")]
+async fn update_employee(employee_update: Json<UpdateColumn>) -> HttpResponse {
+    action_handler::update_employee::execute(employee_update).await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .finish()
+}
+
 pub fn routes() -> impl HttpServiceFactory {
     (
         greet,
         get_all_employees,
         get_employee_by_id,
         delete_employee,
-        create_employee
+        create_employee,
+        update_employee
     )
 }

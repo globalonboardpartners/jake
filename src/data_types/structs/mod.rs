@@ -29,7 +29,7 @@ pub struct Blog {
     pub title: String,
     pub content: String,
     pub publish_date: String,
-    pub category_id: i64,
+    pub category_id: i32,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -55,4 +55,18 @@ pub struct Return<T> {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Id {
     pub id: i32
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub enum ColumnValue {
+    Integer(i32),
+    Float(f64),
+    Text(String),
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct UpdateColumn {
+    pub id: Option<i32>,
+    pub col_name: String,
+    pub col_value: ColumnValue,
 }

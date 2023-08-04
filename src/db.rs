@@ -153,5 +153,7 @@ pub async fn update(
     where_string = where_string.trim_end_matches(", ").to_string();
     query_string = format!("{query_string} WHERE {}", where_string);
 
+    println!("query_str: {:?}", query_string);
+
     query(QueryBuilder::new(&query_string, values)).await.unwrap()
 }
