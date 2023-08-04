@@ -218,31 +218,50 @@ async fn update_blog_category(blog_category_update: Json<UpdateColumn>) -> HttpR
 //         .finish()
 // }
 
-pub fn routes() -> impl HttpServiceFactory {
+pub fn employee() -> impl HttpServiceFactory {
     (
-        // greet,
-        // get_all_employees,
-        // get_employee_by_id,
-        // delete_employee,
-        // create_employee,
-        // update_employee,
-        // create_blog,
-        // get_all_blogs,
-        // get_blog_by_id,
-        // update_blog,
-        // delete_blog,
-        // create_job_listing,
-        // get_all_job_listings,
-        // get_job_listing_by_id,
-        // update_job_listing,
-        // delete_job_listing,
+        greet,
+        get_all_employees,
+        get_employee_by_id,
+        delete_employee,
+        create_employee,
+        update_employee,
 
+    )
+}
+
+pub fn blog() -> impl HttpServiceFactory {
+    (
+        create_blog,
+        get_all_blogs,
+        get_blog_by_id,
+        update_blog,
+        delete_blog,
+    )
+}
+
+pub fn job_listing() -> impl HttpServiceFactory {
+    (
+        create_job_listing,
+        get_all_job_listings,
+        get_job_listing_by_id,
+        update_job_listing,
+        delete_job_listing,
+    )
+}
+
+pub fn product_feature() -> impl HttpServiceFactory {
+    (
         create_product_feature,
         get_all_product_features,
         get_product_feature_by_id,
         update_product_feature,
         delete_product_feature,
+    )
+}
 
+pub fn blog_category() -> impl HttpServiceFactory {
+    (
         create_blog_category,
         get_all_blog_categories,
         get_blog_category_by_id,
