@@ -1,4 +1,5 @@
 use serde::{Serialize, Deserialize};
+use std::time::SystemTime;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Employee {
@@ -28,7 +29,15 @@ pub struct Blog {
     pub id: i32,
     pub title: String,
     pub content: String,
-    pub publish_date: String,
+    pub publish_date: SystemTime,
+    pub category_id: i32,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct NewBlog {
+    pub title: String,
+    pub content: String,
+    pub publish_date: SystemTime,
     pub category_id: i32,
 }
 
@@ -37,7 +46,7 @@ pub struct JobListing {
     pub id: i32,
     pub title: String,
     pub description: String,
-    pub publish_date: String,
+    pub publish_date: SystemTime,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
