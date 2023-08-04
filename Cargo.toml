@@ -1,11 +1,10 @@
 [package]
-name = "jake_the_dog"
+name = "jake"
 version = "1.0.1"
 edition = "2021"
 authors = ["Harrison Hemstreet"]
-description = "jake_the_dog is a skeleton project that you can use to start a basic webserver using Rust and PostgreSQL"
-repository = "https://github.com/HarrisonHemstreet/jake_the_dog"
-license = "MIT OR Apache-2.0"
+description = "Jake is the webservice for you! Runs everything Exploro."
+repository = "https://github.com/globalonboardpartners/exploro-group-webservice"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
