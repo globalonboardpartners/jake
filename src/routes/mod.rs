@@ -1,7 +1,7 @@
 use actix_web::{get, post, put, delete, http, web, Responder, dev::HttpServiceFactory, HttpResponse};
 use actix_web::web::Json;
 use crate::action_handler;
-use crate::data_types::structs::{Id, NewEmployee, UpdateColumn, NewBlog, NewJobListing};
+use crate::data_types::structs::{Id, NewEmployee, UpdateColumn, NewBlog, NewJobListing, NewProductFeature};
 
 #[get("/hello/{name}")]
 async fn greet(name: web::Path<String>) -> impl Responder {
@@ -134,6 +134,48 @@ async fn delete_job_listing(id: Json<Id>) -> impl Responder {
         .finish()
 }
 
+#[post("/product_feature")]
+async fn create_product_feature(product_feature: Json<NewProductFeature>) -> HttpResponse {
+    action_handler::product_feature::create_product_feature::execute(product_feature).await;
+    HttpResponse::Created()
+        .status(http::StatusCode::CREATED)
+        .finish()
+}
+
+#[get("/product_features")]
+async fn get_all_product_features() -> HttpResponse {
+    let res = action_handler::product_feature::get_all_product_features::execute().await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .content_type("application/json")
+        .body(res)
+}
+
+#[get("/product_feature")]
+async fn get_product_feature_by_id(id: Json<Id>) -> impl Responder {
+    let res = action_handler::product_feature::get_product_feature_by_id::execute(id).await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .content_type("application/json")
+        .body(res)
+}
+
+#[put("/product_feature")]
+async fn update_product_feature(product_feature_update: Json<UpdateColumn>) -> HttpResponse {
+    action_handler::product_feature::update_product_feature::execute(product_feature_update).await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .finish()
+}
+
+#[delete("/product_feature")]
+async fn delete_product_feature(id: Json<Id>) -> impl Responder {
+    action_handler::product_feature::delete_product_feature::execute(id).await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .finish()
+}
+
 pub fn routes() -> impl HttpServiceFactory {
     (
         // greet,
@@ -142,15 +184,21 @@ pub fn routes() -> impl HttpServiceFactory {
         // delete_employee,
         // create_employee,
         // update_employee,
-        create_blog,
-        get_all_blogs,
-        get_blog_by_id,
-        update_blog,
-        delete_blog,
+        // create_blog,
+        // get_all_blogs,
+        // get_blog_by_id,
+        // update_blog,
+        // delete_blog,
         create_job_listing,
         get_all_job_listings,
         get_job_listing_by_id,
         update_job_listing,
         delete_job_listing,
+
+        create_product_feature,
+        get_all_product_features,
+        get_product_feature_by_id,
+        update_product_feature,
+        delete_product_feature,
     )
 }

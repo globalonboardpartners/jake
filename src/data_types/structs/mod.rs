@@ -64,6 +64,12 @@ pub struct ProductFeature {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct NewProductFeature {
+    pub title: String,
+    pub description: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Return<T> {
     pub data: T
 }
