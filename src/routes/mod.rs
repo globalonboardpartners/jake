@@ -10,7 +10,7 @@ async fn greet(name: web::Path<String>) -> impl Responder {
 
 #[get("/employees")]
 async fn get_all_employees() -> impl Responder {
-    let res = action_handler::get_all_employees::execute().await;
+    let res = action_handler::employee::get_all_employees::execute().await;
     HttpResponse::Ok()
         .status(http::StatusCode::OK)
         .content_type("application/json")
@@ -19,7 +19,7 @@ async fn get_all_employees() -> impl Responder {
 
 #[get("/employee")]
 async fn get_employee_by_id(id: Json<Id>) -> impl Responder {
-    let res = action_handler::get_employee_by_id::execute(id).await;
+    let res = action_handler::employee::get_employee_by_id::execute(id).await;
     HttpResponse::Ok()
         .status(http::StatusCode::OK)
         .content_type("application/json")
@@ -28,7 +28,7 @@ async fn get_employee_by_id(id: Json<Id>) -> impl Responder {
 
 #[delete("/employee")]
 async fn delete_employee(id: Json<Id>) -> impl Responder {
-    action_handler::delete_employee::execute(id).await;
+    action_handler::employee::delete_employee::execute(id).await;
     HttpResponse::Ok()
         .status(http::StatusCode::OK)
         .finish()
@@ -36,7 +36,7 @@ async fn delete_employee(id: Json<Id>) -> impl Responder {
 
 #[post("/employee")]
 async fn create_employee(employee: Json<NewEmployee>) -> HttpResponse {
-    action_handler::create_employee::execute(employee).await;
+    action_handler::employee::create_employee::execute(employee).await;
     HttpResponse::Created()
         .status(http::StatusCode::CREATED)
         .finish()
@@ -44,7 +44,7 @@ async fn create_employee(employee: Json<NewEmployee>) -> HttpResponse {
 
 #[put("/employee")]
 async fn update_employee(employee_update: Json<UpdateColumn>) -> HttpResponse {
-    action_handler::update_employee::execute(employee_update).await;
+    action_handler::employee::update_employee::execute(employee_update).await;
     HttpResponse::Ok()
         .status(http::StatusCode::OK)
         .finish()
