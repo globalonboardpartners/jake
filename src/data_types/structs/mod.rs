@@ -4,7 +4,7 @@ use serde::{Serialize, Deserialize};
 pub struct Employee {
     pub id: i32,
     pub name: String,
-    pub position: f64,
+    pub position: String,
     pub bio: String,
     pub image_url: String,
 }

@@ -1,3 +1,9 @@
+----------------------------------------
+--             WARNING!               --
+--  if you change the table schema,   --
+--  you will have to also change the  --
+--               code!                --
+----------------------------------------
 -- Create Team Members Table
 CREATE TABLE employee (
   id SERIAL PRIMARY KEY,
@@ -17,49 +23,43 @@ CREATE TABLE blog (
   title VARCHAR(100) NOT NULL,
   content TEXT NOT NULL,
   publish_date TIMESTAMP NOT NULL,
-  category_id INT NOT NULL REFERENCES blog_categories(id)
+  category_id INT NOT NULL REFERENCES blog_category(id)
 );
 -- Create Job Listings Table
-CREATE TABLE job_listings (
+CREATE TABLE job_listing (
   id SERIAL PRIMARY KEY,
   title VARCHAR(100) NOT NULL,
   description TEXT NOT NULL,
-  posted_at TIMESTAMP NOT NULL
+  publish_date TIMESTAMP NOT NULL
 );
 -- Create Product Features Table
-CREATE TABLE product_features (
+CREATE TABLE product_feature (
   id SERIAL PRIMARY KEY,
   title VARCHAR(100) NOT NULL,
   description TEXT NOT NULL
 );
--- Insert Data into Team Members Table
--- INSERT INTO team_members (name, position, bio, image_url)
--- VALUES
---   (‘John Doe’, ‘CEO’, ‘John is the CEO of our company.’, ‘https://example.com/images/john.jpg’),
---   (‘Jane Smith’, ‘CTO’, ‘Jane is the Chief Technology Officer.’, ‘https://example.com/images/jane.jpg’),
---   (‘Mike Johnson’, ‘Senior Developer’, ‘Mike is a senior developer on our team.’, ‘https://example.com/images/mike.jpg’);
--- -- Insert Data into Blog Categories Table
--- INSERT INTO blog_categories (name)
--- VALUES
---   (‘Technology’),
---   (‘Business’),
---   (‘Marketing’),
---   (‘Product Updates’);
--- -- Insert Data into Blog Posts Table
--- INSERT INTO blog_posts (title, content, published_at, category_id)
--- VALUES
---   (‘Introduction to AI’, ‘In this post, we introduce the basics of artificial intelligence...’, ‘2023-07-15 10:00:00’, 1),
---   (‘Tips for Effective Marketing’, ‘Learn some valuable marketing tips to grow your business...’, ‘2023-07-20 09:30:00’, 3),
---   (‘New Product Launch’, ‘We are excited to announce the launch of our new product...’, ‘2023-07-25 14:15:00’, 4);
--- -- Insert Data into Job Listings Table
--- INSERT INTO job_listings (title, description, posted_at)
--- VALUES
---   (‘Software Engineer’, ‘We are looking for a skilled software engineer to join our team...’, ‘2023-07-10 08:00:00’),
---   (‘Marketing Specialist’, ‘We need a marketing specialist to help us promote our products...’, ‘2023-07-12 10:30:00’),
---   (‘Data Analyst’, ‘Join our data team and help us analyze and interpret data...’, ‘2023-07-18 11:45:00’);
--- -- Insert Data into Product Features Table
--- INSERT INTO product_features (title, description)
--- VALUES
---   (‘Real-time Analytics’, ‘Get instant insights with our real-time analytics feature.’),
---   (‘Intuitive Interface’, ‘Our product comes with an easy-to-use and intuitive interface.’),
---   (‘Advanced Security’, ‘We prioritize the security of your data with advanced encryption.’);
+
+-- inserts for employee
+insert into employee (name, position, bio, image_url) values ('tom', 'ceo', 'cool dude', 'https://google.com/1');
+insert into employee (name, position, bio, image_url) values ('sean', 'cto', 'cool guy', 'https://google.com/2');
+insert into employee (name, position, bio, image_url) values ('john', 'cfo', 'cool bro', 'https://google.com/3');
+
+-- inserts for blog_category
+insert into blog_category (category) values ('dumb');
+insert into blog_category (category) values ('young');
+insert into blog_category (category) values ('broke');
+
+-- inserts for blog
+insert into blog (title, content, publish_date, category_id) values ('how to wipe your face', 'its easy', '2023-08-03 12:34:56', 1);
+insert into blog (title, content, publish_date, category_id) values ('runing with scissors is easy', 'sometimes dangerous', '2023-08-04 12:34:56', 1);
+insert into blog (title, content, publish_date, category_id) values ('how to die', 'just jump', '2023-08-05 12:34:56', 1);
+
+-- job_listing
+insert into job_listing (title, description, publish_date) values ('software dev', 'cool vibes', '2023-08-04 12:34:56');
+insert into job_listing (title, description, publish_date) values ('dev', 'cool', '2023-08-05 12:34:56');
+insert into job_listing (title, description, publish_date) values ('developer', 'vibes', '2023-08-06 12:34:56');
+
+-- product feature
+insert into product_feature (title, description) values ('thing', 'function');
+insert into product_feature (title, description) values ('product', 'feature');
+insert into product_feature (title, description) values ('tool', 'use');
