@@ -1,7 +1,7 @@
 use actix_web::{get, post, put, delete, http, web, Responder, dev::HttpServiceFactory, HttpResponse};
 use actix_web::web::Json;
 use crate::action_handler;
-use crate::data_types::structs::{Id, NewEmployee, UpdateColumn, NewBlog, NewJobListing, NewProductFeature};
+use crate::data_types::structs::{Id, NewEmployee, UpdateColumn, NewBlog, NewJobListing, NewProductFeature, NewBlogCategory};
 
 #[get("/hello/{name}")]
 async fn greet(name: web::Path<String>) -> impl Responder {
@@ -176,6 +176,48 @@ async fn delete_product_feature(id: Json<Id>) -> impl Responder {
         .finish()
 }
 
+#[post("/blog_category")]
+async fn create_blog_category(blog_category: Json<NewBlogCategory>) -> HttpResponse {
+    action_handler::blog_category::create_blog_category::execute(blog_category).await;
+    HttpResponse::Created()
+        .status(http::StatusCode::CREATED)
+        .finish()
+}
+
+#[get("/blog_categories")]
+async fn get_all_blog_categories() -> HttpResponse {
+    let res = action_handler::blog_category::get_all_blog_categories::execute().await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .content_type("application/json")
+        .body(res)
+}
+
+#[get("/blog_category")]
+async fn get_blog_category_by_id(id: Json<Id>) -> impl Responder {
+    let res = action_handler::blog_category::get_blog_category_by_id::execute(id).await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .content_type("application/json")
+        .body(res)
+}
+
+#[put("/blog_category")]
+async fn update_blog_category(blog_category_update: Json<UpdateColumn>) -> HttpResponse {
+    action_handler::blog_category::update_blog_category::execute(blog_category_update).await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .finish()
+}
+
+// #[delete("/blog_category")]
+// async fn delete_blog_category(id: Json<Id>) -> impl Responder {
+//     action_handler::blog_category::delete_blog_category::execute(id).await;
+//     HttpResponse::Ok()
+//         .status(http::StatusCode::OK)
+//         .finish()
+// }
+
 pub fn routes() -> impl HttpServiceFactory {
     (
         // greet,
@@ -189,16 +231,22 @@ pub fn routes() -> impl HttpServiceFactory {
         // get_blog_by_id,
         // update_blog,
         // delete_blog,
-        create_job_listing,
-        get_all_job_listings,
-        get_job_listing_by_id,
-        update_job_listing,
-        delete_job_listing,
+        // create_job_listing,
+        // get_all_job_listings,
+        // get_job_listing_by_id,
+        // update_job_listing,
+        // delete_job_listing,
 
         create_product_feature,
         get_all_product_features,
         get_product_feature_by_id,
         update_product_feature,
         delete_product_feature,
+
+        create_blog_category,
+        get_all_blog_categories,
+        get_blog_category_by_id,
+        update_blog_category,
+        // delete_blog_category,
     )
 }

@@ -25,6 +25,11 @@ pub struct BlogCategory {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct NewBlogCategory {
+    pub category: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Blog {
     pub id: i32,
     pub title: String,
