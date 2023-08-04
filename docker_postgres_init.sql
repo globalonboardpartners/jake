@@ -1,5 +1,5 @@
 -- Create Team Members Table
-CREATE TABLE team_members (
+CREATE TABLE employee (
   id SERIAL PRIMARY KEY,
   name VARCHAR(50) NOT NULL,
   position VARCHAR(50) NOT NULL,
@@ -7,16 +7,16 @@ CREATE TABLE team_members (
   image_url VARCHAR(255) NOT NULL
 );
 -- Create Blog Categories Table
-CREATE TABLE blog_categories (
+CREATE TABLE blog_category (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(50) NOT NULL
+  category VARCHAR(50) NOT NULL
 );
 -- Create Blog Posts Table
-CREATE TABLE blog_posts (
+CREATE TABLE blog (
   id SERIAL PRIMARY KEY,
   title VARCHAR(100) NOT NULL,
   content TEXT NOT NULL,
-  published_at TIMESTAMP NOT NULL,
+  publish_date TIMESTAMP NOT NULL,
   category_id INT NOT NULL REFERENCES blog_categories(id)
 );
 -- Create Job Listings Table
