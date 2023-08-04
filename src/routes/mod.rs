@@ -1,7 +1,7 @@
 use actix_web::{get, post, put, delete, http, web, Responder, dev::HttpServiceFactory, HttpResponse};
 use actix_web::web::Json;
 use crate::action_handler;
-use crate::data_types::structs::{Id, NewEmployee, UpdateColumn, NewBlog};
+use crate::data_types::structs::{Id, NewEmployee, UpdateColumn, NewBlog, NewJobListing};
 
 #[get("/hello/{name}")]
 async fn greet(name: web::Path<String>) -> impl Responder {
@@ -34,17 +34,17 @@ async fn get_employee_by_id(id: Json<Id>) -> impl Responder {
         .body(res)
 }
 
-#[delete("/employee")]
-async fn delete_employee(id: Json<Id>) -> impl Responder {
-    action_handler::employee::delete_employee::execute(id).await;
+#[put("/employee")]
+async fn update_employee(employee_update: Json<UpdateColumn>) -> HttpResponse {
+    action_handler::employee::update_employee::execute(employee_update).await;
     HttpResponse::Ok()
         .status(http::StatusCode::OK)
         .finish()
 }
 
-#[put("/employee")]
-async fn update_employee(employee_update: Json<UpdateColumn>) -> HttpResponse {
-    action_handler::employee::update_employee::execute(employee_update).await;
+#[delete("/employee")]
+async fn delete_employee(id: Json<Id>) -> impl Responder {
+    action_handler::employee::delete_employee::execute(id).await;
     HttpResponse::Ok()
         .status(http::StatusCode::OK)
         .finish()
@@ -92,18 +92,65 @@ async fn delete_blog(id: Json<Id>) -> impl Responder {
         .finish()
 }
 
+#[post("/job_listing")]
+async fn create_job_listing(job_listing: Json<NewJobListing>) -> HttpResponse {
+    action_handler::job_listing::create_job_listing::execute(job_listing).await;
+    HttpResponse::Created()
+        .status(http::StatusCode::CREATED)
+        .finish()
+}
+
+#[get("/job_listings")]
+async fn get_all_job_listings() -> HttpResponse {
+    let res = action_handler::job_listing::get_all_job_listings::execute().await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .content_type("application/json")
+        .body(res)
+}
+
+#[get("/job_listing")]
+async fn get_job_listing_by_id(id: Json<Id>) -> impl Responder {
+    let res = action_handler::job_listing::get_job_listing_by_id::execute(id).await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .content_type("application/json")
+        .body(res)
+}
+
+#[put("/job_listing")]
+async fn update_job_listing(job_listing_update: Json<UpdateColumn>) -> HttpResponse {
+    action_handler::job_listing::update_job_listing::execute(job_listing_update).await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .finish()
+}
+
+#[delete("/job_listing")]
+async fn delete_job_listing(id: Json<Id>) -> impl Responder {
+    action_handler::job_listing::delete_job_listing::execute(id).await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .finish()
+}
+
 pub fn routes() -> impl HttpServiceFactory {
     (
-        greet,
-        get_all_employees,
-        get_employee_by_id,
-        delete_employee,
-        create_employee,
-        update_employee,
+        // greet,
+        // get_all_employees,
+        // get_employee_by_id,
+        // delete_employee,
+        // create_employee,
+        // update_employee,
         create_blog,
         get_all_blogs,
         get_blog_by_id,
         update_blog,
         delete_blog,
+        create_job_listing,
+        get_all_job_listings,
+        get_job_listing_by_id,
+        update_job_listing,
+        delete_job_listing,
     )
 }

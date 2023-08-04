@@ -50,6 +50,13 @@ pub struct JobListing {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct NewJobListing {
+    pub title: String,
+    pub description: String,
+    pub publish_date: SystemTime,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ProductFeature {
     pub id: i32,
     pub title: String,
