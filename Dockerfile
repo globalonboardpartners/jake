@@ -19,7 +19,7 @@ COPY src ./src
 RUN cargo build --release
 
 # Expose the port your web server listens on
-EXPOSE 8080
+EXPOSE 8081
 
 # Set the command to run your application
 CMD ["./target/release/jake"]
