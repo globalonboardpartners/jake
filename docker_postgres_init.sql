@@ -46,15 +46,15 @@ CREATE TABLE product_feature (
 -- formally known as "Region"
 CREATE TABLE continent (
   id SERIAL PRIMARY KEY,
-  name varchar(50),
-  slug varchar(50),
-  description_long varchar(100),
-  description_short varchar(200),
-  image_link TEXT,
-  thumbnail_link TEXT,
-  special_offer_image_link TEXT,
-  video_link TEXT,
-  gallery TEXT[],
+  name varchar(50) NOT NULL,
+  slug varchar(50) NOT NULL,
+  description_long varchar(100) NOT NULL,
+  description_short varchar(200) NOT NULL,
+  image_link TEXT NOT NULL,
+  thumbnail_link TEXT NOT NULL,
+  special_offer_image_link TEXT NOT NULL,
+  video_link TEXT NOT NULL,
+  gallery TEXT[] NOT NULL,
   tags TEXT,
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
@@ -372,3 +372,82 @@ insert into job_listing (title, description, publish_date) values ('developer', 
 insert into product_feature (title, description) values ('thing', 'function');
 insert into product_feature (title, description) values ('product', 'feature');
 insert into product_feature (title, description) values ('tool', 'use');
+
+
+-- continent
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery)
+VALUES ('Asia', 'asia', 'Long description of Asia', 'Short description of Asia', 'image_asia.jpg', 'thumbnail_asia.jpg', 'special_offer_asia.jpg', 'video_asia.mp4', ARRAY['image1.jpg', 'image2.jpg']);
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('Europe', 'europe', 'Long description of Europe', 'Short description of Europe', 'image_europe.jpg', 'thumbnail_europe.jpg', 'special_offer_europe.jpg', 'video_europe.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'travel, culture');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, video_link, gallery, tags)
+VALUES ('Africa', 'africa', 'Long description of Africa', 'Short description of Africa', 'image_africa.jpg', 'thumbnail_africa.jpg', 'video_africa.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'safari, nature');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, gallery)
+VALUES ('North America', 'north-america', 'Long description of North America', 'Short description of North America', 'image_north_america.jpg', 'thumbnail_north_america.jpg', 'special_offer_north_america.jpg', ARRAY['image1.jpg', 'image2.jpg']);
+INSERT INTO continent (name, slug, description_long, description_short, image_link, video_link, gallery, tags)
+VALUES ('South America', 'south-america', 'Long description of South America', 'Short description of South America', 'image_south_america.jpg', 'video_south_america.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'adventure, history');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, tags)
+VALUES ('Australia', 'australia', 'Long description of Australia', 'Short description of Australia', 'image_australia.jpg', 'thumbnail_australia.jpg', 'special_offer_australia.jpg', 'beach, surfing');
+INSERT INTO continent (name, slug, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('Antarctica', 'antarctica', 'image_antarctica.jpg', 'thumbnail_antarctica.jpg', 'special_offer_antarctica.jpg', 'video_antarctica.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'expedition, wildlife');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('North Pole', 'north-pole', 'Long description of North Pole', 'Short description of North Pole', 'image_north_pole.jpg', 'thumbnail_north_pole.jpg', 'special_offer_north_pole.jpg', 'video_north_pole.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'arctic, polar bears');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery)
+VALUES ('Greenland', 'greenland', 'Long description of Greenland', 'Short description of Greenland', 'image_greenland.jpg', 'thumbnail_greenland.jpg', 'special_offer_greenland.jpg', 'video_greenland.mp4', ARRAY['image1.jpg', 'image2.jpg']);
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('Oceania', 'oceania', 'Long description of Oceania', 'Short description of Oceania', 'image_oceania.jpg', 'thumbnail_oceania.jpg', 'special_offer_oceania.jpg', 'video_oceania.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'islands, diving');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, video_link, gallery, tags)
+VALUES ('Pangaea', 'pangaea', 'Long description of Pangaea', 'Short description of Pangaea', 'image_pangaea.jpg', 'thumbnail_pangaea.jpg', 'video_pangaea.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'prehistoric');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, gallery)
+VALUES ('Eurasia', 'eurasia', 'Long description of Eurasia', 'Short description of Eurasia', 'image_eurasia.jpg', 'thumbnail_eurasia.jpg', 'special_offer_eurasia.jpg', ARRAY['image1.jpg', 'image2.jpg']);
+INSERT INTO continent (name, slug, description_long, description_short, image_link, video_link, gallery, tags)
+VALUES ('Atlantis', 'atlantis', 'Long description of Atlantis', 'Short description of Atlantis', 'image_atlantis.jpg', 'video_atlantis.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'mythical');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, tags)
+VALUES ('Lemuria', 'lemuria', 'Long description of Lemuria', 'Short description of Lemuria', 'image_lemuria.jpg', 'thumbnail_lemuria.jpg', 'special_offer_lemuria.jpg', 'lost civilization');
+INSERT INTO continent (name, slug, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('Mu', 'mu', 'image_mu.jpg', 'thumbnail_mu.jpg', 'special_offer_mu.jpg', 'video_mu.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'mythical, ancient');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('Laurasia', 'laurasia', 'Long description of Laurasia', 'Short description of Laurasia', 'image_laurasia.jpg', 'thumbnail_laurasia.jpg', 'special_offer_laurasia.jpg', 'video_laurasia.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'supercontinent');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery)
+VALUES ('Gondwana', 'gondwana', 'Long description of Gondwana', 'Short description of Gondwana', 'image_gondwana.jpg', 'thumbnail_gondwana.jpg', 'special_offer_gondwana.jpg', 'video_gondwana.mp4', ARRAY['image1.jpg', 'image2.jpg']);
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('Pangaea Ultima', 'pangaea-ultima', 'Long description of Pangaea Ultima', 'Short description of Pangaea Ultima', 'image_pangaea_ultima.jpg', 'thumbnail_pangaea_ultima.jpg', 'special_offer_pangaea_ultima.jpg', 'video_pangaea_ultima.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'future, science fiction');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, video_link, gallery, tags)
+VALUES ('Lemuria II', 'lemuria-ii', 'Long description of Lemuria II', 'Short description of Lemuria II', 'image_lemuria_ii.jpg', 'thumbnail_lemuria_ii.jpg', 'video_lemuria_ii.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'lost civilization');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, gallery)
+VALUES ('Mu II', 'mu-ii', 'Long description of Mu II', 'Short description of Mu II', 'image_mu_ii.jpg', 'thumbnail_mu_ii.jpg', 'special_offer_mu_ii.jpg', ARRAY['image1.jpg', 'image2.jpg']);
+INSERT INTO continent (name, slug, description_long, description_short, image_link, video_link, gallery, tags)
+VALUES ('Atlantis II', 'atlantis-ii', 'Long description of Atlantis II', 'Short description of Atlantis II', 'image_atlantis_ii.jpg', 'video_atlantis_ii.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'mythical');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, tags)
+VALUES ('Lost Continent', 'lost-continent', 'Long description of Lost Continent', 'Short description of Lost Continent', 'image_lost_continent.jpg', 'thumbnail_lost_continent.jpg', 'special_offer_lost_continent.jpg', 'mythical, ancient');
+INSERT INTO continent (name, slug, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('Hidden Land', 'hidden-land', 'image_hidden_land.jpg', 'thumbnail_hidden_land.jpg', 'special_offer_hidden_land.jpg', 'video_hidden_land.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'mythical');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('Superland', 'superland', 'Long description of Superland', 'Short description of Superland', 'image_superland.jpg', 'thumbnail_superland.jpg', 'special_offer_superland.jpg', 'video_superland.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'fantasy');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery)
+VALUES ('Mystery Land', 'mystery-land', 'Long description of Mystery Land', 'Short description of Mystery Land', 'image_mystery_land.jpg', 'thumbnail_mystery_land.jpg', 'special_offer_mystery_land.jpg', 'video_mystery_land.mp4', ARRAY['image1.jpg', 'image2.jpg']);
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('Wonderland', 'wonderland', 'Long description of Wonderland', 'Short description of Wonderland', 'image_wonderland.jpg', 'thumbnail_wonderland.jpg', 'special_offer_wonderland.jpg', 'video_wonderland.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'fantasy, fairy tales');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, video_link, gallery, tags)
+VALUES ('Mythica', 'mythica', 'Long description of Mythica', 'Short description of Mythica', 'image_mythica.jpg', 'thumbnail_mythica.jpg', 'video_mythica.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'mythical');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, gallery)
+VALUES ('Fabled Land', 'fabled-land', 'Long description of Fabled Land', 'Short description of Fabled Land', 'image_fabled_land.jpg', 'thumbnail_fabled_land.jpg', 'special_offer_fabled_land.jpg', ARRAY['image1.jpg', 'image2.jpg']);
+INSERT INTO continent (name, slug, description_long, description_short, image_link, video_link, gallery, tags)
+VALUES ('Legendary Continent', 'legendary-continent', 'Long description of Legendary Continent', 'Short description of Legendary Continent', 'image_legendary_continent.jpg', 'video_legendary_continent.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'mythical, legendary');
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, tags)
+VALUES ('Enchanted Land', 'enchanted-land', 'Long description of Enchanted Land', 'Short description of Enchanted Land', 'image_enchanted_land.jpg', 'thumbnail_enchanted_land.jpg', 'special_offer_enchanted_land.jpg', 'fantasy, magic');
+
+-- country
+INSERT INTO country (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('United States', 'usa', 'Long description of the United States.', 'Short description of USA.', 'https://example.com/usa.jpg', 'https://example.com/thumbnail/usa.jpg', 'https://example.com/special_offer/usa.jpg', 'https://youtube.com/usa', ARRAY['https://example.com/image1.jpg', 'https://example.com/image2.jpg'], 'country, travel');
+INSERT INTO country (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('France', 'france', 'Long description of France.', 'Short description of France.', 'https://example.com/france.jpg', 'https://example.com/thumbnail/france.jpg', 'https://example.com/special_offer/france.jpg', 'https://youtube.com/france', ARRAY['https://example.com/image1.jpg', 'https://example.com/image2.jpg'], 'country, travel');
+INSERT INTO country (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('Japan', 'japan', 'Long description of Japan.', 'Short description of Japan.', 'https://example.com/japan.jpg', 'https://example.com/thumbnail/japan.jpg', 'https://example.com/special_offer/japan.jpg', 'https://youtube.com/japan', ARRAY['https://example.com/image1.jpg', 'https://example.com/image2.jpg'], 'country, travel');
+
+-- region
+INSERT INTO region (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('California', 'california', 'Long description of California.', 'Short description of California.', 'https://example.com/california.jpg', 'https://example.com/thumbnail/california.jpg', 'https://example.com/special_offer/california.jpg', 'https://youtube.com/california', ARRAY['https://example.com/image1.jpg', 'https://example.com/image2.jpg'], 'region, travel');
+INSERT INTO region (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('Provence', 'provence', 'Long description of Provence.', 'Short description of Provence.', 'https://example.com/provence.jpg', 'https://example.com/thumbnail/provence.jpg', 'https://example.com/special_offer/provence.jpg', 'https://youtube.com/provence', ARRAY['https://example.com/image1.jpg', 'https://example.com/image2.jpg'], 'region, travel');
+INSERT INTO region (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
+VALUES ('Kanto', 'kanto', 'Long description of Kanto.', 'Short description of Kanto.', 'https://example.com/kanto.jpg', 'https://example.com/thumbnail/kanto.jpg', 'https://example.com/special_offer/kanto.jpg', 'https://youtube.com/kanto', ARRAY['https://example.com/image1.jpg', 'https://example.com/image2.jpg'], 'region, travel');
