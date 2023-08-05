@@ -12,11 +12,13 @@ CREATE TABLE employee (
   bio TEXT NOT NULL,
   image_url VARCHAR(255) NOT NULL
 );
+
 -- Create Blog Categories Table
 CREATE TABLE blog_category (
   id SERIAL PRIMARY KEY,
   category VARCHAR(50) NOT NULL
 );
+
 -- Create Blog Posts Table
 CREATE TABLE blog (
   id SERIAL PRIMARY KEY,
@@ -25,6 +27,7 @@ CREATE TABLE blog (
   publish_date TIMESTAMP NOT NULL,
   category_id INT NOT NULL REFERENCES blog_category(id)
 );
+
 -- Create Job Listings Table
 CREATE TABLE job_listing (
   id SERIAL PRIMARY KEY,
@@ -32,48 +35,13 @@ CREATE TABLE job_listing (
   description TEXT NOT NULL,
   publish_date TIMESTAMP NOT NULL
 );
+
 -- Create Product Features Table
 CREATE TABLE product_feature (
   id SERIAL PRIMARY KEY,
   title VARCHAR(100) NOT NULL,
   description TEXT NOT NULL
 );
-
--- inserts for employee
-insert into employee (name, position, bio, image_url) values ('tom', 'ceo', 'cool dude', 'https://google.com/1');
-insert into employee (name, position, bio, image_url) values ('sean', 'cto', 'cool guy', 'https://google.com/2');
-insert into employee (name, position, bio, image_url) values ('john', 'cfo', 'cool bro', 'https://google.com/3');
-
--- inserts for blog_category
-insert into blog_category (category) values ('dumb');
-insert into blog_category (category) values ('young');
-insert into blog_category (category) values ('broke');
-
--- inserts for blog
-insert into blog (title, content, publish_date, category_id) values ('how to wipe your face', 'its easy', '2023-08-03 12:34:56', 1);
-insert into blog (title, content, publish_date, category_id) values ('runing with scissors is easy', 'sometimes dangerous', '2023-08-04 12:34:56', 1);
-insert into blog (title, content, publish_date, category_id) values ('how to die', 'just jump', '2023-08-05 12:34:56', 1);
-
--- job_listing
-insert into job_listing (title, description, publish_date) values ('software dev', 'cool vibes', '2023-08-04 12:34:56');
-insert into job_listing (title, description, publish_date) values ('dev', 'cool', '2023-08-05 12:34:56');
-insert into job_listing (title, description, publish_date) values ('developer', 'vibes', '2023-08-06 12:34:56');
-
--- product feature
-insert into product_feature (title, description) values ('thing', 'function');
-insert into product_feature (title, description) values ('product', 'feature');
-insert into product_feature (title, description) values ('tool', 'use');
-
---------------------------------------------------------------
--- CREATE database exploro;
-
-CREATE OR REPLACE FUNCTION update_updated_on()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.edited = NOW();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
 
 -- formally known as "Region"
 CREATE TABLE continent (
@@ -92,11 +60,6 @@ CREATE TABLE continent (
   edited TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TRIGGER trigger_row_edit_update_timestamp_for_continent
-BEFORE UPDATE ON continent
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_on();
-
 CREATE TABLE country (
   id SERIAL PRIMARY KEY,
   name varchar(50),
@@ -112,11 +75,6 @@ CREATE TABLE country (
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );
-
-CREATE TRIGGER trigger_row_edit_update_timestamp_for_country
-BEFORE UPDATE ON country
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_on();
 
 -- for states/provinences/regions/teritory/reservation/military base/etc basically for anything that is the next largest division of a country
 CREATE TABLE region (
@@ -135,11 +93,6 @@ CREATE TABLE region (
   edited TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TRIGGER trigger_row_edit_update_timestamp_for_region
-BEFORE UPDATE ON country
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_on();
-
 CREATE TABLE city (
   id SERIAL PRIMARY KEY,
   name varchar(50),
@@ -156,11 +109,6 @@ CREATE TABLE city (
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );
-
-CREATE TRIGGER trigger_row_edit_update_timestamp_for_city
-BEFORE UPDATE ON city
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_on();
 
 -- formally known as "business"
 CREATE TABLE partner_vendor (
@@ -189,10 +137,6 @@ CREATE TABLE partner_vendor (
   edited TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TRIGGER trigger_row_edit_update_timestamp_for_partner_vendor
-BEFORE UPDATE ON partner_vendor
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_on();
 -- I want to change the name of the "collection_id" and "item_id" to be something significantly more descriptive
 -- restaurant table has significant differences from the csv joe gave me
 CREATE TABLE restaurant (
@@ -223,11 +167,6 @@ CREATE TABLE restaurant (
   edited TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TRIGGER trigger_row_edit_update_timestamp_for_partner_restaurant
-BEFORE UPDATE ON restaurant
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_on();
-
 CREATE TABLE hotel (
   id SERIAL PRIMARY KEY,
   name varchar(50),
@@ -255,11 +194,6 @@ CREATE TABLE hotel (
   edited TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TRIGGER trigger_row_edit_update_timestamp_for_partner_hotel
-BEFORE UPDATE ON hotel
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_on();
-
 CREATE TABLE hotel_room (
   id SERIAL PRIMARY KEY,
   name varchar(50),
@@ -275,11 +209,6 @@ CREATE TABLE hotel_room (
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );
-
-CREATE TRIGGER trigger_row_edit_update_timestamp_for_partner_hotel_room
-BEFORE UPDATE ON hotel_room
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_on();
 
 CREATE TABLE activity (
   id SERIAL PRIMARY KEY,
@@ -307,11 +236,6 @@ CREATE TABLE activity (
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );
-
-CREATE TRIGGER trigger_row_edit_update_timestamp_for_activity
-BEFORE UPDATE ON activity
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_on();
 
 CREATE TABLE event (
   id SERIAL PRIMARY KEY,
@@ -341,11 +265,6 @@ CREATE TABLE event (
   edited TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TRIGGER trigger_row_edit_update_timestamp_for_event
-BEFORE UPDATE ON event
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_on();
-
 CREATE TABLE event_details (
   id SERIAL PRIMARY KEY,
   name VARCHAR(50),
@@ -366,7 +285,90 @@ CREATE TABLE event_details (
   edited TIMESTAMP DEFAULT NOW()
 );
 
+CREATE OR REPLACE FUNCTION update_updated_on()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.edited = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_row_edit_update_timestamp_for_continent
+BEFORE UPDATE ON continent
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_on();
+
+CREATE TRIGGER trigger_row_edit_update_timestamp_for_country
+BEFORE UPDATE ON country
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_on();
+
+CREATE TRIGGER trigger_row_edit_update_timestamp_for_region
+BEFORE UPDATE ON country
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_on();
+
+CREATE TRIGGER trigger_row_edit_update_timestamp_for_city
+BEFORE UPDATE ON city
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_on();
+
+CREATE TRIGGER trigger_row_edit_update_timestamp_for_partner_vendor
+BEFORE UPDATE ON partner_vendor
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_on();
+
+CREATE TRIGGER trigger_row_edit_update_timestamp_for_partner_restaurant
+BEFORE UPDATE ON restaurant
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_on();
+
+CREATE TRIGGER trigger_row_edit_update_timestamp_for_partner_hotel
+BEFORE UPDATE ON hotel
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_on();
+
+CREATE TRIGGER trigger_row_edit_update_timestamp_for_partner_hotel_room
+BEFORE UPDATE ON hotel_room
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_on();
+
+CREATE TRIGGER trigger_row_edit_update_timestamp_for_activity
+BEFORE UPDATE ON activity
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_on();
+
+CREATE TRIGGER trigger_row_edit_update_timestamp_for_event
+BEFORE UPDATE ON event
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_on();
+
 CREATE TRIGGER trigger_row_edit_update_timestamp_for_event_details
 BEFORE UPDATE ON event_details
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_on();
+
+-- inserts for employee
+insert into employee (name, position, bio, image_url) values ('tom', 'ceo', 'cool dude', 'https://google.com/1');
+insert into employee (name, position, bio, image_url) values ('sean', 'cto', 'cool guy', 'https://google.com/2');
+insert into employee (name, position, bio, image_url) values ('john', 'cfo', 'cool bro', 'https://google.com/3');
+
+-- inserts for blog_category
+insert into blog_category (category) values ('dumb');
+insert into blog_category (category) values ('young');
+insert into blog_category (category) values ('broke');
+
+-- inserts for blog
+insert into blog (title, content, publish_date, category_id) values ('how to wipe your face', 'its easy', '2023-08-03 12:34:56', 1);
+insert into blog (title, content, publish_date, category_id) values ('runing with scissors is easy', 'sometimes dangerous', '2023-08-04 12:34:56', 1);
+insert into blog (title, content, publish_date, category_id) values ('how to die', 'just jump', '2023-08-05 12:34:56', 1);
+
+-- job_listing
+insert into job_listing (title, description, publish_date) values ('software dev', 'cool vibes', '2023-08-04 12:34:56');
+insert into job_listing (title, description, publish_date) values ('dev', 'cool', '2023-08-05 12:34:56');
+insert into job_listing (title, description, publish_date) values ('developer', 'vibes', '2023-08-06 12:34:56');
+
+-- product feature
+insert into product_feature (title, description) values ('thing', 'function');
+insert into product_feature (title, description) values ('product', 'feature');
+insert into product_feature (title, description) values ('tool', 'use');
