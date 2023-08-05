@@ -1,5 +1,3 @@
-CREATE database exploro;
-
 CREATE OR REPLACE FUNCTION update_updated_on()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -20,7 +18,7 @@ CREATE TABLE continent (
   special_offer_image_link TEXT,
   video_link TEXT,
   gallery TEXT[],
-  tags TEXT[],
+  tags TEXT,
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );
@@ -41,7 +39,7 @@ CREATE TABLE country (
   special_offer_image_link TEXT,
   video_link TEXT,
   gallery TEXT[],
-  tags TEXT[],
+  tags TEXT,
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );
@@ -51,6 +49,7 @@ BEFORE UPDATE ON country
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_on();
 
+-- for states/provinences/regions/teritory/reservation/military base/etc basically for anything that is the next largest division of a country
 CREATE TABLE region (
   id SERIAL PRIMARY KEY,
   name varchar(50),
@@ -62,7 +61,7 @@ CREATE TABLE region (
   special_offer_image_link TEXT,
   video_link TEXT,
   gallery TEXT[],
-  tags TEXT[],
+  tags TEXT,
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );
@@ -84,7 +83,7 @@ CREATE TABLE city (
   video_link TEXT,
   gallery TEXT[],
   featured_city BOOLEAN,
-  tags TEXT[],
+  tags TEXT,
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );
@@ -116,7 +115,7 @@ CREATE TABLE partner_vendor (
   email TEXT,
   phone VARCHAR(16),
   website_link TEXT,
-  tags TEXT[],
+  tags TEXT,
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );
@@ -150,7 +149,7 @@ CREATE TABLE restaurant (
   email TEXT,
   phone VARCHAR(16),
   website_link TEXT,
-  tags TEXT[],
+  tags TEXT,
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );
@@ -182,7 +181,7 @@ CREATE TABLE hotel (
   email TEXT,
   phone VARCHAR(16),
   website_link TEXT,
-  tags TEXT[],
+  tags TEXT,
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );
@@ -203,7 +202,7 @@ CREATE TABLE hotel_room (
   image_link_2 TEXT,
   thumbnail_link TEXT,
   gallery TEXT[],
-  tags TEXT[],
+  tags TEXT,
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );
@@ -235,7 +234,7 @@ CREATE TABLE activity (
   email TEXT,
   phone VARCHAR(16),
   website_link TEXT,
-  tags TEXT[],
+  tags TEXT,
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );
@@ -268,7 +267,7 @@ CREATE TABLE event (
   email TEXT,
   phone VARCHAR(16),
   website_link TEXT,
-  tags TEXT[],
+  tags TEXT,
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );
@@ -293,7 +292,7 @@ CREATE TABLE event_details (
   region integer references region(id),
   ticket_link TEXT,
   gallery TEXT[],
-  tags TEXT[],
+  tags TEXT,
   created TIMESTAMP DEFAULT NOW(),
   edited TIMESTAMP DEFAULT NOW()
 );

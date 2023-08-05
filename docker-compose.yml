@@ -7,7 +7,7 @@ services:
             - DATABASE_HOST=127.0.0.1
             - POSTGRES_USER=root
             - POSTGRES_PASSWORD=root
-            - POSTGRES_DB=root  
+            - POSTGRES_DB=exploro
 
         ports: 
             - "5440:5432"
