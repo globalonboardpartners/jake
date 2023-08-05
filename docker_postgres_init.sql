@@ -229,7 +229,7 @@ CREATE TABLE activity (
   city integer references city(id) NOT NULL,
   latatude FLOAT NOT NULL,
   longitude FLOAT NOT NULL,
-  email TEXT, NOT NULL
+  email TEXT NOT NULL,
   phone VARCHAR(16) NOT NULL,
   website_link TEXT NOT NULL,
   tags TEXT,
