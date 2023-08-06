@@ -24,12 +24,12 @@ services:
     depends_on: 
       - postgres
   
-  jake:
-    image: jake
-    restart: always
-    ports:
-      - "8081:8080"
-    depends_on:
-      - postgres
-    env_file:
-      - .env
+  # jake:
+  #   image: jake
+  #   restart: always
+  #   ports:
+  #     - "8081:8080"
+  #   depends_on:
+  #     - postgres
+  #   env_file:
+  #     - .env
