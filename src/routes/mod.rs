@@ -1,7 +1,7 @@
 use actix_web::{get, post, put, delete, http, web, Responder, dev::HttpServiceFactory, HttpResponse};
 use actix_web::web::Json;
 use crate::action_handler;
-use crate::data_types::structs::{Id, NewEmployee, UpdateColumn, NewBlog, NewJobListing, NewProductFeature, NewBlogCategory};
+use crate::data_types::structs::{Id, NewEmployee, UpdateColumn, NewBlog, NewJobListing, NewProductFeature, NewBlogCategory, NewContinent};
 
 #[get("/hello/{name}")]
 async fn greet(name: web::Path<String>) -> impl Responder {
@@ -218,6 +218,48 @@ async fn update_blog_category(blog_category_update: Json<UpdateColumn>) -> HttpR
 //         .finish()
 // }
 
+#[post("/continent")]
+async fn create_continent(continent: Json<NewContinent>) -> HttpResponse {
+    action_handler::continent::create_continent::execute(continent).await;
+    HttpResponse::Created()
+        .status(http::StatusCode::CREATED)
+        .finish()
+}
+
+#[get("/continent")]
+async fn get_all_continents() -> HttpResponse {
+    let res = action_handler::continent::get_all_continents::execute().await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .content_type("application/json")
+        .body(res)
+}
+
+#[get("/continent")]
+async fn get_continent_by_id(id: Json<Id>) -> impl Responder {
+    let res = action_handler::continent::get_continent_by_id::execute(id).await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .content_type("application/json")
+        .body(res)
+}
+
+#[put("/continent")]
+async fn update_continent(continent_update: Json<UpdateColumn>) -> HttpResponse {
+    action_handler::product_feature::continent::execute(continent_update).await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .finish()
+}
+
+#[delete("/continent")]
+async fn delete_continent(id: Json<Id>) -> impl Responder {
+    action_handler::continent::delete_continent::execute(id).await;
+    HttpResponse::Ok()
+        .status(http::StatusCode::OK)
+        .finish()
+}
+
 pub fn employee() -> impl HttpServiceFactory {
     (
         greet,
@@ -267,5 +309,15 @@ pub fn blog_category() -> impl HttpServiceFactory {
         get_blog_category_by_id,
         update_blog_category,
         // delete_blog_category,
+    )
+}
+
+pub fn continent() -> impl HttpServiceFactory {
+    (
+        create_continent,
+        get_all_continents,
+        get_continent_by_id,
+        update_continent,
+        delete_continent,
     )
 }
