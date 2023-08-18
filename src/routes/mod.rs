@@ -246,7 +246,7 @@ async fn get_continent_by_id(id: Json<Id>) -> impl Responder {
 
 #[put("/continent")]
 async fn update_continent(continent_update: Json<UpdateColumn>) -> HttpResponse {
-    action_handler::product_feature::continent::execute(continent_update).await;
+    action_handler::continent::update_continent::execute(continent_update).await;
     HttpResponse::Ok()
         .status(http::StatusCode::OK)
         .finish()

@@ -7,7 +7,7 @@ pub async fn execute(id: Json<Id>) -> String {
 
     let row = get("continent", None, Some(vec!["id"]), Some(&[&id.id])).await;
 
-    data.push(Blog {
+    data.push(Continent {
         id: row[0].get(0),
         name: row[0].get(1),
         slug: row[0].get(2),

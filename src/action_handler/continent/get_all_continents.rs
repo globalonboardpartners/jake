@@ -12,7 +12,7 @@ pub async fn execute() -> String {
             break;
         }
 
-        data.push(Blog {
+        data.push(Continent {
             id: rows[i].get(0),
             name: rows[i].get(1),
             slug: rows[i].get(2),
