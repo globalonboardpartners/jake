@@ -10,9 +10,12 @@ pub async fn execute(id: Json<Id>) -> String {
     data.push(Blog {
         id: row[0].get(0),
         title: row[0].get(1),
-        content: row[0].get(2),
-        publish_date: row[0].get(3),
-        category_id: row[0].get(4),
+        slug: row[0].get(2),
+        category_id: row[0].get(3),
+        content: row[0].get(4),
+        image_link: row[0].get(5),
+        thumbnail_link: row[0].get(6),
+        publish_date: row[0].get(7),
     });
 
     let return_data: Return<Vec<Blog>> = Return {data};

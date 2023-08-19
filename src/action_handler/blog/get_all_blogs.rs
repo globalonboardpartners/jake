@@ -15,9 +15,12 @@ pub async fn execute() -> String {
         data.push(Blog {
             id: rows[i].get(0),
             title: rows[i].get(1),
-            content: rows[i].get(2),
-            publish_date: rows[i].get(3),
-            category_id: rows[i].get(4),
+            slug: rows[i].get(2),
+            category_id: rows[i].get(3),
+            content: rows[i].get(4),
+            image_link: rows[i].get(5),
+            thumbnail_link: rows[i].get(6),
+            publish_date: rows[i].get(7),
         });
         
         i += 1;

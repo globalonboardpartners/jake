@@ -33,17 +33,23 @@ pub struct NewBlogCategory {
 pub struct Blog {
     pub id: i32,
     pub title: String,
-    pub content: String,
-    pub publish_date: SystemTime,
+    pub slug: String,
     pub category_id: i32,
+    pub content: String,
+    pub image_link: String,
+    pub thumbnail_link: String,
+    pub publish_date: SystemTime,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct NewBlog {
     pub title: String,
-    pub content: String,
-    pub publish_date: SystemTime,
+    pub slug: String,
     pub category_id: i32,
+    pub content: String,
+    pub image_link: String,
+    pub thumbnail_link: String,
+    pub publish_date: SystemTime,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
