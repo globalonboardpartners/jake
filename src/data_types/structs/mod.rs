@@ -38,6 +38,7 @@ pub struct Blog {
     pub content: String,
     pub image_link: String,
     pub thumbnail_link: String,
+    pub featured: bool,
     pub publish_date: SystemTime,
 }
 
@@ -49,6 +50,7 @@ pub struct NewBlog {
     pub content: String,
     pub image_link: String,
     pub thumbnail_link: String,
+    pub featured: bool,
     pub publish_date: SystemTime,
 }
 

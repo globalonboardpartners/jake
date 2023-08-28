@@ -20,7 +20,8 @@ pub async fn execute() -> String {
             content: rows[i].get(4),
             image_link: rows[i].get(5),
             thumbnail_link: rows[i].get(6),
-            publish_date: rows[i].get(7),
+            featured: rows[i].get(7),
+            publish_date: rows[i].get(8),
         });
         
         i += 1;
