@@ -1,5 +1,6 @@
 use crate::db::get_all;
 use crate::data_types::structs::{JobListing, Return};
+use crate::utils::format_unix_timestamp;
 
 pub async fn execute() -> String {
     let mut data = vec![];
@@ -16,7 +17,7 @@ pub async fn execute() -> String {
             id: rows[i].get(0),
             title: rows[i].get(1),
             description: rows[i].get(2),
-            publish_date: rows[i].get(3),
+            publish_date: format_unix_timestamp(rows[i].get(3), None),
         });
         
         i += 1;

@@ -1,6 +1,7 @@
 use actix_web::web::Json;
 use crate::db::get;
 use crate::data_types::structs::{Id, JobListing, Return};
+use crate::utils::format_unix_timestamp;
 
 pub async fn execute(id: Json<Id>) -> String {
     let mut data = vec![];
@@ -11,7 +12,7 @@ pub async fn execute(id: Json<Id>) -> String {
         id: row[0].get(0),
         title: row[0].get(1),
         description: row[0].get(2),
-        publish_date: row[0].get(3),
+        publish_date: format_unix_timestamp(row[0].get(3), None),
     });
 
     let return_data: Return<Vec<JobListing>> = Return {data};
