@@ -17,7 +17,7 @@ pub async fn execute(id: Json<Id>) -> String {
         image_link: row[0].get(5),
         thumbnail_link: row[0].get(6),
         featured: row[0].get(7),
-        publish_date: format_unix_timestamp(row[0].get(8), "%e %B %Y"),
+        publish_date: format_unix_timestamp(row[0].get(8), None),
     });
 
     let return_data: Return<Vec<Blog>> = Return {data};

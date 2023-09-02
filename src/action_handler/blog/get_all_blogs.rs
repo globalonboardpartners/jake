@@ -22,7 +22,7 @@ pub async fn execute() -> String {
             image_link: rows[i].get(5),
             thumbnail_link: rows[i].get(6),
             featured: rows[i].get(7),
-            publish_date: format_unix_timestamp(rows[i].get(8), "%e %B %Y"),
+            publish_date: format_unix_timestamp(rows[i].get(8), None),
         });
         
         i += 1;
