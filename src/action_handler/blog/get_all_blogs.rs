@@ -1,5 +1,6 @@
 use crate::db::get_all;
 use crate::data_types::structs::{Blog, Return};
+use crate::utils::format_unix_timestamp;
 
 pub async fn execute() -> String {
     let mut data = vec![];
@@ -21,7 +22,7 @@ pub async fn execute() -> String {
             image_link: rows[i].get(5),
             thumbnail_link: rows[i].get(6),
             featured: rows[i].get(7),
-            publish_date: rows[i].get(8),
+            publish_date: format_unix_timestamp(rows[i].get(8), "%e %B %Y"),
         });
         
         i += 1;

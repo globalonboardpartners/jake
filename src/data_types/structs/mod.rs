@@ -39,7 +39,7 @@ pub struct Blog {
     pub image_link: String,
     pub thumbnail_link: String,
     pub featured: bool,
-    pub publish_date: SystemTime,
+    pub publish_date: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -51,7 +51,6 @@ pub struct NewBlog {
     pub image_link: String,
     pub thumbnail_link: String,
     pub featured: bool,
-    pub publish_date: SystemTime,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
