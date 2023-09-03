@@ -28,14 +28,11 @@ fn get_env_var(env_var: &str) -> String {
     }
 }
 
-pub async fn query(query: QueryBuilder<'_>) -> Result<Vec<tokio_postgres::Row>, ()> {
+pub async fn query(query: QueryBuilder<'_>) -> Result<Vec<tokio_postgres::Row>, tokio_postgres::error::Error> {
 
     dotenv().ok();
 
-    let query_params = match query.query_params {
-        Some(x) => x,
-        None => &[]
-    };
+    let query_params = query.query_params.unwrap_or(&[]);
 
     let connection_str = format!(
         "host={} user={} port={} password={} dbname={}",
@@ -46,8 +43,12 @@ pub async fn query(query: QueryBuilder<'_>) -> Result<Vec<tokio_postgres::Row>, 
         get_env_var("DBNAME")
     );
 
-    let (client, connection) =
-        tokio_postgres::connect(&connection_str, NoTls).await.unwrap();
+    let (client, connection) = tokio_postgres::connect(&connection_str, NoTls)
+        .await
+        .map_err(|e| {
+            eprintln!("connection error: {}", e);
+            e
+    })?;
 
     tokio::spawn(async move {
         if let Err(e) = connection.await {
@@ -57,7 +58,7 @@ pub async fn query(query: QueryBuilder<'_>) -> Result<Vec<tokio_postgres::Row>, 
 
     let rows = client
         .query(query.query_str, query_params)
-        .await.unwrap();
+        .await?;
 
     Ok(rows)
 }
@@ -80,7 +81,7 @@ pub async fn get_all(table: &str) -> Vec<tokio_postgres::Row> {
     query(QueryBuilder::new(&query_string, None)).await.unwrap()
 }
 
-pub async fn get(table: &str, columns: Option<Vec<&str>>, where_columns: Option<Vec<&str>>, where_values: Option<& [& (dyn ToSql + Sync)]>) -> Vec<tokio_postgres::Row> {
+pub async fn get(table: &str, columns: Option<Vec<&str>>, where_columns: Option<Vec<&str>>, where_values: Option<& [& (dyn ToSql + Sync)]>) -> Result<Vec<tokio_postgres::Row>, tokio_postgres::error::Error> {
     let mut columns_string: String = String::from("");
     let mut values_string: String = String::from("");
     let new_columns = match columns {
@@ -104,7 +105,7 @@ pub async fn get(table: &str, columns: Option<Vec<&str>>, where_columns: Option<
 
     let new_where_string = where_string.get(..where_string.len() - 2).unwrap_or("");
     let query_string = format!("SELECT {} FROM {} WHERE {};", new_columns_string, table, new_where_string);
-    query(QueryBuilder::new(&query_string, where_values)).await.unwrap()
+    query(QueryBuilder::new(&query_string, where_values)).await
 }
 
 pub async fn delete(table: &str, where_columns: Option<Vec<&str>>, where_values: Option<& [& (dyn ToSql + Sync)]>) -> Vec<tokio_postgres::Row> {
