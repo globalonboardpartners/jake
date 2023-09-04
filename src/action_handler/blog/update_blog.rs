@@ -1,5 +1,5 @@
 use actix_web::web::Json;
-use crate::db::update;
+use crate::db::QueryBuilder;
 use crate::data_types::structs::{UpdateColumn, ColumnValue};
 
 pub async fn execute(blog_update: Json<UpdateColumn>) -> Vec<tokio_postgres::Row> {
@@ -9,7 +9,7 @@ pub async fn execute(blog_update: Json<UpdateColumn>) -> Vec<tokio_postgres::Row
         ColumnValue::Text(text) => text.clone(),
     };
 
-    update(
+    QueryBuilder::update(
         "blog",
         Some(vec![&blog_update.col_name]),
         Some(vec!["id"]),

@@ -1,11 +1,11 @@
-use crate::db::get_all;
+use crate::db::QueryBuilder;
 use crate::data_types::structs::{JobListing, Return};
 use crate::utils::format_unix_timestamp;
 
 pub async fn execute() -> String {
     let mut data = vec![];
 
-    let rows = get_all("job_listing").await;
+    let rows = QueryBuilder::get_all("job_listing").await;
     
     let mut i: usize = 0;
     loop {

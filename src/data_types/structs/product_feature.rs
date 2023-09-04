@@ -14,7 +14,6 @@ pub struct NewProductFeature {
     pub description: String,
 }
 
-// maybe "PrepToSerializeRow"?
 impl SerializeStruct for ProductFeature {
     fn name() -> &'static str {
         "product_feature"

@@ -1,5 +1,5 @@
 use actix_web::web::Json;
-use crate::db::insert;
+use crate::db::QueryBuilder;
 use crate::data_types::structs::{NewEmployee};
 
 pub async fn execute(new_product: Json<NewEmployee>) {
@@ -8,7 +8,7 @@ pub async fn execute(new_product: Json<NewEmployee>) {
     let bio: &String = &new_product.bio;
     let image_url: &String = &new_product.image_url;
 
-    insert("employee",
+    QueryBuilder::insert("employee",
         vec!["name", "position", "bio", "image_url"],
         Some(&[
             &name,

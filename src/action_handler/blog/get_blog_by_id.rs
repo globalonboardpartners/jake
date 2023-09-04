@@ -1,12 +1,12 @@
 use actix_web::web::Json;
-use crate::db::get;
+use crate::db::QueryBuilder;
 use crate::data_types::structs::{Id, Blog, Return};
 use crate::utils::format_unix_timestamp;
 
 pub async fn execute(id: Json<Id>) -> String {
     let mut data = vec![];
 
-    let res = get("blog", None, Some(vec!["id"]), Some(&[&id.id])).await;
+    let res = QueryBuilder::get("blog", None, Some(vec!["id"]), Some(&[&id.id])).await;
 
     match res {
         Ok(row) => {

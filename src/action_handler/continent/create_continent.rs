@@ -1,6 +1,5 @@
 use actix_web::web::Json;
-// use std::time::SystemTime;
-use crate::db::insert;
+use crate::db::QueryBuilder;
 use crate::data_types::structs::NewContinent;
 
 pub async fn execute(new_continent: Json<NewContinent>) {
@@ -15,7 +14,7 @@ pub async fn execute(new_continent: Json<NewContinent>) {
     let gallery: &Vec<String> = &new_continent.gallery;
     let tags: &String = &new_continent.tags;
 
-    insert("continent",
+    QueryBuilder::insert("continent",
         vec!["name", "slug", "description_long", "description_short", "image_link", "thumbnail_link", "special_offer_image_link", "video_link", "gallery", "tags"],
         Some(&[
             &name,

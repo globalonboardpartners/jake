@@ -1,6 +1,6 @@
 use actix_web::web::Json;
 use std::time::SystemTime;
-use crate::db::insert;
+use crate::db::QueryBuilder;
 use crate::data_types::structs::NewBlog;
 
 pub async fn execute(new_blog: Json<NewBlog>) {
@@ -14,7 +14,7 @@ pub async fn execute(new_blog: Json<NewBlog>) {
 
     let publish_date: &SystemTime = &SystemTime::now();
 
-    insert("blog",
+    QueryBuilder::insert("blog",
         vec!["title", "slug", "category_id","content", "image_link", "thumbnail_link", "featured", "publish_date"],
         Some(&[
             &title,
