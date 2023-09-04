@@ -17,18 +17,9 @@ pub mod job_listing;
 pub use self::job_listing::JobListing;
 pub use self::job_listing::NewJobListing;
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct ProductFeature {
-    pub id: i32,
-    pub title: String,
-    pub description: String,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct NewProductFeature {
-    pub title: String,
-    pub description: String,
-}
+pub mod product_feature;
+pub use self::product_feature::ProductFeature;
+pub use self::product_feature::NewProductFeature;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Return<T> {
