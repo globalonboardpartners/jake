@@ -5,33 +5,13 @@ pub mod blog_category;
 pub use self::blog_category::BlogCategory;
 pub use self::blog_category::NewBlogCategory;
 
+pub mod blog;
+pub use self::blog::Blog;
+pub use self::blog::NewBlog;
+
 pub mod employee;
 pub use self::employee::Employee;
 pub use self::employee::NewEmployee;
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Blog {
-    pub id: i32,
-    pub title: String,
-    pub slug: String,
-    pub category_id: i32,
-    pub content: String,
-    pub image_link: String,
-    pub thumbnail_link: String,
-    pub featured: bool,
-    pub publish_date: String,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct NewBlog {
-    pub title: String,
-    pub slug: String,
-    pub category_id: i32,
-    pub content: String,
-    pub image_link: String,
-    pub thumbnail_link: String,
-    pub featured: bool,
-}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct JobListing {
