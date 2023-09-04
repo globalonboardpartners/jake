@@ -1,6 +1,12 @@
 use tokio_postgres::{NoTls, types::ToSql};
 use dotenv::dotenv;
 use std::env;
+use actix_web::web::Json;
+use crate::data_types::structs::Id;
+use crate::data_types::traits::SerializeStruct;
+use actix_web::error::InternalError;
+use actix_web::http::StatusCode;
+use serde::Serialize;
 
 pub struct QueryBuilder<'a> {
     query_str: &'a str,
@@ -106,6 +112,31 @@ pub async fn get(table: &str, columns: Option<Vec<&str>>, where_columns: Option<
     let new_where_string = where_string.get(..where_string.len() - 2).unwrap_or("");
     let query_string = format!("SELECT {} FROM {} WHERE {};", new_columns_string, table, new_where_string);
     query(QueryBuilder::new(&query_string, where_values)).await
+}
+
+pub async fn get_by_id<T>(id: Json<Id>) -> Result<Json<T>, InternalError<String>>
+where
+    T: SerializeStruct + Serialize
+{
+    let res = get(T::name(), None, Some(vec!["id"]), Some(&[&id.id])).await;
+
+    let rows = res.map_err(|e| {
+        InternalError::new(
+            e.to_string(),
+            StatusCode::INTERNAL_SERVER_ERROR,
+        )
+    })?;
+
+    if rows.is_empty() {
+        return Err(InternalError::new(
+            format!("row with id of {} not found", id.id),
+            StatusCode::NOT_FOUND
+        ));
+    }
+
+    let data = T::new_from_row(&rows[0]);
+
+    Ok(Json(data))
 }
 
 pub async fn delete(table: &str, where_columns: Option<Vec<&str>>, where_values: Option<& [& (dyn ToSql + Sync)]>) -> Vec<tokio_postgres::Row> {
