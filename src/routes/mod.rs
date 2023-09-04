@@ -3,7 +3,7 @@ use actix_web::{get, post, put, delete, http, web, Responder, dev::HttpServiceFa
 use actix_web::web::Json;
 use crate::action_handler;
 use crate::db;
-use crate::data_types::structs::{Id, NewEmployee, UpdateColumn, NewBlog, NewJobListing, NewProductFeature, NewBlogCategory, NewContinent, BlogCategory, Employee, Blog};
+use crate::data_types::structs::{Id, NewEmployee, UpdateColumn, NewBlog, NewJobListing, NewProductFeature, NewBlogCategory, NewContinent, BlogCategory, Employee, Blog, JobListing};
 
 #[get("/hello/{name}")]
 async fn greet(name: web::Path<String>) -> impl Responder {
@@ -126,12 +126,19 @@ async fn get_all_job_listings() -> HttpResponse {
 }
 
 #[get("/job_listing")]
-async fn get_job_listing_by_id(id: Json<Id>) -> impl Responder {
-    let res = action_handler::job_listing::get_job_listing_by_id::execute(id).await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .content_type("application/json")
-        .body(res)
+async fn get_job_listing_by_id(id: Json<Id>) -> HttpResponse {
+    let res = db::get_by_id::<JobListing>(id).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("json serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[put("/job_listing")]
