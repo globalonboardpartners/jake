@@ -33,11 +33,19 @@ impl PgPreparable for ProductFeature {
         vec!["title", "description"]
     }
 
-    fn values(new_entity: &Json<Self>) -> Option<&'static [&'static (dyn ToSql + Sync + '_)]> where Self: std::marker::Sized + PgPreparable + Serialize {
-        let title: &String = &new_entity.title;
-        let description: &String = &new_entity.description;
+    fn values(&self) -> Vec<&(dyn ToSql + Sync + '_)> {
+        let title: &String = &self.title;
+        let description: &String = &self.description;
 
-        Some(&[&title, &description])
+        vec![title, description]
     }
 }
 
+// impl ProductFeature {
+//     fn values(&self) -> Option<&'static [&'static (dyn ToSql + Sync + '_)]> where Self: std::marker::Sized + PgPreparable + Serialize {
+//         let title: &String = &self.title;
+//         let description: &String = &self.description;
+
+//         Some(&[&title, &description])
+//     }
+// }

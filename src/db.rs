@@ -246,7 +246,8 @@ pub async fn create<T>(new_entity: Json<T>) -> Result<Json<T>, InternalError<Str
 where
     T: PgPreparable + Serialize + 'static
 {
-    let res = QueryBuilder::insert(T::name(), T::columns(), T::values(new_entity_clone)).await;
+    let new = new_entity.into_inner();
+    let res = QueryBuilder::insert(T::name(), T::columns(), Some(new.values().as_slice())).await;
 
     let rows = res.map_err(|e| {
         InternalError::new(

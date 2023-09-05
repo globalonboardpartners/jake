@@ -1,5 +1,4 @@
 use serde::{Serialize, Deserialize};
-use actix_web::web::Json;
 use tokio_postgres::types::ToSql;
 use crate::data_types::traits::PgPreparable;
 use std::time::SystemTime;
@@ -77,32 +76,61 @@ impl PgPreparable for Continent {
        ]
     }
 
-    fn values(new_entity: &Json<Self>) -> Option<&'static [&'static (dyn ToSql + Sync + '_)]> where Self: std::marker::Sized + PgPreparable + Serialize {
+    fn values(&self) -> Vec<&(dyn ToSql + Sync + '_)> {
+        let name: &String = &self.name;
+        let slug: &String = &self.slug;
+        let description_long: &String = &self.description_long;
+        let description_short: &String = &self.description_short;
+        let image_link: &String = &self.image_link;
+        let thumbnail_link: &String = &self.thumbnail_link;
+        let special_offer_image_link: &String = &self.special_offer_image_link;
+        let video_link: &String = &self.video_link;
+        let gallery: &Vec<String> = &self.gallery;
+        let tags: &String = &self.tags;
+        let created: &SystemTime = &self.created;
+        let edited: &SystemTime = &self.edited;
 
-        let name: &String = &new_entity.name;
-        let slug: &String = &new_entity.slug;
-        let description_long: &String = &new_entity.description_long;
-        let description_short: &String = &new_entity.description_short;
-        let image_link: &String = &new_entity.image_link;
-        let thumbnail_link: &String = &new_entity.thumbnail_link;
-        let special_offer_image_link: &String = &new_entity.special_offer_image_link;
-        let video_link: &String = &new_entity.video_link;
-        let gallery: &Vec<String> = &new_entity.gallery;
-        let tags: &String = &new_entity.tags;
-        let created: &SystemTime = &new_entity.created;
-        let edited: &SystemTime = &new_entity.edited;
-
-        Some(&[
-            &name,
-            &slug,
-            &description_long,
-            &description_short,
-            &image_link,
-            &thumbnail_link,
-            &special_offer_image_link,
-            &video_link,
-            &gallery,
-            &tags,
-        ])
+        vec![
+            name,
+            slug,
+            description_long,
+            description_short,
+            image_link,
+            thumbnail_link,
+            special_offer_image_link,
+            video_link,
+            gallery,
+            tags,
+        ]
     }
 }
+
+// impl Continent {
+//     fn values(&self) -> Option<&'static [&'static (dyn ToSql + Sync + '_)]> where Self: std::marker::Sized + PgPreparable + Serialize {
+//         let name: &String = &self.name;
+//         let slug: &String = &self.slug;
+//         let description_long: &String = &self.description_long;
+//         let description_short: &String = &self.description_short;
+//         let image_link: &String = &self.image_link;
+//         let thumbnail_link: &String = &self.thumbnail_link;
+//         let special_offer_image_link: &String = &self.special_offer_image_link;
+//         let video_link: &String = &self.video_link;
+//         let gallery: &Vec<String> = &self.gallery;
+//         let tags: &String = &self.tags;
+//         let created: &SystemTime = &self.created;
+//         let edited: &SystemTime = &self.edited;
+
+//         Some(&[
+//             &name,
+//             &slug,
+//             &description_long,
+//             &description_short,
+//             &image_link,
+//             &thumbnail_link,
+//             &special_offer_image_link,
+//             &video_link,
+//             &gallery,
+//             &tags,
+//         ])
+//     }
+// }

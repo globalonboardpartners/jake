@@ -1,6 +1,5 @@
 use serde::{Serialize, Deserialize};
 use crate::data_types::traits::PgPreparable;
-use actix_web::web::Json;
 use tokio_postgres::types::ToSql;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -38,17 +37,17 @@ impl PgPreparable for Employee {
         vec!["name", "position", "bio", "image_url"]
     }
 
-    fn values(new_entity: &Json<Self>) -> Option<&'static [&'static (dyn ToSql + Sync + '_)]> where Self: std::marker::Sized + PgPreparable + Serialize {
-        let name: &String = &new_entity.name;
-        let position: &String = &new_entity.position;
-        let bio: &String = &new_entity.bio;
-        let image_url: &String = &new_entity.image_url;
+    fn values(&self) -> Vec<&(dyn ToSql + Sync + '_)> {
+        let name: &String = &self.name;
+        let position: &String = &self.position;
+        let bio: &String = &self.bio;
+        let image_url: &String = &self.image_url;
 
-        Some(&[
-            &name,
-            &position,
-            &bio,
-            &image_url,
-        ])
+        vec![
+            name,
+            position,
+            bio,
+            image_url,
+        ]
     }
 }

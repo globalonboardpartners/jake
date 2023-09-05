@@ -20,6 +20,10 @@ postgres-types = { version = "0.2.5", features = ["derive"]}
 better_todos = "1.1.0"
 chrono = "0.4.28"
 
+sqlx = "0.7.1"
+sqlx-core = "0.7.1"
+sqlx-postgres = "0.7.1"
+
 # [[bin]]
 # name = "jake"
 # path = "target/release/jake"

@@ -2,7 +2,7 @@ use serde::{Serialize, Deserialize};
 use crate::data_types::traits::PgPreparable;
 use crate::utils::format_unix_timestamp;
 use std::time::SystemTime;
-use actix_web::web::Json;
+// use actix_web::web::Json;
 use tokio_postgres::types::ToSql;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -61,28 +61,23 @@ impl PgPreparable for Blog {
         ]
     }
 
-    fn values(new_entity: &Json<Self>) -> Option<&'static [&'static (dyn ToSql + Sync + '_)]> where Self: std::marker::Sized + PgPreparable + Serialize {
+    fn values(&self) -> Vec<&(dyn ToSql + Sync + '_)> {
+        let title: &String = &self.title;
+        let slug: &String = &self.slug;
+        let category_id: &i32 = &self.category_id;
+        let content: &String = &self.content;
+        let image_link: &String = &self.image_link;
+        let thumbnail_link: &String = &self.thumbnail_link;
+        let featured: &bool = &self.featured;
 
-        // let id: &String = &new_entity.id;
-        let title: &String = &new_entity.title;
-        let slug: &String = &new_entity.slug;
-        let category_id: &i32 = &new_entity.category_id;
-        let content: &String = &new_entity.content;
-        let image_link: &String = &new_entity.image_link;
-        let thumbnail_link: &String = &new_entity.thumbnail_link;
-        let featured: &bool = &new_entity.featured;
-
-        let publish_date: &SystemTime = &SystemTime::now();
-
-        Some(&[
-            &title,
-            &slug,
-            &category_id,
-            &content,
-            &image_link,
-            &thumbnail_link,
-            &featured,
-            &publish_date,
-        ])
+        vec![
+            title,
+            slug,
+            category_id,
+            content,
+            image_link,
+            thumbnail_link,
+            featured,
+        ]
     }
 }

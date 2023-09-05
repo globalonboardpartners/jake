@@ -1,7 +1,6 @@
 use serde::{Serialize, Deserialize};
 use crate::data_types::traits::PgPreparable;
 use crate::utils::format_unix_timestamp;
-use actix_web::web::Json;
 use tokio_postgres::types::ToSql;
 use std::time::SystemTime;
 
@@ -37,16 +36,28 @@ impl PgPreparable for JobListing {
         vec!["title", "description", "publish_date"]
     }
 
-    fn values(new_entity: &Json<Self>) -> Option<&'static [&'static (dyn ToSql + Sync + '_)]> where Self: std::marker::Sized + PgPreparable + Serialize {
-        let title: &String = &new_entity.title;
-        let description: &String = &new_entity.description;
+    fn values(&self) -> Vec<&(dyn ToSql + Sync + '_)> {
+        let title: &String = &self.title;
+        let description: &String = &self.description;
 
-        let publish_date: &SystemTime = &SystemTime::now();
-
-        Some(&[
-            &title,
-            &description,
-            &publish_date,
-        ])
+        vec![
+            title,
+            description,
+        ]
     }
 }
+
+// impl JobListing {
+//     fn values(&self) -> Option<&'static [&'static (dyn ToSql + Sync + '_)]> where Self: std::marker::Sized + PgPreparable + Serialize {
+//         let title: &String = &self.title;
+//         let description: &String = &self.description;
+
+//         let publish_date: &SystemTime = &SystemTime::now();
+
+//         Some(&[
+//             &title,
+//             &description,
+//             &publish_date,
+//         ])
+//     }
+// }
