@@ -1,9 +1,8 @@
 use actix_web::ResponseError;
 use actix_web::{get, post, put, delete, http, web, Responder, dev::HttpServiceFactory, HttpResponse};
 use actix_web::web::Json;
-use crate::action_handler;
 use crate::db;
-use crate::data_types::structs::{Id, NewEmployee, UpdateColumn, NewBlog, NewJobListing, NewProductFeature, NewBlogCategory, NewContinent, BlogCategory, Employee, Blog, JobListing, ProductFeature};
+use crate::data_types::structs::{Id, NewEmployee, UpdateColumn, NewBlog, NewJobListing, NewProductFeature, NewBlogCategory, NewContinent, BlogCategory, Employee, Blog, JobListing, ProductFeature, Continent};
 
 #[get("/hello/{name}")]
 async fn greet(name: web::Path<String>) -> impl Responder {
@@ -11,20 +10,35 @@ async fn greet(name: web::Path<String>) -> impl Responder {
 }
 
 #[post("/employee")]
-async fn create_employee(employee: Json<NewEmployee>) -> HttpResponse {
-    action_handler::employee::create_employee::execute(employee).await;
-    HttpResponse::Created()
-        .status(http::StatusCode::CREATED)
-        .finish()
+async fn create_employee(employee: Json<Employee>) -> HttpResponse {
+    let res = db::create::<Employee>(employee).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Created()
+                .status(http::StatusCode::CREATED)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[get("/employees")]
-async fn get_all_employees() -> impl Responder {
-    let res = action_handler::employee::get_all_employees::execute().await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .content_type("application/json")
-        .body(res)
+async fn get_all_employees() -> HttpResponse {
+    let res = db::get_all::<Employee>().await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[get("/employee")]
@@ -45,35 +59,66 @@ async fn get_employee_by_id(id: Json<Id>) -> HttpResponse {
 
 #[put("/employee")]
 async fn update_employee(employee_update: Json<UpdateColumn>) -> HttpResponse {
-    action_handler::employee::update_employee::execute(employee_update).await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .finish()
+    let res = db::update_by_id::<Employee>(employee_update).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[delete("/employee")]
 async fn delete_employee(id: Json<Id>) -> impl Responder {
-    action_handler::employee::delete_employee::execute(id).await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .finish()
+    let res = db::delete_by_id::<Employee>(id).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[post("/blog")]
-async fn create_blog(blog: Json<NewBlog>) -> HttpResponse {
-    action_handler::blog::create_blog::execute(blog).await;
-    HttpResponse::Created()
-        .status(http::StatusCode::CREATED)
-        .finish()
+async fn create_blog(blog: Json<Blog>) -> HttpResponse {
+    let res = db::create::<Blog>(blog).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Created()
+                .status(http::StatusCode::CREATED)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[get("/blogs")]
 async fn get_all_blogs() -> HttpResponse {
-    let res = action_handler::blog::get_all_blogs::execute().await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .content_type("application/json")
-        .body(res)
+    let res = db::get_all::<Blog>().await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[get("/blog")]
@@ -94,35 +139,66 @@ async fn get_blog_by_id(id: Json<Id>) -> impl Responder {
 
 #[put("/blog")]
 async fn update_blog(blog_update: Json<UpdateColumn>) -> HttpResponse {
-    action_handler::blog::update_blog::execute(blog_update).await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .finish()
+    let res = db::update_by_id::<Blog>(blog_update).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[delete("/blog")]
 async fn delete_blog(id: Json<Id>) -> impl Responder {
-    action_handler::blog::delete_blog::execute(id).await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .finish()
+    let res = db::delete_by_id::<Blog>(id).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[post("/job_listing")]
-async fn create_job_listing(job_listing: Json<NewJobListing>) -> HttpResponse {
-    action_handler::job_listing::create_job_listing::execute(job_listing).await;
-    HttpResponse::Created()
-        .status(http::StatusCode::CREATED)
-        .finish()
+async fn create_job_listing(job_listing: Json<JobListing>) -> HttpResponse {
+    let res = db::create::<JobListing>(job_listing).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Created()
+                .status(http::StatusCode::CREATED)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[get("/job_listings")]
 async fn get_all_job_listings() -> HttpResponse {
-    let res = action_handler::job_listing::get_all_job_listings::execute().await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .content_type("application/json")
-        .body(res)
+    let res = db::get_all::<JobListing>().await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[get("/job_listing")]
@@ -143,35 +219,66 @@ async fn get_job_listing_by_id(id: Json<Id>) -> HttpResponse {
 
 #[put("/job_listing")]
 async fn update_job_listing(job_listing_update: Json<UpdateColumn>) -> HttpResponse {
-    action_handler::job_listing::update_job_listing::execute(job_listing_update).await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .finish()
+    let res = db::update_by_id::<JobListing>(job_listing_update).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[delete("/job_listing")]
 async fn delete_job_listing(id: Json<Id>) -> impl Responder {
-    action_handler::job_listing::delete_job_listing::execute(id).await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .finish()
+    let res = db::delete_by_id::<JobListing>(id).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[post("/product_feature")]
-async fn create_product_feature(product_feature: Json<NewProductFeature>) -> HttpResponse {
-    action_handler::product_feature::create_product_feature::execute(product_feature).await;
-    HttpResponse::Created()
-        .status(http::StatusCode::CREATED)
-        .finish()
+async fn create_product_feature(product_feature: Json<ProductFeature>) -> HttpResponse {
+    let res = db::create::<ProductFeature>(product_feature).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Created()
+                .status(http::StatusCode::CREATED)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[get("/product_features")]
 async fn get_all_product_features() -> HttpResponse {
-    let res = action_handler::product_feature::get_all_product_features::execute().await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .content_type("application/json")
-        .body(res)
+    let res = db::get_all::<ProductFeature>().await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[get("/product_feature")]
@@ -192,35 +299,66 @@ async fn get_product_feature_by_id(id: Json<Id>) -> HttpResponse {
 
 #[put("/product_feature")]
 async fn update_product_feature(product_feature_update: Json<UpdateColumn>) -> HttpResponse {
-    action_handler::product_feature::update_product_feature::execute(product_feature_update).await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .finish()
+    let res = db::update_by_id::<ProductFeature>(product_feature_update).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[delete("/product_feature")]
 async fn delete_product_feature(id: Json<Id>) -> impl Responder {
-    action_handler::product_feature::delete_product_feature::execute(id).await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .finish()
+    let res = db::delete_by_id::<ProductFeature>(id).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[post("/blog_category")]
-async fn create_blog_category(blog_category: Json<NewBlogCategory>) -> HttpResponse {
-    action_handler::blog_category::create_blog_category::execute(blog_category).await;
-    HttpResponse::Created()
-        .status(http::StatusCode::CREATED)
-        .finish()
+async fn create_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse {
+    let res = db::create::<BlogCategory>(blog_category).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Created()
+                .status(http::StatusCode::CREATED)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[get("/blog_categories")]
 async fn get_all_blog_categories() -> HttpResponse {
-    let res = action_handler::blog_category::get_all_blog_categories::execute().await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .content_type("application/json")
-        .body(res)
+    let res = db::get_all::<BlogCategory>().await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[get("/blog_category")]
@@ -241,10 +379,18 @@ async fn get_blog_category_by_id(id: Json<Id>) -> HttpResponse {
 
 #[put("/blog_category")]
 async fn update_blog_category(blog_category_update: Json<UpdateColumn>) -> HttpResponse {
-    action_handler::blog_category::update_blog_category::execute(blog_category_update).await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .finish()
+    let res = db::update_by_id::<BlogCategory>(blog_category_update).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 // #[delete("/blog_category")]
@@ -256,45 +402,83 @@ async fn update_blog_category(blog_category_update: Json<UpdateColumn>) -> HttpR
 // }
 
 #[post("/continent")]
-async fn create_continent(continent: Json<NewContinent>) -> HttpResponse {
-    action_handler::continent::create_continent::execute(continent).await;
-    HttpResponse::Created()
-        .status(http::StatusCode::CREATED)
-        .finish()
+async fn create_continent(continent: Json<Continent>) -> HttpResponse {
+    let res = db::create::<Continent>(continent).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Created()
+                .status(http::StatusCode::CREATED)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[get("/continent")]
 async fn get_all_continents() -> HttpResponse {
-    let res = action_handler::continent::get_all_continents::execute().await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .content_type("application/json")
-        .body(res)
+    let res = db::get_all::<Continent>().await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[get("/continent")]
-async fn get_continent_by_id(id: Json<Id>) -> impl Responder {
-    let res = action_handler::continent::get_continent_by_id::execute(id).await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .content_type("application/json")
-        .body(res)
+async fn get_continent_by_id(id: Json<Id>) -> HttpResponse {
+    let res = db::get_by_id::<Continent>(id).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[put("/continent")]
 async fn update_continent(continent_update: Json<UpdateColumn>) -> HttpResponse {
-    action_handler::continent::update_continent::execute(continent_update).await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .finish()
+    let res = db::update_by_id::<Continent>(continent_update).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 #[delete("/continent")]
 async fn delete_continent(id: Json<Id>) -> impl Responder {
-    action_handler::continent::delete_continent::execute(id).await;
-    HttpResponse::Ok()
-        .status(http::StatusCode::OK)
-        .finish()
+    let res = db::delete_by_id::<Continent>(id).await;
+    match res {
+        Ok(json) => {
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+        }
+        Err(e) => {
+            e.error_response()
+        }
+    }
 }
 
 pub fn employee() -> impl HttpServiceFactory {

@@ -1,10 +1,10 @@
 use crate::db::QueryBuilder;
 use crate::data_types::structs::{BlogCategory, Return};
 
-pub async fn execute() -> String {
+pub async fn execute() -> Result<Vec<tokio_postgres::Row>, tokio_postgres::error::Error> {
     let mut data = vec![];
 
-    let rows = QueryBuilder::get_all("blog_category").await;
+    let rows = QueryBuilder::get_all("blog_category").await.unwrap();
     
     let mut i: usize = 0;
     loop {
@@ -20,7 +20,8 @@ pub async fn execute() -> String {
         i += 1;
     }
 
-    let return_data: Return<Vec<BlogCategory>> = Return {data};
+    // let return_data: Return<Vec<BlogCategory>> = Return {data};
 
-    serde_json::to_string(&return_data).unwrap()
+    // serde_json::to_string(&return_data).unwrap()
+    Ok(data)
 }

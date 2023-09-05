@@ -1,2 +1,2 @@
-pub mod serialize_struct;
-pub use self::serialize_struct::SerializeStruct;
+pub mod pg_preparable;
+pub use self::pg_preparable::PgPreparable;

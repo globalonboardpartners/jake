@@ -1,5 +1,7 @@
 use serde::{Serialize, Deserialize};
-use crate::data_types::traits::SerializeStruct;
+use crate::data_types::traits::PgPreparable;
+use actix_web::web::Json;
+use tokio_postgres::types::ToSql;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Employee {
@@ -18,7 +20,7 @@ pub struct NewEmployee {
     pub image_url: String,
 }
 
-impl SerializeStruct for Employee {
+impl PgPreparable for Employee {
     fn new_from_row(row: &tokio_postgres::Row) -> Self {
         Employee {
             id: row.get(0),
@@ -30,5 +32,23 @@ impl SerializeStruct for Employee {
     }
     fn name() -> &'static str {
         "employee"
+    }
+
+    fn columns() -> Vec<&'static str> {
+        vec!["name", "position", "bio", "image_url"]
+    }
+
+    fn values(new_entity: &Json<Self>) -> Option<&'static [&'static (dyn ToSql + Sync + '_)]> where Self: std::marker::Sized + PgPreparable + Serialize {
+        let name: &String = &new_entity.name;
+        let position: &String = &new_entity.position;
+        let bio: &String = &new_entity.bio;
+        let image_url: &String = &new_entity.image_url;
+
+        Some(&[
+            &name,
+            &position,
+            &bio,
+            &image_url,
+        ])
     }
 }

@@ -4,8 +4,8 @@ use crate::data_types::structs::{UpdateColumn, ColumnValue};
 
 pub async fn execute(blog_category_update: Json<UpdateColumn<>>) -> Vec<tokio_postgres::Row> {
     let value: String = match &blog_category_update.col_value {
-        ColumnValue::Integer(num) => format!("{}", num),
-        ColumnValue::Float(num) => format!("{}", num),
+        ColumnValue::Integer(num) => num.to_string(),
+        ColumnValue::Float(num) => num.to_string(),
         ColumnValue::Text(text) => text.clone(),
     };
 
