@@ -3,6 +3,7 @@ use std::io::Result;
 
 pub mod action_handler;
 pub mod db;
+pub mod db2;
 pub mod routes;
 pub mod data_types;
 pub mod utils;

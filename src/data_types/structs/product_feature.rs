@@ -1,11 +1,12 @@
 use serde::{Serialize, Deserialize};
 use crate::data_types::traits::PgPreparable;
+use crate::data_types::traits::PgPreparable2;
 use actix_web::web::Json;
 use tokio_postgres::types::ToSql;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, sqlx::FromRow)]
 pub struct ProductFeature {
-    pub id: Option<i32>,
+    pub id: i32,
     pub title: String,
     pub description: String,
 }
@@ -41,11 +42,12 @@ impl PgPreparable for ProductFeature {
     }
 }
 
-// impl ProductFeature {
-//     fn values(&self) -> Option<&'static [&'static (dyn ToSql + Sync + '_)]> where Self: std::marker::Sized + PgPreparable + Serialize {
-//         let title: &String = &self.title;
-//         let description: &String = &self.description;
+impl PgPreparable2 for ProductFeature {
+    fn name() -> &'static str {
+        "product_feature"
+    }
 
-//         Some(&[&title, &description])
-//     }
-// }
+    fn prepare_update(update_body: Json<&ProductFeature>) -> String {
+        format!(r#"SET title = '{}', description = '{}' WHERE id = {}"#, update_body.title, update_body.description, update_body.id)
+    }
+}

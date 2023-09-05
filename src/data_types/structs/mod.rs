@@ -35,6 +35,12 @@ pub struct Id {
     pub id: i32
 }
 
+impl std::fmt::Display for Id {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "Id: {}", self.id)
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 pub enum ColumnValue {
     Integer(i32),

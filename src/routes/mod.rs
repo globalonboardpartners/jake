@@ -2,6 +2,7 @@ use actix_web::ResponseError;
 use actix_web::{get, post, put, delete, http, web, Responder, dev::HttpServiceFactory, HttpResponse};
 use actix_web::web::Json;
 use crate::db;
+use crate::db2;
 use crate::data_types::structs::{Id, NewEmployee, UpdateColumn, NewBlog, NewJobListing, NewProductFeature, NewBlogCategory, NewContinent, BlogCategory, Employee, Blog, JobListing, ProductFeature, Continent};
 
 #[get("/hello/{name}")]
@@ -314,17 +315,22 @@ async fn update_product_feature(product_feature_update: Json<UpdateColumn>) -> H
 }
 
 #[delete("/product_feature")]
-async fn delete_product_feature(id: Json<Id>) -> impl Responder {
-    let res = db::delete_by_id::<ProductFeature>(id).await;
+async fn delete_product_feature(id: Json<Id>) -> HttpResponse {
+    println!("in here3");
+    let res = db2::delete_by_id::<ProductFeature>(id.id).await;
+    println!("in here2");
     match res {
         Ok(json) => {
             HttpResponse::Ok()
                 .status(http::StatusCode::OK)
                 .content_type("application/json") 
-                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+                .body(serde_json::to_string(&json.rows_affected()).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
         }
         Err(e) => {
-            e.error_response()
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body("")
         }
     }
 }
@@ -347,7 +353,7 @@ async fn create_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse
 
 #[get("/blog_categories")]
 async fn get_all_blog_categories() -> HttpResponse {
-    let res = db::get_all::<BlogCategory>().await;
+    let res = db2::get_all::<BlogCategory>().await;
     match res {
         Ok(json) => {
             HttpResponse::Ok()
@@ -356,14 +362,17 @@ async fn get_all_blog_categories() -> HttpResponse {
                 .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
         }
         Err(e) => {
-            e.error_response()
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body("")
         }
     }
 }
 
 #[get("/blog_category")]
 async fn get_blog_category_by_id(id: Json<Id>) -> HttpResponse {
-    let res = db::get_by_id::<BlogCategory>(id).await;
+    let res = db2::get_by_id::<BlogCategory>(id.id).await;
     match res {
         Ok(json) => {
             HttpResponse::Ok()
@@ -372,23 +381,29 @@ async fn get_blog_category_by_id(id: Json<Id>) -> HttpResponse {
                 .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
         }
         Err(e) => {
-            e.error_response()
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body("")
         }
     }
 }
 
 #[put("/blog_category")]
-async fn update_blog_category(blog_category_update: Json<UpdateColumn>) -> HttpResponse {
-    let res = db::update_by_id::<BlogCategory>(blog_category_update).await;
+async fn update_blog_category(blog_category_update: Json<BlogCategory>) -> HttpResponse {
+    let res = db2::update_by_id::<BlogCategory>(blog_category_update).await;
     match res {
         Ok(json) => {
             HttpResponse::Ok()
                 .status(http::StatusCode::OK)
                 .content_type("application/json") 
-                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+                .body(serde_json::to_string(&json.rows_affected()).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
         }
         Err(e) => {
-            e.error_response()
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body("")
         }
     }
 }

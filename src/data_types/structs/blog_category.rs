@@ -1,11 +1,20 @@
 use serde::{Serialize, Deserialize};
 use crate::data_types::traits::PgPreparable;
+use crate::data_types::traits::PgPreparable2;
 use tokio_postgres::types::ToSql;
+use actix_web::web::Json;
+use std::fmt;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, sqlx::FromRow)]
 pub struct BlogCategory {
     pub id: i32,
     pub category: String,
+}
+
+impl fmt::Debug for BlogCategory {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "BlogCategory {{ id: {}, category: \"{}\" }}", self.id, self.category)
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -33,10 +42,12 @@ impl PgPreparable for BlogCategory {
     }
 }
 
-// impl BlogCategory {
-//     fn values(&self) -> Option<&'static [&'static (dyn ToSql + Sync + '_)]> where Self: std::marker::Sized + PgPreparable + Serialize {
-//         let category: &String = &self.category;
+impl PgPreparable2 for BlogCategory {
+    fn name() -> &'static str {
+        "blog_category"
+    }
 
-//         Some(&[&category])
-//     }
-// }
+    fn prepare_update(update_body: Json<&BlogCategory>) -> String {
+        format!(r#"SET category = '{}' WHERE id = {}"#, update_body.category, update_body.id)
+    }
+}
