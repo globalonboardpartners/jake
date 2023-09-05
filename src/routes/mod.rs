@@ -3,7 +3,7 @@ use actix_web::{get, post, put, delete, http, web, Responder, dev::HttpServiceFa
 use actix_web::web::Json;
 use crate::db;
 use crate::db2;
-use crate::data_types::structs::{Id, NewEmployee, UpdateColumn, NewBlog, NewJobListing, NewProductFeature, NewBlogCategory, NewContinent, BlogCategory, Employee, Blog, JobListing, ProductFeature, Continent};
+use crate::data_types::structs::{Id, UpdateColumn, BlogCategory, Employee, Blog, JobListing, ProductFeature, Continent};
 
 #[get("/hello/{name}")]
 async fn greet(name: web::Path<String>) -> impl Responder {
@@ -28,7 +28,7 @@ async fn create_employee(employee: Json<Employee>) -> HttpResponse {
 
 #[get("/employees")]
 async fn get_all_employees() -> HttpResponse {
-    let res = db::get_all::<Employee>().await;
+    let res = db2::get_all::<Employee>().await;
     match res {
         Ok(json) => {
             HttpResponse::Ok()
@@ -37,14 +37,17 @@ async fn get_all_employees() -> HttpResponse {
                 .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
         }
         Err(e) => {
-            e.error_response()
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body("")
         }
     }
 }
 
 #[get("/employee")]
 async fn get_employee_by_id(id: Json<Id>) -> HttpResponse {
-    let res = db::get_by_id::<Employee>(id).await;
+    let res = db2::get_by_id::<Employee>(id.id).await;
     match res {
         Ok(json) => {
             HttpResponse::Ok()
@@ -53,39 +56,48 @@ async fn get_employee_by_id(id: Json<Id>) -> HttpResponse {
                 .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
         }
         Err(e) => {
-            e.error_response()
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body("")
         }
     }
 }
 
 #[put("/employee")]
-async fn update_employee(employee_update: Json<UpdateColumn>) -> HttpResponse {
-    let res = db::update_by_id::<Employee>(employee_update).await;
+async fn update_employee(employee_update: Json<Employee>) -> HttpResponse {
+    let res = db2::update_by_id::<Employee>(employee_update.into_inner()).await;
     match res {
         Ok(json) => {
             HttpResponse::Ok()
                 .status(http::StatusCode::OK)
                 .content_type("application/json") 
-                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+                .body(serde_json::to_string(&json.rows_affected()).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
         }
         Err(e) => {
-            e.error_response()
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body("")
         }
     }
 }
 
 #[delete("/employee")]
 async fn delete_employee(id: Json<Id>) -> impl Responder {
-    let res = db::delete_by_id::<Employee>(id).await;
+    let res = db2::delete_by_id::<Employee>(id.id).await;
     match res {
         Ok(json) => {
             HttpResponse::Ok()
                 .status(http::StatusCode::OK)
                 .content_type("application/json") 
-                .body(serde_json::to_string(&json).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+                .body(serde_json::to_string(&json.rows_affected()).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
         }
         Err(e) => {
-            e.error_response()
+            HttpResponse::Ok()
+                .status(http::StatusCode::OK)
+                .content_type("application/json") 
+                .body("")
         }
     }
 }
@@ -316,9 +328,7 @@ async fn update_product_feature(product_feature_update: Json<UpdateColumn>) -> H
 
 #[delete("/product_feature")]
 async fn delete_product_feature(id: Json<Id>) -> HttpResponse {
-    println!("in here3");
     let res = db2::delete_by_id::<ProductFeature>(id.id).await;
-    println!("in here2");
     match res {
         Ok(json) => {
             HttpResponse::Ok()
@@ -391,7 +401,7 @@ async fn get_blog_category_by_id(id: Json<Id>) -> HttpResponse {
 
 #[put("/blog_category")]
 async fn update_blog_category(blog_category_update: Json<BlogCategory>) -> HttpResponse {
-    let res = db2::update_by_id::<BlogCategory>(blog_category_update).await;
+    let res = db2::update_by_id::<BlogCategory>(blog_category_update.into_inner()).await;
     match res {
         Ok(json) => {
             HttpResponse::Ok()

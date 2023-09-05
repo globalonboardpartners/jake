@@ -51,7 +51,7 @@ where
     }
 }
 
-pub async fn update_by_id<T: 'static>(update_body: Json<T>) -> Result<Json<PgQueryResult>, sqlx::Error>
+pub async fn update_by_id<T: 'static>(update_body: T) -> Result<Json<PgQueryResult>, sqlx::Error>
 where
     T: PgPreparable2 + Serialize + for<'r> FromRow<'r, PgRow> + Send + Unpin,
 {
@@ -59,8 +59,8 @@ where
 
     match pg {
         Ok(db) => {
-            let query_string = format!("UPDATE {} {}", T::name(), T::prepare_update(Json(&update_body)));
-            dbg!(&query_string);
+            let mut query_string = T::write_update_sql(&update_body, update_body.into_id());
+            query_string = query_string.replace("\n", "");
             let rows = sqlx::query(&query_string)
                 .execute(&db)
                 .await?;
@@ -75,12 +75,10 @@ where
     T: PgPreparable2 + Serialize + for<'r> FromRow<'r, PgRow> + Send + Unpin,
 {
     let pg = connect_to_database().await;
-    println!("in here");
 
     match pg {
         Ok(db) => {
             let query_string = format!("DELETE FROM {} WHERE id = {};", T::name(), id);
-            dbg!(&query_string);
             let rows = sqlx::query(&query_string)
                 .execute(&db)
                 .await?;

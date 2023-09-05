@@ -1,10 +1,13 @@
 use serde::{Serialize, Deserialize};
 use crate::data_types::traits::PgPreparable;
+use crate::data_types::traits::PgPreparable2;
 use tokio_postgres::types::ToSql;
+use actix_web::web::Json;
+use sqlx::FromRow;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, FromRow)]
 pub struct Employee {
-    pub id: i32,
+    pub id: Option<i32>,
     pub name: String,
     pub position: String,
     pub bio: String,
@@ -49,5 +52,42 @@ impl PgPreparable for Employee {
             bio,
             image_url,
         ]
+    }
+}
+
+impl PgPreparable2 for Employee {
+    fn name() -> &'static str {
+        "employee"
+    }
+
+    fn write_update_sql(update_body: &Self, id: String) -> String {
+        format!("
+            UPDATE
+                employee
+            SET
+                name = '{}',
+                position = '{}',
+                bio = '{}',
+                image_url = '{}'
+            WHERE
+                id = {}
+        ",
+            update_body.name,
+            update_body.position,
+            update_body.bio,
+            update_body.image_url,
+            id
+        )
+    }
+
+    fn id(&self) -> Option<i32> {
+        self.id
+    }
+
+    fn into_id(&self) -> String {
+        match &self.id {
+            Some(x) => x.to_string(),
+            None => "None".to_string()
+        }
     }
 }

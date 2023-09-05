@@ -1,4 +1,5 @@
 use serde::{Serialize, Deserialize};
+use std::fmt::{Display, Formatter, Result as FmtResult};
 use crate::data_types::traits::PgPreparable;
 use crate::data_types::traits::PgPreparable2;
 use actix_web::web::Json;
@@ -6,9 +7,26 @@ use tokio_postgres::types::ToSql;
 
 #[derive(Serialize, Deserialize, Debug, sqlx::FromRow)]
 pub struct ProductFeature {
-    pub id: i32,
+    pub id: Option<i32>,
     pub title: String,
     pub description: String,
+}
+
+impl Display for ProductFeature {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        let id = match self.id {
+            Some(val) => val.to_string(),
+            None => "None".to_string(),
+        };
+
+        write!(
+            f,
+            "ProductFeature [id: {}, title: {}, description: {}]",
+            id,
+            self.title,
+            self.description
+        )
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -47,7 +65,30 @@ impl PgPreparable2 for ProductFeature {
         "product_feature"
     }
 
-    fn prepare_update(update_body: Json<&ProductFeature>) -> String {
-        format!(r#"SET title = '{}', description = '{}' WHERE id = {}"#, update_body.title, update_body.description, update_body.id)
+   fn write_update_sql(update_body: &Self, id: String) -> String {
+        format!("
+            UPDATE
+                product_feature
+            SET
+                title = '{}',
+                description = '{}'
+            WHERE
+                id = {}
+        ",
+            update_body.title,
+            update_body.description,
+            id
+        )
+    }
+
+    fn id(&self) -> Option<i32> {
+        self.id
+    }
+
+    fn into_id(&self) -> String {
+        match &self.id {
+            Some(x) => x.to_string(),
+            None => "None".to_string()
+        }
     }
 }

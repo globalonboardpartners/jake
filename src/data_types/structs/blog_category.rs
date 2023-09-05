@@ -7,13 +7,13 @@ use std::fmt;
 
 #[derive(Serialize, Deserialize, sqlx::FromRow)]
 pub struct BlogCategory {
-    pub id: i32,
+    pub id: Option<i32>,
     pub category: String,
 }
 
 impl fmt::Debug for BlogCategory {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "BlogCategory {{ id: {}, category: \"{}\" }}", self.id, self.category)
+        write!(f, "BlogCategory {{ id: {:?}, category: \"{}\" }}", self.id, self.category)
     }
 }
 
@@ -47,7 +47,39 @@ impl PgPreparable2 for BlogCategory {
         "blog_category"
     }
 
-    fn prepare_update(update_body: Json<&BlogCategory>) -> String {
-        format!(r#"SET category = '{}' WHERE id = {}"#, update_body.category, update_body.id)
+    fn write_update_sql(update_body: &Self, id: String) -> String {
+        // let mut id: String;
+
+        // match update_body.id {
+        //     Some(x) => {
+        //         id = x.to_string();
+        //     },
+        //     None => {
+        //         id = "None".to_string()
+        //     }
+        // }
+
+        format!("
+            UPDATE
+                blog_category
+            SET
+                category = '{}'
+            WHERE
+                id = {}
+        ",
+            update_body.category,
+            id
+        )
+    }
+
+    fn id(&self) -> Option<i32> {
+        self.id
+    }
+
+    fn into_id(&self) -> String {
+        match &self.id {
+            Some(x) => x.to_string(),
+            None => "None".to_string()
+        }
     }
 }
