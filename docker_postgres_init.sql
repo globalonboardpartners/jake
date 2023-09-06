@@ -26,10 +26,10 @@ CREATE TABLE blog (
   slug VARCHAR(200) NOT NULL,
   category_id INT NOT NULL REFERENCES blog_category(id),
   content TEXT NOT NULL,
-  image_link TEXT,
-  thumbnail_link TEXT,
-  featured BOOLEAN,
-  publish_date TIMESTAMP
+  image_link TEXT NOT NULL,
+  thumbnail_link TEXT NOT NULL,
+  featured BOOLEAN NOT NULL,
+  publish_date TIMESTAMP NOT NULL
 );
 
 -- Create Job Listings Table

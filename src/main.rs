@@ -12,11 +12,11 @@ pub mod utils;
 async fn main() -> Result<()> {
     HttpServer::new(|| App::new()
         .service(routes::employee())
-        .service(routes::job_listing())
+        // .service(routes::job_listing())
         .service(routes::blog())
-        .service(routes::blog_category())
-        .service(routes::product_feature())
-        .service(routes::product_feature())
+        // .service(routes::blog_category())
+        // .service(routes::product_feature())
+        // .service(routes::product_feature())
     )
         .bind(("127.0.0.1", 8080))?
         .run()
