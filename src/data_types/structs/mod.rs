@@ -3,7 +3,7 @@ use std::time::SystemTime;
 
 pub mod blog_category;
 pub use self::blog_category::BlogCategory;
-pub use self::blog_category::NewBlogCategory;
+// pub use self::blog_category::NewBlogCategory;
 
 pub mod blog;
 pub use self::blog::Blog;

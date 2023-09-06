@@ -832,6 +832,205 @@ async fn delete_product_feature(id: Json<Id>) -> HttpResponse {
     }
 }
 
+#[post("/blog_category")]
+async fn create_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse {
+    let pg = db2::connect().await;
+
+    match pg {
+        Ok(db) => {
+            let returned: Result<BlogCategory, Error> = sqlx::query_as!(
+                BlogCategory,
+                "
+                    INSERT INTO blog_category
+                        (
+                            category
+                        )
+                    VALUES ($1)
+                    RETURNING *;
+                ",
+                blog_category.category,
+            )
+            .fetch_one(&db)
+            .await;
+
+            match returned {
+                Ok(record) => {
+                    HttpResponse::Created()
+                        .status(StatusCode::CREATED)
+                        .content_type("application/json") 
+                        .body(serde_json::to_string(&Json(record)).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+                    
+                },
+
+                Err(e) => handle_sql_error(e)
+            }
+        },
+        Err(e) => {
+            HttpResponse::InternalServerError()
+                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+                .content_type("application/json") 
+                .body(e)
+        }
+    }
+}
+
+#[get("/blog_categories")]
+async fn get_all_blog_categories() -> HttpResponse {
+    let pg = db2::connect().await;
+
+    match pg {
+        Ok(db) => {
+            let returned: Result<Vec<BlogCategory>, Error> = sqlx::query_as!(
+                BlogCategory,
+                "SELECT * from blog_category;"
+            )
+            .fetch_all(&db)
+            .await;
+
+            match returned {
+                Ok(record) => {
+                    HttpResponse::Ok()
+                        .status(StatusCode::OK)
+                        .content_type("application/json") 
+                        .body(serde_json::to_string(&Json(record)).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+                    
+                },
+
+                Err(e) => handle_sql_error(e)
+            }
+        },
+        Err(e) => {
+            HttpResponse::InternalServerError()
+                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+                .content_type("application/json") 
+                .body(e)
+        }
+    }
+}
+
+#[get("/blog_category")]
+async fn get_blog_category_by_id(id: Json<Id>) -> HttpResponse {
+    let pg = db2::connect().await;
+
+    match pg {
+        Ok(db) => {
+            let returned: Result<BlogCategory, Error> = sqlx::query_as!(
+                BlogCategory,
+                "SELECT * FROM blog_category WHERE id = $1;",
+                id.id
+            )
+            .fetch_one(&db)
+            .await;
+
+            match returned {
+                Ok(record) => {
+                    HttpResponse::Ok()
+                        .status(StatusCode::OK)
+                        .content_type("application/json") 
+                        .body(serde_json::to_string(&Json(record)).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+                    
+                },
+
+                Err(e) => handle_sql_error(e)
+            }
+        },
+        Err(e) => {
+            HttpResponse::InternalServerError()
+                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+                .content_type("application/json") 
+                .body(e)
+        }
+    }
+}
+
+#[put("/blog_category")]
+async fn update_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse {
+    let pg = db2::connect().await;
+
+    match pg {
+        Ok(db) => {
+            let returned: Result<BlogCategory, Error> = sqlx::query_as!(
+                BlogCategory,
+                "
+                    INSERT INTO blog_category
+                        (
+                            id,
+                            category
+                        )
+                    VALUES ($1, $2)
+                    ON CONFLICT (id)
+                    DO UPDATE SET 
+                    id = EXCLUDED.id, category = EXCLUDED.category
+                    RETURNING *;
+                ",
+                blog_category.id,
+                blog_category.category,
+            )
+            .fetch_one(&db)
+            .await;
+
+            match returned {
+                Ok(record) => {
+                    HttpResponse::Ok()
+                        .status(StatusCode::OK)
+                        .content_type("application/json") 
+                        .body(serde_json::to_string(&Json(record)).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+                    
+                },
+
+                Err(e) => handle_sql_error(e)
+            }
+        },
+        Err(e) => {
+            HttpResponse::InternalServerError()
+                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+                .content_type("application/json") 
+                .body(e)
+        }
+    }
+}
+
+#[delete("/blog_category")]
+async fn delete_blog_category(id: Json<Id>) -> HttpResponse {
+    let pg = db2::connect().await;
+
+    match pg {
+        Ok(db) => {
+            let returned: Result<PgQueryResult, Error> = sqlx::query_as!(
+                BlogCategory,
+                "
+                    DELETE FROM blog_category 
+                    WHERE id = $1
+                    AND NOT EXISTS (
+                        SELECT 1 FROM blog WHERE category_id = $1
+                    );
+                ",
+                id.id
+            )
+            .execute(&db)
+            .await;
+
+            match returned {
+                Ok(_) => {
+                    HttpResponse::NoContent()
+                        .status(StatusCode::NO_CONTENT)
+                        .content_type("application/json") 
+                        .finish()
+                },
+
+                Err(e) => handle_sql_error(e)
+            }
+        },
+
+        Err(e) => {
+            HttpResponse::InternalServerError()
+                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+                .content_type("application/json") 
+                .body(e)
+        }
+    }
+}
+
 pub fn employee() -> impl HttpServiceFactory {
     (
         greet,
@@ -874,15 +1073,15 @@ pub fn product_feature() -> impl HttpServiceFactory {
     )
 }
 
-// pub fn blog_category() -> impl HttpServiceFactory {
-//     (
-//         create_blog_category,
-//         get_all_blog_categories,
-//         get_blog_category_by_id,
-//         update_blog_category,
-//         // delete_blog_category,
-//     )
-// }
+pub fn blog_category() -> impl HttpServiceFactory {
+    (
+        create_blog_category,
+        get_all_blog_categories,
+        get_blog_category_by_id,
+        update_blog_category,
+        delete_blog_category,
+    )
+}
 
 // pub fn continent() -> impl HttpServiceFactory {
 //     (
