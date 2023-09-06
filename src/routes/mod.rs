@@ -635,6 +635,202 @@ async fn delete_job_listing(id: Json<Id>) -> HttpResponse {
     }
 }
 
+#[post("/product_feature")]
+async fn create_product_feature(product_feature: Json<ProductFeature>) -> HttpResponse {
+    let pg = db2::connect().await;
+
+    match pg {
+        Ok(db) => {
+            let returned: Result<ProductFeature, Error> = sqlx::query_as!(
+                ProductFeature,
+                "
+                    INSERT INTO product_feature
+                        (
+                            title,
+                            description
+                        )
+                    VALUES ($1, $2)
+                    RETURNING *;
+                ",
+                product_feature.title,
+                product_feature.description,
+            )
+            .fetch_one(&db)
+            .await;
+
+            match returned {
+                Ok(record) => {
+                    HttpResponse::Created()
+                        .status(StatusCode::CREATED)
+                        .content_type("application/json") 
+                        .body(serde_json::to_string(&Json(record)).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+                    
+                },
+
+                Err(e) => handle_sql_error(e)
+            }
+        },
+        Err(e) => {
+            HttpResponse::InternalServerError()
+                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+                .content_type("application/json") 
+                .body(e)
+        }
+    }
+}
+
+#[get("/product_feature")]
+async fn get_all_product_features() -> HttpResponse {
+    let pg = db2::connect().await;
+
+    match pg {
+        Ok(db) => {
+            let returned: Result<Vec<ProductFeature>, Error> = sqlx::query_as!(
+                ProductFeature,
+                "SELECT * from product_feature;"
+            )
+            .fetch_all(&db)
+            .await;
+
+            match returned {
+                Ok(record) => {
+                    HttpResponse::Ok()
+                        .status(StatusCode::OK)
+                        .content_type("application/json") 
+                        .body(serde_json::to_string(&Json(record)).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+                    
+                },
+
+                Err(e) => handle_sql_error(e)
+            }
+        },
+        Err(e) => {
+            HttpResponse::InternalServerError()
+                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+                .content_type("application/json") 
+                .body(e)
+        }
+    }
+}
+
+#[get("/product_feature")]
+async fn get_product_feature_by_id(id: Json<Id>) -> HttpResponse {
+    let pg = db2::connect().await;
+
+    match pg {
+        Ok(db) => {
+            let returned: Result<ProductFeature, Error> = sqlx::query_as!(
+                ProductFeature,
+                "SELECT * FROM product_feature WHERE id = $1;",
+                id.id
+            )
+            .fetch_one(&db)
+            .await;
+
+            match returned {
+                Ok(record) => {
+                    HttpResponse::Ok()
+                        .status(StatusCode::OK)
+                        .content_type("application/json") 
+                        .body(serde_json::to_string(&Json(record)).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+                    
+                },
+
+                Err(e) => handle_sql_error(e)
+            }
+        },
+        Err(e) => {
+            HttpResponse::InternalServerError()
+                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+                .content_type("application/json") 
+                .body(e)
+        }
+    }
+}
+
+#[put("/product_feature")]
+async fn update_product_feature(product_feature: Json<ProductFeature>) -> HttpResponse {
+    let pg = db2::connect().await;
+
+    match pg {
+        Ok(db) => {
+            let returned: Result<ProductFeature, Error> = sqlx::query_as!(
+                ProductFeature,
+                "
+                    INSERT INTO product_feature
+                        (
+                            id,
+                            title,
+                            description
+                        )
+                    VALUES ($1, $2, $3)
+                    ON CONFLICT (id)
+                    DO UPDATE SET 
+                    id = EXCLUDED.id, title = EXCLUDED.title, description = EXCLUDED.description
+                    RETURNING *;
+                ",
+                product_feature.id,
+                product_feature.title,
+                product_feature.description,
+            )
+            .fetch_one(&db)
+            .await;
+
+            match returned {
+                Ok(record) => {
+                    HttpResponse::Ok()
+                        .status(StatusCode::OK)
+                        .content_type("application/json") 
+                        .body(serde_json::to_string(&Json(record)).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
+                    
+                },
+
+                Err(e) => handle_sql_error(e)
+            }
+        },
+        Err(e) => {
+            HttpResponse::InternalServerError()
+                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+                .content_type("application/json") 
+                .body(e)
+        }
+    }
+}
+
+#[delete("/product_feature")]
+async fn delete_product_feature(id: Json<Id>) -> HttpResponse {
+    let pg = db2::connect().await;
+
+    match pg {
+        Ok(db) => {
+            let returned: Result<PgQueryResult, Error> = sqlx::query_as!(
+                ProductFeature,
+                "DELETE FROM product_feature WHERE id = $1;",
+                id.id
+            )
+            .execute(&db)
+            .await;
+
+            match returned {
+                Ok(_) => {
+                    HttpResponse::NoContent()
+                        .status(StatusCode::NO_CONTENT)
+                        .content_type("application/json") 
+                        .finish()
+                },
+
+                Err(e) => handle_sql_error(e)
+            }
+        },
+
+        Err(e) => {
+            HttpResponse::InternalServerError()
+                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+                .content_type("application/json") 
+                .body(e)
+        }
+    }
+}
 
 pub fn employee() -> impl HttpServiceFactory {
     (
@@ -668,15 +864,15 @@ pub fn job_listing() -> impl HttpServiceFactory {
     )
 }
 
-// pub fn product_feature() -> impl HttpServiceFactory {
-//     (
-//         create_product_feature,
-//         get_all_product_features,
-//         get_product_feature_by_id,
-//         update_product_feature,
-//         delete_product_feature,
-//     )
-// }
+pub fn product_feature() -> impl HttpServiceFactory {
+    (
+        create_product_feature,
+        get_all_product_features,
+        get_product_feature_by_id,
+        update_product_feature,
+        delete_product_feature,
+    )
+}
 
 // pub fn blog_category() -> impl HttpServiceFactory {
 //     (

@@ -19,46 +19,46 @@ pub struct NewJobListing {
     pub description: String,
 }
 
-impl PgPreparable for JobListing {
-    fn name() -> &'static str {
-        "job_listing"
-    }
+// impl PgPreparable for JobListing {
+//     fn name() -> &'static str {
+//         "job_listing"
+//     }
 
-    fn new_from_row(row: &tokio_postgres::Row) -> Self {
-        JobListing {
-            id: row.get(0),
-            title: row.get(1),
-            description: row.get(2),
-            publish_date: format_unix_timestamp(row.get(3), None),
-        }
-    }
+//     fn new_from_row(row: &tokio_postgres::Row) -> Self {
+//         JobListing {
+//             id: row.get(0),
+//             title: row.get(1),
+//             description: row.get(2),
+//             publish_date: format_unix_timestamp(row.get(3), None),
+//         }
+//     }
 
-    fn columns() -> Vec<&'static str> {
-        vec!["title", "description", "publish_date"]
-    }
+//     fn columns() -> Vec<&'static str> {
+//         vec!["title", "description", "publish_date"]
+//     }
 
-    fn values(&self) -> Vec<&(dyn ToSql + Sync + '_)> {
-        let title: &String = &self.title;
-        let description: &String = &self.description;
-
-        vec![
-            title,
-            description,
-        ]
-    }
-}
-
-// impl JobListing {
-//     fn values(&self) -> Option<&'static [&'static (dyn ToSql + Sync + '_)]> where Self: std::marker::Sized + PgPreparable + Serialize {
+//     fn values(&self) -> Vec<&(dyn ToSql + Sync + '_)> {
 //         let title: &String = &self.title;
 //         let description: &String = &self.description;
 
-//         let publish_date: &SystemTime = &SystemTime::now();
-
-//         Some(&[
-//             &title,
-//             &description,
-//             &publish_date,
-//         ])
+//         vec![
+//             title,
+//             description,
+//         ]
 //     }
 // }
+
+// // impl JobListing {
+// //     fn values(&self) -> Option<&'static [&'static (dyn ToSql + Sync + '_)]> where Self: std::marker::Sized + PgPreparable + Serialize {
+// //         let title: &String = &self.title;
+// //         let description: &String = &self.description;
+
+// //         let publish_date: &SystemTime = &SystemTime::now();
+
+// //         Some(&[
+// //             &title,
+// //             &description,
+// //             &publish_date,
+// //         ])
+// //     }
+// // }
