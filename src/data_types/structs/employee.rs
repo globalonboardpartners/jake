@@ -80,6 +80,29 @@ impl PgPreparable2 for Employee {
         )
     }
 
+    fn write_insert_sql(body: &Self) -> String {
+        format!("
+            INSERT INTO
+                blog_category
+                    (
+                        name,
+                        position,
+                        bio,
+                        image_url
+                    )
+            VALUES
+                name = '{}',
+                position = '{}',
+                bio = '{}',
+                image_url = '{}'
+        ",
+            body.name,
+            body.position,
+            body.bio,
+            body.image_url,
+        )
+    }
+
     fn id(&self) -> Option<i32> {
         self.id
     }

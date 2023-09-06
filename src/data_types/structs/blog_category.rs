@@ -48,17 +48,6 @@ impl PgPreparable2 for BlogCategory {
     }
 
     fn write_update_sql(update_body: &Self, id: String) -> String {
-        // let mut id: String;
-
-        // match update_body.id {
-        //     Some(x) => {
-        //         id = x.to_string();
-        //     },
-        //     None => {
-        //         id = "None".to_string()
-        //     }
-        // }
-
         format!("
             UPDATE
                 blog_category
@@ -69,6 +58,18 @@ impl PgPreparable2 for BlogCategory {
         ",
             update_body.category,
             id
+        )
+    }
+
+    fn write_insert_sql(body: &Self) -> String {
+        format!("
+            INSERT INTO
+                blog_category
+                    (category)
+            VALUES
+                category = '{}'
+        ",
+            body.category,
         )
     }
 

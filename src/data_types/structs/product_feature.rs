@@ -81,6 +81,23 @@ impl PgPreparable2 for ProductFeature {
         )
     }
 
+    fn write_insert_sql(body: &Self) -> String {
+        format!("
+            INSERT INTO
+                product_feature
+                    (
+                        title,
+                        description
+                    )
+            VALUES
+                title = '{}',
+                description = '{}'
+        ",
+            body.title,
+            body.description,
+        )
+    }
+
     fn id(&self) -> Option<i32> {
         self.id
     }

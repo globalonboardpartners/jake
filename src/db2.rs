@@ -15,6 +15,25 @@ pub async fn connect_to_database() -> Result<PgPool, sqlx::Error> {
     Ok(pool)
 }
 
+pub async fn create<T: 'static>(body: T) -> Result<Json<PgQueryResult>, sqlx::Error>
+where
+    T: PgPreparable2 + Serialize + for<'r> FromRow<'r, PgRow> + Send + Unpin,
+{
+    let pg = connect_to_database().await;
+
+    match pg {
+        Ok(db) => {
+            let mut query_string = T::write_insert_sql(&body);
+            query_string = query_string.replace("\n", "");
+            let rows = sqlx::query(&query_string)
+                .execute(&db)
+                .await?;
+            Ok(Json(rows))
+        },
+        Err(e) => Err(e)
+    }
+}
+
 pub async fn get_all<T: 'static>() -> Result<Json<Vec<T>>, sqlx::Error>
 where
     T: PgPreparable2 + Serialize + for<'r> FromRow<'r, PgRow> + Send + Unpin,
