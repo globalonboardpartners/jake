@@ -3,13 +3,14 @@ use crate::data_types::traits::PgPreparable;
 use crate::utils::format_unix_timestamp;
 use tokio_postgres::types::ToSql;
 use std::time::SystemTime;
+use chrono::NaiveDateTime;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct JobListing {
     pub id: i32,
     pub title: String,
     pub description: String,
-    pub publish_date: String,
+    pub publish_date: Option<NaiveDateTime>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

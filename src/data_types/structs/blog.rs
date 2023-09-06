@@ -6,7 +6,7 @@ use std::time::SystemTime;
 // use actix_web::web::Json;
 use tokio_postgres::types::ToSql;
 
-use chrono::{NaiveDateTime, Utc};
+use chrono::NaiveDateTime;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Blog {
