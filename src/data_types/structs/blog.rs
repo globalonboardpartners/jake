@@ -1,5 +1,5 @@
 use serde::{Serialize, Deserialize};
-use chrono::NaiveDateTime;
+use sqlx::types::chrono::NaiveDateTime;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Blog {
