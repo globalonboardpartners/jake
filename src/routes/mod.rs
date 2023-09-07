@@ -1,8 +1,8 @@
 use actix_web::{get, post, put, delete, http, web, Responder, dev::HttpServiceFactory, HttpResponse};
 use actix_web::web::Json;
 use crate::utils::handle_request_error as handle_sql_error;
-use crate::db2;
-use crate::data_types::structs::{Id, UpdateColumn, BlogCategory, Employee, Blog, JobListing, ProductFeature, Continent};
+use crate::db;
+use crate::data_types::structs::{Id, BlogCategory, Employee, Blog, JobListing, ProductFeature};
 use sqlx::Error;
 use actix_web::http::StatusCode;
 use sqlx::postgres::PgQueryResult;
@@ -15,10 +15,8 @@ async fn greet(name: web::Path<String>) -> impl Responder {
 
 #[post("/employee")]
 async fn create_employee(employee: Json<Employee>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<Employee, Error> = sqlx::query_as!(
                 Employee,
                 "
@@ -42,7 +40,7 @@ async fn create_employee(employee: Json<Employee>) -> HttpResponse {
                 employee.bio,
                 employee.image_url,
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -68,15 +66,13 @@ async fn create_employee(employee: Json<Employee>) -> HttpResponse {
 
 #[get("/employees")]
 async fn get_all_employees() -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<Vec<Employee>, Error> = sqlx::query_as!(
                 Employee,
                 "SELECT * from employee;"
             )
-            .fetch_all(&db)
+            .fetch_all(&pg)
             .await;
 
             match returned {
@@ -102,16 +98,14 @@ async fn get_all_employees() -> HttpResponse {
 
 #[get("/employee")]
 async fn get_employee_by_id(id: Json<Id>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<Employee, Error> = sqlx::query_as!(
                 Employee,
                 "SELECT * FROM employee WHERE id = $1;",
                 id.id
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -137,10 +131,8 @@ async fn get_employee_by_id(id: Json<Id>) -> HttpResponse {
 
 #[put("/employee")]
 async fn update_employee(employee: Json<Employee>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<Employee, Error> = sqlx::query_as!(
                 Employee,
                 "
@@ -157,7 +149,7 @@ async fn update_employee(employee: Json<Employee>) -> HttpResponse {
                 employee.image_url,
                 employee.id,
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -183,16 +175,14 @@ async fn update_employee(employee: Json<Employee>) -> HttpResponse {
 
 #[delete("/employee")]
 async fn delete_employee(id: Json<Id>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<PgQueryResult, Error> = sqlx::query_as!(
                 Employee,
                 "DELETE FROM employee WHERE id = $1;",
                 id.id
             )
-            .execute(&db)
+            .execute(&pg)
             .await;
 
             match returned {
@@ -218,10 +208,8 @@ async fn delete_employee(id: Json<Id>) -> HttpResponse {
 
 #[post("/blog")]
 async fn create_blog(blog: Json<Blog>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<Blog, Error> = sqlx::query_as!(
                 Blog,
                 "
@@ -248,7 +236,7 @@ async fn create_blog(blog: Json<Blog>) -> HttpResponse {
                 blog.featured,
                 Utc::now().naive_utc(),
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -274,15 +262,13 @@ async fn create_blog(blog: Json<Blog>) -> HttpResponse {
 
 #[get("/blogs")]
 async fn get_all_blogs() -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<Vec<Blog>, Error> = sqlx::query_as!(
                 Blog,
                 "SELECT * from blog;"
             )
-            .fetch_all(&db)
+            .fetch_all(&pg)
             .await;
 
             match returned {
@@ -308,16 +294,14 @@ async fn get_all_blogs() -> HttpResponse {
 
 #[get("/blog")]
 async fn get_blog_by_id(id: Json<Id>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<Blog, Error> = sqlx::query_as!(
                 Blog,
                 "SELECT * FROM blog WHERE id = $1;",
                 id.id
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -343,10 +327,8 @@ async fn get_blog_by_id(id: Json<Id>) -> HttpResponse {
 
 #[put("/blog")]
 async fn update_blog(blog: Json<Blog>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<Blog, Error> = sqlx::query_as!(
                 Blog,
                 "
@@ -375,7 +357,7 @@ async fn update_blog(blog: Json<Blog>) -> HttpResponse {
                 blog.featured,
                 blog.publish_date,
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -401,16 +383,14 @@ async fn update_blog(blog: Json<Blog>) -> HttpResponse {
 
 #[delete("/blog")]
 async fn delete_blog(id: Json<Id>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<PgQueryResult, Error> = sqlx::query_as!(
                 Blog,
                 "DELETE FROM blog WHERE id = $1;",
                 id.id
             )
-            .execute(&db)
+            .execute(&pg)
             .await;
 
             match returned {
@@ -436,10 +416,8 @@ async fn delete_blog(id: Json<Id>) -> HttpResponse {
 
 #[post("/job_listing")]
 async fn create_job_listing(job_listing: Json<JobListing>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<JobListing, Error> = sqlx::query_as!(
                 JobListing,
                 "
@@ -456,7 +434,7 @@ async fn create_job_listing(job_listing: Json<JobListing>) -> HttpResponse {
                 job_listing.description,
                 Utc::now().naive_utc(),
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -482,15 +460,13 @@ async fn create_job_listing(job_listing: Json<JobListing>) -> HttpResponse {
 
 #[get("/job_listings")]
 async fn get_all_job_listings() -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<Vec<JobListing>, Error> = sqlx::query_as!(
                 JobListing,
                 "SELECT * from job_listing;"
             )
-            .fetch_all(&db)
+            .fetch_all(&pg)
             .await;
 
             match returned {
@@ -516,16 +492,14 @@ async fn get_all_job_listings() -> HttpResponse {
 
 #[get("/job_listing")]
 async fn get_job_listing_by_id(id: Json<Id>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<JobListing, Error> = sqlx::query_as!(
                 JobListing,
                 "SELECT * FROM job_listing WHERE id = $1;",
                 id.id
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -551,10 +525,8 @@ async fn get_job_listing_by_id(id: Json<Id>) -> HttpResponse {
 
 #[put("/job_listing")]
 async fn update_job_listing(job_listing: Json<JobListing>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<JobListing, Error> = sqlx::query_as!(
                 JobListing,
                 "
@@ -576,7 +548,7 @@ async fn update_job_listing(job_listing: Json<JobListing>) -> HttpResponse {
                 job_listing.description,
                 Utc::now().naive_utc(),
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -602,16 +574,14 @@ async fn update_job_listing(job_listing: Json<JobListing>) -> HttpResponse {
 
 #[delete("/job_listing")]
 async fn delete_job_listing(id: Json<Id>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<PgQueryResult, Error> = sqlx::query_as!(
                 JobListing,
                 "DELETE FROM employee WHERE id = $1;",
                 id.id
             )
-            .execute(&db)
+            .execute(&pg)
             .await;
 
             match returned {
@@ -637,10 +607,8 @@ async fn delete_job_listing(id: Json<Id>) -> HttpResponse {
 
 #[post("/product_feature")]
 async fn create_product_feature(product_feature: Json<ProductFeature>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<ProductFeature, Error> = sqlx::query_as!(
                 ProductFeature,
                 "
@@ -655,7 +623,7 @@ async fn create_product_feature(product_feature: Json<ProductFeature>) -> HttpRe
                 product_feature.title,
                 product_feature.description,
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -681,15 +649,13 @@ async fn create_product_feature(product_feature: Json<ProductFeature>) -> HttpRe
 
 #[get("/product_feature")]
 async fn get_all_product_features() -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<Vec<ProductFeature>, Error> = sqlx::query_as!(
                 ProductFeature,
                 "SELECT * from product_feature;"
             )
-            .fetch_all(&db)
+            .fetch_all(&pg)
             .await;
 
             match returned {
@@ -715,16 +681,14 @@ async fn get_all_product_features() -> HttpResponse {
 
 #[get("/product_feature")]
 async fn get_product_feature_by_id(id: Json<Id>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<ProductFeature, Error> = sqlx::query_as!(
                 ProductFeature,
                 "SELECT * FROM product_feature WHERE id = $1;",
                 id.id
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -750,10 +714,8 @@ async fn get_product_feature_by_id(id: Json<Id>) -> HttpResponse {
 
 #[put("/product_feature")]
 async fn update_product_feature(product_feature: Json<ProductFeature>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<ProductFeature, Error> = sqlx::query_as!(
                 ProductFeature,
                 "
@@ -773,7 +735,7 @@ async fn update_product_feature(product_feature: Json<ProductFeature>) -> HttpRe
                 product_feature.title,
                 product_feature.description,
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -799,16 +761,14 @@ async fn update_product_feature(product_feature: Json<ProductFeature>) -> HttpRe
 
 #[delete("/product_feature")]
 async fn delete_product_feature(id: Json<Id>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<PgQueryResult, Error> = sqlx::query_as!(
                 ProductFeature,
                 "DELETE FROM product_feature WHERE id = $1;",
                 id.id
             )
-            .execute(&db)
+            .execute(&pg)
             .await;
 
             match returned {
@@ -834,10 +794,8 @@ async fn delete_product_feature(id: Json<Id>) -> HttpResponse {
 
 #[post("/blog_category")]
 async fn create_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<BlogCategory, Error> = sqlx::query_as!(
                 BlogCategory,
                 "
@@ -850,7 +808,7 @@ async fn create_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse
                 ",
                 blog_category.category,
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -876,15 +834,13 @@ async fn create_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse
 
 #[get("/blog_categories")]
 async fn get_all_blog_categories() -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<Vec<BlogCategory>, Error> = sqlx::query_as!(
                 BlogCategory,
                 "SELECT * from blog_category;"
             )
-            .fetch_all(&db)
+            .fetch_all(&pg)
             .await;
 
             match returned {
@@ -910,16 +866,14 @@ async fn get_all_blog_categories() -> HttpResponse {
 
 #[get("/blog_category")]
 async fn get_blog_category_by_id(id: Json<Id>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<BlogCategory, Error> = sqlx::query_as!(
                 BlogCategory,
                 "SELECT * FROM blog_category WHERE id = $1;",
                 id.id
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -945,10 +899,8 @@ async fn get_blog_category_by_id(id: Json<Id>) -> HttpResponse {
 
 #[put("/blog_category")]
 async fn update_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<BlogCategory, Error> = sqlx::query_as!(
                 BlogCategory,
                 "
@@ -966,7 +918,7 @@ async fn update_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse
                 blog_category.id,
                 blog_category.category,
             )
-            .fetch_one(&db)
+            .fetch_one(&pg)
             .await;
 
             match returned {
@@ -992,10 +944,8 @@ async fn update_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse
 
 #[delete("/blog_category")]
 async fn delete_blog_category(id: Json<Id>) -> HttpResponse {
-    let pg = db2::connect().await;
-
-    match pg {
-        Ok(db) => {
+    match db::connect().await {
+        Ok(pg) => {
             let returned: Result<PgQueryResult, Error> = sqlx::query_as!(
                 BlogCategory,
                 "
@@ -1007,7 +957,7 @@ async fn delete_blog_category(id: Json<Id>) -> HttpResponse {
                 ",
                 id.id
             )
-            .execute(&db)
+            .execute(&pg)
             .await;
 
             match returned {
