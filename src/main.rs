@@ -11,6 +11,7 @@ async fn main() -> Result<()> {
     HttpServer::new(|| {
         App::new()
             .service(routes::employee())
+            .service(routes::client())
             .service(routes::job_listing())
             .service(routes::blog())
             .service(routes::blog_category())

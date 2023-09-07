@@ -75,7 +75,7 @@ async fn create_client(client: Json<Client>) -> HttpResponse {
     }
 }
 
-#[get("/client")]
+#[get("/clients")]
 async fn get_all_clients() -> HttpResponse {
     match db::connect().await {
         Ok(pg) => {

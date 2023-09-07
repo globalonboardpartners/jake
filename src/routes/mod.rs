@@ -7,6 +7,16 @@ pub mod employee;
 pub mod job_listing;
 pub mod product_feature;
 
+pub fn client() -> impl HttpServiceFactory {
+    (
+        client::get_all_clients,
+        client::get_client_by_id,
+        client::delete_client,
+        client::create_client,
+        client::update_client,
+    )
+}
+
 pub fn employee() -> impl HttpServiceFactory {
     (
         employee::get_all_employees,
