@@ -17,13 +17,31 @@ async fn create_product_feature(product_feature: Json<ProductFeature>) -> HttpRe
                     INSERT INTO product_feature
                         (
                             title,
-                            description
+                            slug,
+                            description_short,
+                            description_long,
+                            image_link,
+                            video_link,
+                            icon,
+                            quote,
+                            quote_author,
+                            quote_author_position,
+                            order_number
                         )
-                    VALUES ($1, $2)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
                     RETURNING *;
                 ",
                 product_feature.title,
-                product_feature.description,
+                product_feature.slug,
+                product_feature.description_short,
+                product_feature.description_long,
+                product_feature.image_link,
+                product_feature.video_link,
+                product_feature.icon,
+                product_feature.quote,
+                product_feature.quote_author,
+                product_feature.quote_author_position,
+                product_feature.order_number,
             )
             .fetch_one(&pg)
             .await;
@@ -117,17 +135,46 @@ async fn update_product_feature(product_feature: Json<ProductFeature>) -> HttpRe
                         (
                             id,
                             title,
-                            description
+                            slug,
+                            description_short,
+                            description_long,
+                            image_link,
+                            video_link,
+                            icon,
+                            quote,
+                            quote_author,
+                            quote_author_position,
+                            order_number
                         )
-                    VALUES ($1, $2, $3)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
                     ON CONFLICT (id)
                     DO UPDATE SET 
-                    id = EXCLUDED.id, title = EXCLUDED.title, description = EXCLUDED.description
+                        id = EXCLUDED.id,
+                        title = EXCLUDED.title,
+                        slug = EXCLUDED.slug,
+                        description_short = EXCLUDED.description_short,
+                        description_long = EXCLUDED.description_long,
+                        image_link = EXCLUDED.image_link,
+                        video_link = EXCLUDED.video_link,
+                        icon = EXCLUDED.icon,
+                        quote = EXCLUDED.quote,
+                        quote_author = EXCLUDED.quote_author,
+                        quote_author_position = EXCLUDED.quote_author_position,
+                        order_number = EXCLUDED.order_number
                     RETURNING *;
                 ",
                 product_feature.id,
                 product_feature.title,
-                product_feature.description,
+                product_feature.slug,
+                product_feature.description_short,
+                product_feature.description_long,
+                product_feature.image_link,
+                product_feature.video_link,
+                product_feature.icon,
+                product_feature.quote,
+                product_feature.quote_author,
+                product_feature.quote_author_position,
+                product_feature.order_number,
             )
             .fetch_one(&pg)
             .await;

@@ -17,22 +17,25 @@ async fn create_employee(employee: Json<Employee>) -> HttpResponse {
                     INSERT INTO employee
                         (
                             name,
+                            slug,
                             position,
                             bio,
-                            image_url
+                            image_url,
+                            twitter_link,
+                            linkedin_link,
+                            email
                         )
-                    VALUES ($1, $2, $3, $4)
-                    RETURNING
-                        id,
-                        name,
-                        position,
-                        bio,
-                        image_url;
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                    RETURNING *;
                 ",
                 employee.name,
+                employee.slug,
                 employee.position,
                 employee.bio,
                 employee.image_url,
+                employee.twitter_link,
+                employee.linkedin_link,
+                employee.email,
             )
             .fetch_one(&pg)
             .await;
@@ -119,18 +122,41 @@ async fn update_employee(employee: Json<Employee>) -> HttpResponse {
             let returned: Result<Employee, Error> = sqlx::query_as!(
                 Employee,
                 "
-                    INSERT INTO employee (id, name, position, bio, image_url)
-                    VALUES ($5, $1, $2, $3, $4)
+                    INSERT INTO employee
+                        (
+                            id,
+                            name,
+                            slug,
+                            position,
+                            bio,
+                            image_url,
+                            twitter_link,
+                            linkedin_link,
+                            email
+                        )
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                     ON CONFLICT (id)
                     DO UPDATE SET 
-                    name = EXCLUDED.name, position = EXCLUDED.position, bio = EXCLUDED.bio, image_url = EXCLUDED.image_url
+                        id = EXCLUDED.id,
+                        name = EXCLUDED.name,
+                        slug = EXCLUDED.slug,
+                        position = EXCLUDED.position,
+                        bio = EXCLUDED.bio,
+                        image_url = EXCLUDED.image_url,
+                        twitter_link = EXCLUDED.twitter_link,
+                        linkedin_link = EXCLUDED.linkedin_link,
+                        email = EXCLUDED.email
                     RETURNING *;
                 ",
+                employee.id,
                 employee.name,
+                employee.slug,
                 employee.position,
                 employee.bio,
                 employee.image_url,
-                employee.id,
+                employee.twitter_link,
+                employee.linkedin_link,
+                employee.email,
             )
             .fetch_one(&pg)
             .await;

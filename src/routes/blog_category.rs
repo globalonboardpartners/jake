@@ -16,12 +16,14 @@ async fn create_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse
                 "
                     INSERT INTO blog_category
                         (
-                            category
+                            category,
+                            slug
                         )
-                    VALUES ($1)
+                    VALUES ($1, $2)
                     RETURNING *;
                 ",
                 blog_category.category,
+                blog_category.slug
             )
             .fetch_one(&pg)
             .await;
@@ -114,16 +116,18 @@ async fn update_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse
                     INSERT INTO blog_category
                         (
                             id,
-                            category
+                            category,
+                            slug
                         )
-                    VALUES ($1, $2)
+                    VALUES ($1, $2, $3)
                     ON CONFLICT (id)
                     DO UPDATE SET 
-                    id = EXCLUDED.id, category = EXCLUDED.category
+                    id = EXCLUDED.id, category = EXCLUDED.category, slug = EXCLUDED.slug
                     RETURNING *;
                 ",
                 blog_category.id,
                 blog_category.category,
+                blog_category.slug,
             )
             .fetch_one(&pg)
             .await;

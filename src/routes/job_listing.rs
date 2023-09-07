@@ -18,14 +18,20 @@ async fn create_job_listing(job_listing: Json<JobListing>) -> HttpResponse {
                     INSERT INTO job_listing
                         (
                             title,
+                            slug,
                             description,
+                            location,
+                            employment_basis,
                             publish_date
                         )
-                    VALUES ($1, $2, $3)
+                    VALUES ($1, $2, $3, $4, $5, $6)
                     RETURNING *;
                 ",
                 job_listing.title,
+                job_listing.slug,
                 job_listing.description,
+                job_listing.location,
+                job_listing.employment_basis,
                 Utc::now().naive_utc(),
             )
             .fetch_one(&pg)
@@ -120,18 +126,30 @@ async fn update_job_listing(job_listing: Json<JobListing>) -> HttpResponse {
                         (
                             id,
                             title,
+                            slug,
                             description,
+                            location,
+                            employment_basis,
                             publish_date
                         )
-                    VALUES ($1, $2, $3, $4)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7)
                     ON CONFLICT (id)
                     DO UPDATE SET 
-                    id = EXCLUDED.id, title = EXCLUDED.title, description = EXCLUDED.description, publish_date = EXCLUDED.publish_date
+                        id = EXCLUDED.id,
+                        title = EXCLUDED.title,
+                        slug = EXCLUDED.slug,
+                        description = EXCLUDED.description,
+                        location = EXCLUDED.location,
+                        employment_basis = EXCLUDED.employment_basis,
+                        publish_date = EXCLUDED.publish_date
                     RETURNING *;
                 ",
                 job_listing.id,
                 job_listing.title,
+                job_listing.slug,
                 job_listing.description,
+                job_listing.location,
+                job_listing.employment_basis,
                 Utc::now().naive_utc(),
             )
             .fetch_one(&pg)
