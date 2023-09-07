@@ -19,6 +19,9 @@ pub use self::product_feature::ProductFeature;
 pub mod continent;
 pub use self::continent::Continent;
 
+pub mod client;
+pub use self::client::Client;
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Id {
     pub id: i32,

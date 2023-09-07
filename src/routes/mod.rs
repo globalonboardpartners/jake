@@ -2,6 +2,7 @@ use actix_web::dev::HttpServiceFactory;
 
 pub mod blog;
 pub mod blog_category;
+pub mod client;
 pub mod employee;
 pub mod job_listing;
 pub mod product_feature;

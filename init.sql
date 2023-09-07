@@ -64,6 +64,26 @@ CREATE TABLE product_feature (
   order_number INT NOT NULL
 );
 
+CREATE TABLE client (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  slug TEXT NOT NULL,
+  title TEXT NOT NULL,
+  description_short TEXT,
+  description_long TEXT,
+  logo TEXT,
+  image_link TEXT,
+  quote TEXT,
+  quote_author TEXT,
+  quote_author_position TEXT,
+  number_of_employees TEXT,
+  industry TEXT,
+  website_link TEXT,
+  features_used TEXT,
+  featured BOOLEAN,
+  publish_date TIMESTAMP NOT NULL
+);
+
 -- formally known as "Region"
 CREATE TABLE continent (
   id SERIAL PRIMARY KEY,
