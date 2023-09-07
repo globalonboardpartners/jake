@@ -1,6 +1,6 @@
 use actix_web::{get, post, put, delete, http, web, Responder, dev::HttpServiceFactory, HttpResponse};
 use actix_web::web::Json;
-use crate::utils::handle_request_error as handle_sql_error;
+use crate::utils::handle_sql_error;
 use crate::db;
 use crate::data_types::structs::{Id, BlogCategory, Employee, Blog, JobListing, ProductFeature};
 use sqlx::Error;
