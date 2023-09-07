@@ -22,6 +22,9 @@ pub use self::continent::Continent;
 pub mod client;
 pub use self::client::Client;
 
+pub mod error_message;
+pub use self::error_message::ErrorMessage;
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Id {
     pub id: i32,

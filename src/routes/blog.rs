@@ -3,14 +3,14 @@ use crate::db;
 use crate::utils::handle_sql_error;
 use actix_web::http::StatusCode;
 use actix_web::web::Json;
-use actix_web::{delete, get, http, post, put, HttpResponse};
+use actix_web::{delete, get, http, post, put, HttpResponse, HttpRequest};
 use sqlx::postgres::PgQueryResult;
 use sqlx::types::chrono::Utc;
 use sqlx::Error;
 
 #[post("/blog")]
-async fn create_blog(blog: Json<Blog>) -> HttpResponse {
-    match db::connect().await {
+async fn create_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<Blog, Error> = sqlx::query_as!(
                 Blog,
@@ -56,13 +56,13 @@ async fn create_blog(blog: Json<Blog>) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }
 
 #[get("/blogs")]
-async fn get_all_blogs() -> HttpResponse {
-    match db::connect().await {
+async fn get_all_blogs(req: HttpRequest) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<Vec<Blog>, Error> = sqlx::query_as!(Blog, "SELECT * from blog;")
                 .fetch_all(&pg)
@@ -83,13 +83,13 @@ async fn get_all_blogs() -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }
 
 #[get("/blog")]
-async fn get_blog_by_id(id: Json<Id>) -> HttpResponse {
-    match db::connect().await {
+async fn get_blog_by_id(req: HttpRequest, id: Json<Id>) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<Blog, Error> =
                 sqlx::query_as!(Blog, "SELECT * FROM blog WHERE id = $1;", id.id)
@@ -111,13 +111,13 @@ async fn get_blog_by_id(id: Json<Id>) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }
 
 #[put("/blog")]
-async fn update_blog(blog: Json<Blog>) -> HttpResponse {
-    match db::connect().await {
+async fn update_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<Blog, Error> = sqlx::query_as!(
                 Blog,
@@ -165,13 +165,13 @@ async fn update_blog(blog: Json<Blog>) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }
 
 #[delete("/blog")]
-async fn delete_blog(id: Json<Id>) -> HttpResponse {
-    match db::connect().await {
+async fn delete_blog(req: HttpRequest, id: Json<Id>) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<PgQueryResult, Error> =
                 sqlx::query_as!(Blog, "DELETE FROM blog WHERE id = $1;", id.id)
@@ -191,6 +191,6 @@ async fn delete_blog(id: Json<Id>) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }

@@ -3,13 +3,13 @@ use crate::db;
 use crate::utils::handle_sql_error;
 use actix_web::http::StatusCode;
 use actix_web::web::Json;
-use actix_web::{delete, get, http, post, put, HttpResponse};
+use actix_web::{delete, get, http, post, put, HttpResponse, HttpRequest};
 use sqlx::postgres::PgQueryResult;
 use sqlx::Error;
 
 #[post("/blog_category")]
-async fn create_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse {
-    match db::connect().await {
+async fn create_blog_category(req: HttpRequest, blog_category: Json<BlogCategory>) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<BlogCategory, Error> = sqlx::query_as!(
                 BlogCategory,
@@ -43,13 +43,13 @@ async fn create_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }
 
 #[get("/blog_categories")]
-async fn get_all_blog_categories() -> HttpResponse {
-    match db::connect().await {
+async fn get_all_blog_categories(req: HttpRequest) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<Vec<BlogCategory>, Error> =
                 sqlx::query_as!(BlogCategory, "SELECT * from blog_category;")
@@ -71,13 +71,13 @@ async fn get_all_blog_categories() -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }
 
 #[get("/blog_category")]
-async fn get_blog_category_by_id(id: Json<Id>) -> HttpResponse {
-    match db::connect().await {
+async fn get_blog_category_by_id(req: HttpRequest, id: Json<Id>) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<BlogCategory, Error> = sqlx::query_as!(
                 BlogCategory,
@@ -102,13 +102,13 @@ async fn get_blog_category_by_id(id: Json<Id>) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }
 
 #[put("/blog_category")]
-async fn update_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse {
-    match db::connect().await {
+async fn update_blog_category(req: HttpRequest, blog_category: Json<BlogCategory>) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<BlogCategory, Error> = sqlx::query_as!(
                 BlogCategory,
@@ -147,13 +147,13 @@ async fn update_blog_category(blog_category: Json<BlogCategory>) -> HttpResponse
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }
 
 #[delete("/blog_category")]
-async fn delete_blog_category(id: Json<Id>) -> HttpResponse {
-    match db::connect().await {
+async fn delete_blog_category(req: HttpRequest, id: Json<Id>) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<PgQueryResult, Error> = sqlx::query_as!(
                 BlogCategory,
@@ -176,6 +176,6 @@ async fn delete_blog_category(id: Json<Id>) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }

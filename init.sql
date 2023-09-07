@@ -4,6 +4,13 @@
 --  you will have to also change the  --
 --               code!                --
 ----------------------------------------
+-- create table api key
+CREATE TABLE api_key (
+    id SERIAL PRIMARY KEY,
+    key TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL UNIQUE
+);
+
 -- Create Team Members Table
 CREATE TABLE employee (
   id SERIAL PRIMARY KEY,

@@ -3,13 +3,13 @@ use crate::db;
 use crate::utils::handle_sql_error;
 use actix_web::http::StatusCode;
 use actix_web::web::Json;
-use actix_web::{delete, get, http, post, put, HttpResponse};
+use actix_web::{delete, get, http, post, put, HttpResponse, HttpRequest};
 use sqlx::postgres::PgQueryResult;
 use sqlx::Error;
 
 #[post("/client")]
-async fn create_client(client: Json<Client>) -> HttpResponse {
-    match db::connect().await {
+async fn create_client(req: HttpRequest, client: Json<Client>) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<Client, Error> = sqlx::query_as!(
                 Client,
@@ -71,13 +71,13 @@ async fn create_client(client: Json<Client>) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }
 
 #[get("/clients")]
-async fn get_all_clients() -> HttpResponse {
-    match db::connect().await {
+async fn get_all_clients(req: HttpRequest) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<Vec<Client>, Error> =
                 sqlx::query_as!(Client, "SELECT * from client;")
@@ -99,13 +99,13 @@ async fn get_all_clients() -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }
 
 #[get("/client")]
-async fn get_client_by_id(id: Json<Id>) -> HttpResponse {
-    match db::connect().await {
+async fn get_client_by_id(req: HttpRequest, id: Json<Id>) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<Client, Error> =
                 sqlx::query_as!(Client, "SELECT * FROM client WHERE id = $1;", id.id)
@@ -127,13 +127,13 @@ async fn get_client_by_id(id: Json<Id>) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }
 
 #[put("/client")]
-async fn update_client(client: Json<Client>) -> HttpResponse {
-    match db::connect().await {
+async fn update_client(req: HttpRequest, client: Json<Client>) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<Client, Error> = sqlx::query_as!(
                 Client,
@@ -216,13 +216,13 @@ async fn update_client(client: Json<Client>) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }
 
 #[delete("/client")]
-async fn delete_client(id: Json<Id>) -> HttpResponse {
-    match db::connect().await {
+async fn delete_client(req: HttpRequest, id: Json<Id>) -> HttpResponse {
+    match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<PgQueryResult, Error> =
                 sqlx::query_as!(Client, "DELETE FROM client WHERE id = $1;", id.id)
@@ -242,6 +242,6 @@ async fn delete_client(id: Json<Id>) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(http::StatusCode::INTERNAL_SERVER_ERROR)
             .content_type("application/json")
-            .body(e),
+            .body(e.message),
     }
 }
