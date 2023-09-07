@@ -1,6 +1,6 @@
 use actix_web::{App, HttpServer};
 use std::io::Result;
-use actix_web::middleware::DefaultHeaders;
+use actix_cors::Cors;
 
 pub mod data_types;
 pub mod db;
@@ -10,10 +10,12 @@ pub mod utils;
 #[tokio::main]
 async fn main() -> Result<()> {
     HttpServer::new(|| {
+        let cors = Cors::permissive()
+            .allowed_origin("http://localhost:3000")
+            .allow_any_method()
+            .allow_any_header();
         App::new()
-            .wrap(DefaultHeaders::new().add(("Access-Control-Allow-Origin", "http://localhost:3000")))
-            .wrap(DefaultHeaders::new().add(("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")))
-            .wrap(DefaultHeaders::new().add(("Access-Control-Allow-Headers", "Content-Type, Authorization")))
+            .wrap(cors)
             .service(routes::employee())
             .service(routes::client())
             .service(routes::job_listing())

@@ -5,6 +5,7 @@ use actix_web::HttpRequest;
 use actix_web::Result;
 use actix_web::http::header::HeaderMap;
 use sqlx::Row;
+use actix_web::http::header;
 
 pub async fn connect(req: HttpRequest) -> Result<PgPool, ErrorMessage> {
     dotenv::dotenv().ok();
@@ -14,18 +15,18 @@ pub async fn connect(req: HttpRequest) -> Result<PgPool, ErrorMessage> {
     
     let headers: &HeaderMap = req.headers();
     let api_key = headers
-        .get("api_key")
+        .get(header::AUTHORIZATION)
         .ok_or(ErrorMessage::new("Header not found"))?
         .to_str()
         .map_err(|_| ErrorMessage::new("Invalid format"))?;
-    
+
     match pool_result {
         Ok(db) => {
             let row = sqlx::query("SELECT COUNT(*) FROM api_key WHERE key = $1")
                 .bind(api_key)
                 .fetch_one(&db)
                 .await;
-            
+
             match row {
                 Ok(record) => {
                     let count: i64 = record.get("count");
