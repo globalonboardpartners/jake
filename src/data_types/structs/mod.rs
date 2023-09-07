@@ -3,27 +3,21 @@ use std::time::SystemTime;
 
 pub mod blog_category;
 pub use self::blog_category::BlogCategory;
-// pub use self::blog_category::NewBlogCategory;
 
 pub mod blog;
 pub use self::blog::Blog;
-pub use self::blog::NewBlog;
 
 pub mod employee;
 pub use self::employee::Employee;
-pub use self::employee::NewEmployee;
 
 pub mod job_listing;
 pub use self::job_listing::JobListing;
-pub use self::job_listing::NewJobListing;
 
 pub mod product_feature;
 pub use self::product_feature::ProductFeature;
-pub use self::product_feature::NewProductFeature;
 
 pub mod continent;
 pub use self::continent::Continent;
-pub use self::continent::NewContinent;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Return<T> {
