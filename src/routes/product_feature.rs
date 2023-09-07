@@ -65,7 +65,7 @@ async fn create_product_feature(product_feature: Json<ProductFeature>) -> HttpRe
     }
 }
 
-#[get("/product_feature")]
+#[get("/product_features")]
 async fn get_all_product_features() -> HttpResponse {
     match db::connect().await {
         Ok(pg) => {
