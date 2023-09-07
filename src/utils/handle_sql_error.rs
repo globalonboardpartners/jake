@@ -3,7 +3,7 @@ use sqlx::Error;
 use actix_web::http::StatusCode;
 use actix_web::web::Json;
 
-pub fn handle_request_error(e: Error) -> HttpResponse {
+pub fn handle_sql_error(e: Error) -> HttpResponse {
     match e {
         Error::Database(err) => {
             HttpResponse::InternalServerError()
