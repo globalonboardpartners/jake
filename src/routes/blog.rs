@@ -1,12 +1,12 @@
-use actix_web::{get, post, put, delete, http, HttpResponse};
-use actix_web::web::Json;
-use crate::utils::handle_sql_error;
+use crate::data_types::structs::{Blog, Id};
 use crate::db;
-use crate::data_types::structs::{Id, Blog};
-use sqlx::Error;
+use crate::utils::handle_sql_error;
 use actix_web::http::StatusCode;
+use actix_web::web::Json;
+use actix_web::{delete, get, http, post, put, HttpResponse};
 use sqlx::postgres::PgQueryResult;
 use sqlx::types::chrono::Utc;
+use sqlx::Error;
 
 #[post("/blog")]
 async fn create_blog(blog: Json<Blog>) -> HttpResponse {
@@ -42,23 +42,21 @@ async fn create_blog(blog: Json<Blog>) -> HttpResponse {
             .await;
 
             match returned {
-                Ok(record) => {
-                    HttpResponse::Created()
-                        .status(StatusCode::CREATED)
-                        .content_type("application/json") 
-                        .body(serde_json::to_string(&Json(record)).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
-                    
-                },
+                Ok(record) => HttpResponse::Created()
+                    .status(StatusCode::CREATED)
+                    .content_type("application/json")
+                    .body(
+                        serde_json::to_string(&Json(record))
+                            .unwrap_or_else(|e| format!("JSON serialization error: {}", e)),
+                    ),
 
-                Err(e) => handle_sql_error(e)
+                Err(e) => handle_sql_error(e),
             }
-        },
-        Err(e) => {
-            HttpResponse::InternalServerError()
-                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
-                .content_type("application/json") 
-                .body(e)
         }
+        Err(e) => HttpResponse::InternalServerError()
+            .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+            .content_type("application/json")
+            .body(e),
     }
 }
 
@@ -66,31 +64,26 @@ async fn create_blog(blog: Json<Blog>) -> HttpResponse {
 async fn get_all_blogs() -> HttpResponse {
     match db::connect().await {
         Ok(pg) => {
-            let returned: Result<Vec<Blog>, Error> = sqlx::query_as!(
-                Blog,
-                "SELECT * from blog;"
-            )
-            .fetch_all(&pg)
-            .await;
+            let returned: Result<Vec<Blog>, Error> = sqlx::query_as!(Blog, "SELECT * from blog;")
+                .fetch_all(&pg)
+                .await;
 
             match returned {
-                Ok(record) => {
-                    HttpResponse::Ok()
-                        .status(StatusCode::OK)
-                        .content_type("application/json") 
-                        .body(serde_json::to_string(&Json(record)).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
-                    
-                },
+                Ok(record) => HttpResponse::Ok()
+                    .status(StatusCode::OK)
+                    .content_type("application/json")
+                    .body(
+                        serde_json::to_string(&Json(record))
+                            .unwrap_or_else(|e| format!("JSON serialization error: {}", e)),
+                    ),
 
-                Err(e) => handle_sql_error(e)
+                Err(e) => handle_sql_error(e),
             }
-        },
-        Err(e) => {
-            HttpResponse::InternalServerError()
-                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
-                .content_type("application/json") 
-                .body(e)
         }
+        Err(e) => HttpResponse::InternalServerError()
+            .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+            .content_type("application/json")
+            .body(e),
     }
 }
 
@@ -98,32 +91,27 @@ async fn get_all_blogs() -> HttpResponse {
 async fn get_blog_by_id(id: Json<Id>) -> HttpResponse {
     match db::connect().await {
         Ok(pg) => {
-            let returned: Result<Blog, Error> = sqlx::query_as!(
-                Blog,
-                "SELECT * FROM blog WHERE id = $1;",
-                id.id
-            )
-            .fetch_one(&pg)
-            .await;
+            let returned: Result<Blog, Error> =
+                sqlx::query_as!(Blog, "SELECT * FROM blog WHERE id = $1;", id.id)
+                    .fetch_one(&pg)
+                    .await;
 
             match returned {
-                Ok(record) => {
-                    HttpResponse::Ok()
-                        .status(StatusCode::OK)
-                        .content_type("application/json") 
-                        .body(serde_json::to_string(&Json(record)).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
-                    
-                },
+                Ok(record) => HttpResponse::Ok()
+                    .status(StatusCode::OK)
+                    .content_type("application/json")
+                    .body(
+                        serde_json::to_string(&Json(record))
+                            .unwrap_or_else(|e| format!("JSON serialization error: {}", e)),
+                    ),
 
-                Err(e) => handle_sql_error(e)
+                Err(e) => handle_sql_error(e),
             }
-        },
-        Err(e) => {
-            HttpResponse::InternalServerError()
-                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
-                .content_type("application/json") 
-                .body(e)
         }
+        Err(e) => HttpResponse::InternalServerError()
+            .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+            .content_type("application/json")
+            .body(e),
     }
 }
 
@@ -163,23 +151,21 @@ async fn update_blog(blog: Json<Blog>) -> HttpResponse {
             .await;
 
             match returned {
-                Ok(record) => {
-                    HttpResponse::Ok()
-                        .status(StatusCode::OK)
-                        .content_type("application/json") 
-                        .body(serde_json::to_string(&Json(record)).unwrap_or_else(|e| format!("JSON serialization error: {}", e)))
-                    
-                },
+                Ok(record) => HttpResponse::Ok()
+                    .status(StatusCode::OK)
+                    .content_type("application/json")
+                    .body(
+                        serde_json::to_string(&Json(record))
+                            .unwrap_or_else(|e| format!("JSON serialization error: {}", e)),
+                    ),
 
-                Err(e) => handle_sql_error(e)
+                Err(e) => handle_sql_error(e),
             }
-        },
-        Err(e) => {
-            HttpResponse::InternalServerError()
-                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
-                .content_type("application/json") 
-                .body(e)
         }
+        Err(e) => HttpResponse::InternalServerError()
+            .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+            .content_type("application/json")
+            .body(e),
     }
 }
 
@@ -187,32 +173,24 @@ async fn update_blog(blog: Json<Blog>) -> HttpResponse {
 async fn delete_blog(id: Json<Id>) -> HttpResponse {
     match db::connect().await {
         Ok(pg) => {
-            let returned: Result<PgQueryResult, Error> = sqlx::query_as!(
-                Blog,
-                "DELETE FROM blog WHERE id = $1;",
-                id.id
-            )
-            .execute(&pg)
-            .await;
+            let returned: Result<PgQueryResult, Error> =
+                sqlx::query_as!(Blog, "DELETE FROM blog WHERE id = $1;", id.id)
+                    .execute(&pg)
+                    .await;
 
             match returned {
-                Ok(_) => {
-                    HttpResponse::NoContent()
-                        .status(StatusCode::NO_CONTENT)
-                        .content_type("application/json") 
-                        .finish()
-                },
+                Ok(_) => HttpResponse::NoContent()
+                    .status(StatusCode::NO_CONTENT)
+                    .content_type("application/json")
+                    .finish(),
 
-                Err(e) => handle_sql_error(e)
+                Err(e) => handle_sql_error(e),
             }
-        },
-
-        Err(e) => {
-            HttpResponse::InternalServerError()
-                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
-                .content_type("application/json") 
-                .body(e)
         }
+
+        Err(e) => HttpResponse::InternalServerError()
+            .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+            .content_type("application/json")
+            .body(e),
     }
 }
-

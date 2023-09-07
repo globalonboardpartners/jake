@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, sqlx::FromRow)]
 pub struct BlogCategory {
@@ -8,6 +8,10 @@ pub struct BlogCategory {
 
 impl std::fmt::Debug for BlogCategory {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "BlogCategory {{ id: {:?}, category: \"{}\" }}", self.id, self.category)
+        write!(
+            f,
+            "BlogCategory {{ id: {:?}, category: \"{}\" }}",
+            self.id, self.category
+        )
     }
 }

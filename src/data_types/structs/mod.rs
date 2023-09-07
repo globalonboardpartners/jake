@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
 
 pub mod blog_category;
@@ -20,13 +20,8 @@ pub mod continent;
 pub use self::continent::Continent;
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Return<T> {
-    pub data: T
-}
-
-#[derive(Serialize, Deserialize, Debug)]
 pub struct Id {
-    pub id: i32
+    pub id: i32,
 }
 
 impl std::fmt::Display for Id {
@@ -36,38 +31,8 @@ impl std::fmt::Display for Id {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub enum ColumnValue {
-    Integer(i32),
-    Float(f64),
-    Text(String),
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct UpdateColumn {
-    pub id: Option<i32>,
-    pub col_name: String,
-    pub col_value: ColumnValue,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
 pub struct Country {
     pub id: i32,
-    pub name: String,
-    pub slug: String,
-    pub description_long: String,
-    pub description_short: String,
-    pub image_link: String,
-    pub thumbnail_link: String,
-    pub special_offer_image_link: String,
-    pub video_link: String,
-    pub gallery: String,
-    pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct NewCountry {
     pub name: String,
     pub slug: String,
     pub description_long: String,
@@ -100,41 +65,8 @@ pub struct Region {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct NewRegion {
-    pub name: String,
-    pub slug: String,
-    pub description_long: String,
-    pub description_short: String,
-    pub image_link: String,
-    pub thumbnail_link: String,
-    pub special_offer_image_link: String,
-    pub video_link: String,
-    pub gallery: String,
-    pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
 pub struct City {
     pub id: i32,
-    pub name: String,
-    pub slug: String,
-    pub description_long: String,
-    pub description_short: String,
-    pub image_link: String,
-    pub thumbnail_link: String,
-    pub special_offer_image_link: String,
-    pub video_link: String,
-    pub gallery: String,
-    pub featured_city: f32,
-    pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct NewCity {
     pub name: String,
     pub slug: String,
     pub description_long: String,
@@ -179,64 +111,8 @@ pub struct PartnerVendor {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct NewPartnerVendor {
-    pub name: String,
-    pub slug: String,
-    pub description_short: String,
-    pub description_long: String,
-    pub video_link: String,
-    pub image_link: String,
-    pub image_link_2: String,
-    pub thumbnail_link: String,
-    pub gallery: Vec<String>,
-    pub featured_partner_vendor: f32,
-    pub continent: i32,
-    pub country: i32,
-    pub region: i32,
-    pub city: i32,
-    pub latitude: f32,
-    pub longitude: f32,
-    pub email: String,
-    pub phone: String,
-    pub address: String,
-    pub website_link: String,
-    pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
 pub struct Restaurant {
     pub id: i32,
-    pub name: String,
-    pub slug: String,
-    pub description_short: String,
-    pub description_long: String,
-    pub video_link: String,
-    pub image_link: String,
-    pub image_link_2: String,
-    pub thumbnail_link: String,
-    pub gallery: Vec<String>,
-    pub menu_gallery: Vec<String>,
-    pub featured_restaurant: f32,
-    pub partner_vendor: i32,
-    pub continent: i32,
-    pub country: i32,
-    pub region: i32,
-    pub city: i32,
-    pub latitude: f32,
-    pub longitude: f32,
-    pub email: String,
-    pub phone: String,
-    pub address: String,
-    pub website_link: String,
-    pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct NewRestaurant {
     pub name: String,
     pub slug: String,
     pub description_short: String,
@@ -294,34 +170,6 @@ pub struct Hotel {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct NewHotel {
-    pub name: String,
-    pub slug: String,
-    pub description_short: String,
-    pub description_long: String,
-    pub video_link: String,
-    pub image_link: String,
-    pub image_link_2: String,
-    pub thumbnail_link: String,
-    pub gallery: Vec<String>,
-    pub featured_hotel: f32,
-    pub partner_vendor: i32,
-    pub continent: i32,
-    pub country: i32,
-    pub region: i32,
-    pub city: i32,
-    pub latitude: f32,
-    pub longitude: f32,
-    pub email: String,
-    pub phone: String,
-    pub address: String,
-    pub website_link: String,
-    pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
 pub struct HotelRoom {
     pub id: i32,
     pub name: String,
@@ -339,52 +187,8 @@ pub struct HotelRoom {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct NewHotelRoom {
-    pub name: String,
-    pub hotel_id: i32,
-    pub description_short: String,
-    pub description_long: String,
-    pub video_link: String,
-    pub image_link: String,
-    pub image_link_2: String,
-    pub thumbnail_link: String,
-    pub gallery: Vec<String>,
-    pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
 pub struct Activity {
     pub id: i32,
-    pub name: String,
-    pub slug: String,
-    pub description_short: String,
-    pub description_long: String,
-    pub video_link: String,
-    pub image_link: String,
-    pub image_link_2: String,
-    pub thumbnail_link: String,
-    pub gallery: Vec<String>,
-    pub featured_activity: f32,
-    pub partner_vendor: i32,
-    pub continent: i32,
-    pub country: i32,
-    pub region: i32,
-    pub city: i32,
-    pub latitude: f32,
-    pub longitude: f32,
-    pub email: String,
-    pub phone: String,
-    pub address: String,
-    pub website_link: String,
-    pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct NewActivity {
     pub name: String,
     pub slug: String,
     pub description_short: String,
@@ -442,55 +246,8 @@ pub struct Event {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct NewEvent {
-    pub name: String,
-    pub slug: String,
-    pub description_short: String,
-    pub description_long: String,
-    pub video_link: String,
-    pub image_link: String,
-    pub image_link_2: String,
-    pub thumbnail_link: String,
-    pub gallery: Vec<String>,
-    pub featured_event: f32,
-    pub ticket_link: String,
-    pub partner_vendor: i32,
-    pub continent: i32,
-    pub country: i32,
-    pub region: i32,
-    pub city: i32,
-    pub latitude: f32,
-    pub longitude: f32,
-    pub email: String,
-    pub phone: String,
-    pub address: String,
-    pub website_link: String,
-    pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
 pub struct EventDetails {
     pub id: i32,
-    pub name: String,
-    pub slug: String,
-    pub event_date: SystemTime,
-    pub event_artist_slug: String,
-    pub venue_name: String,
-    pub event_time: SystemTime,
-    pub country: i32,
-    pub region: i32,
-    pub city: i32,
-    pub ticket_link: String,
-    pub gallery: Vec<String>,
-    pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct NewEventDetails {
     pub name: String,
     pub slug: String,
     pub event_date: SystemTime,

@@ -1,7 +1,7 @@
+use crate::data_types::types::ErrorMessage;
+use sqlx::Error;
 use sqlx::PgPool;
 use std::env;
-use sqlx::Error;
-use crate::data_types::types::ErrorMessage;
 
 pub async fn connect() -> Result<PgPool, ErrorMessage> {
     dotenv::dotenv().ok();
@@ -13,8 +13,7 @@ pub async fn connect() -> Result<PgPool, ErrorMessage> {
         Err(e) => match e {
             Error::Configuration(e) => Err(format!("Configuration error: {}", e)),
             Error::Database(e) => Err(format!("Database error: {}", e)),
-            _ => Err(format!("Unknown Error: {}", e))
-        }
+            _ => Err(format!("Unknown Error: {}", e)),
+        },
     }
 }
-

@@ -1,10 +1,10 @@
 use actix_web::dev::HttpServiceFactory;
 
-pub mod employee;
 pub mod blog;
+pub mod blog_category;
+pub mod employee;
 pub mod job_listing;
 pub mod product_feature;
-pub mod blog_category;
 
 pub fn employee() -> impl HttpServiceFactory {
     (
@@ -13,7 +13,6 @@ pub fn employee() -> impl HttpServiceFactory {
         employee::delete_employee,
         employee::create_employee,
         employee::update_employee,
-
     )
 }
 
