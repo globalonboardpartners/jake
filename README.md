@@ -24,6 +24,7 @@ The purpose of this project is to provide a good 'ole reliable web service that 
 5. if you would like to look at the GUI for PostgreSQL (PgAdmin4), then you can go here: `http://localhost:16543`. The username is `test@test.com` and the password is `test`
   i. to add the PostgreSQL server in PgAdmin4, after logging in click on "Add New Server". On the 'General' tab, name the server anything you would like. Next, select the 'Connection' tab. In place of the 'Host name/address', run this command: `ifconfig | grep inet`, and input one of the output ip addresses. For the 'port', input `5440`. For 'Maintenance database', input `root`. For 'Username', input `root`. For 'Password', input `root`. Finally, if everything has been input correctly, you should be able to hit the save button on the modal and you should be connected.
 6. In the `init.sql`, you should see various SQL statements. Feel free to poke around at the table definitions to learn more about the foundations of this web service.
+7. Make sure you take note of the api_key insert statement in `init.sql`. Feel free to change it or keep it the same. **MAKE SURE TO ADD api_key HEADER TO EACH POSTMAN REQUEST!**
 
 ## About Jake the Dog
 wiki: https://adventuretime.fandom.com/wiki/Jake

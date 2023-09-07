@@ -11,6 +11,8 @@ CREATE TABLE api_key (
     name TEXT NOT NULL UNIQUE
 );
 
+INSERT INTO api_key (key, name) VALUES ('test', 'your_name_here');
+
 -- Create Team Members Table
 CREATE TABLE employee (
   id SERIAL PRIMARY KEY,
