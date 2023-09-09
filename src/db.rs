@@ -16,7 +16,7 @@ pub async fn connect(req: HttpRequest) -> Result<PgPool, ErrorMessage> {
     let headers: &HeaderMap = req.headers();
     let api_key = headers
         .get(header::AUTHORIZATION)
-        .ok_or(ErrorMessage::new("Header not found"))?
+        .ok_or(ErrorMessage::new("Missing API Key"))?
         .to_str()
         .map_err(|_| ErrorMessage::new("Invalid format"))?;
 
