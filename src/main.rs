@@ -1,6 +1,7 @@
 use actix_web::{App, HttpServer};
 use std::io::Result;
 use actix_cors::Cors;
+use std::env;
 
 pub mod data_types;
 pub mod db;
@@ -10,8 +11,15 @@ pub mod utils;
 #[tokio::main]
 async fn main() -> Result<()> {
     HttpServer::new(|| {
+        dotenv::dotenv().ok();
+        let mut allowed_origin = env::var("FRONTEND_URL").expect("FRONTEND_URL is not set");
+
+        if cfg!(debug_assertions) {
+            allowed_origin = env::var("DEV_FRONTEND_URL").expect("DEV_FRONTEND_URL is not set");
+        }
+
         let cors = Cors::permissive()
-            .allowed_origin("http://localhost:3000")
+            .allowed_origin(allowed_origin.as_str())
             .allow_any_method()
             .allow_any_header();
         App::new()
