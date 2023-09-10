@@ -60,6 +60,34 @@ async fn create_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
     }
 }
 
+#[get("/blog/featured")]
+async fn get_featured_blogs(req: HttpRequest) -> HttpResponse {
+    match db::connect(req).await {
+        Ok(pg) => {
+            let returned: Result<Vec<Blog>, Error> =
+                sqlx::query_as!(Blog, "SELECT * from blog WHERE featured = TRUE LIMIT 2;")
+                    .fetch_all(&pg)
+                    .await;
+
+            match returned {
+                Ok(record) => HttpResponse::Ok()
+                    .status(StatusCode::OK)
+                    .content_type("application/json")
+                    .body(
+                        serde_json::to_string(&Json(record))
+                            .unwrap_or_else(|e| format!("JSON serialization error: {}", e)),
+                    ),
+
+                Err(e) => handle_sql_error(e),
+            }
+        }
+        Err(e) => HttpResponse::InternalServerError()
+            .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+            .content_type("application/json")
+            .body(e.message),
+    }
+}
+
 #[get("/blog")]
 async fn get_blog_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpResponse {
     if id.id.is_some() {
