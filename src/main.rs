@@ -1,5 +1,5 @@
 use actix_cors::Cors;
-use actix_web::{App, HttpServer};
+use actix_web::{web, App, HttpServer};
 use std::env;
 use std::io::Result;
 
@@ -22,14 +22,15 @@ async fn main() -> Result<()> {
             .allowed_origin(allowed_origin.as_str())
             .allow_any_method()
             .allow_any_header();
-        App::new()
-            .wrap(cors)
-            .service(routes::employee())
-            .service(routes::client())
-            .service(routes::job_listing())
-            .service(routes::blog())
-            .service(routes::blog_category())
-            .service(routes::product_feature())
+        App::new().wrap(cors).service(
+            web::scope("/api/v1")
+                .service(routes::employee())
+                .service(routes::client())
+                .service(routes::job_listing())
+                .service(routes::blog())
+                .service(routes::blog_category())
+                .service(routes::product_feature()),
+        )
     })
     .bind(("127.0.0.1", 8080))?
     .run()

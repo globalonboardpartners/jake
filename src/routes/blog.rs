@@ -14,24 +14,39 @@ async fn create_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
         Ok(pg) => {
             let returned: Result<Blog, Error> = sqlx::query_as!(
                 Blog,
-                "
-                    INSERT INTO blog
-                        (
-                            title,
-                            slug,
-                            category_id,
-                            content,
-                            image_link,
-                            thumbnail_link,
-                            featured,
-                            publish_date
+                r#"
+                    WITH new_row AS (
+                        INSERT INTO blog
+                            (
+                                title,
+                                slug,
+                                category_id,
+                                content,
+                                image_link,
+                                thumbnail_link,
+                                featured,
+                                publish_date
+                            )
+                        VALUES (
+                            $1,
+                            $2,
+                            (SELECT id FROM blog_category WHERE category = $3),
+                            $4,
+                            $5,
+                            $6,
+                            $7,
+                            $8
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-                    RETURNING *;
-                ",
+                        RETURNING *
+                    )
+                    SELECT
+                        new_row.*,
+                        (SELECT category FROM blog_category WHERE id = new_row.category_id) AS "category!"
+                    FROM new_row
+                "#,
                 blog.title,
                 blog.slug,
-                blog.category_id,
+                blog.category,
                 blog.content,
                 blog.image_link,
                 blog.thumbnail_link,
@@ -64,10 +79,17 @@ async fn create_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
 async fn get_featured_blogs(req: HttpRequest) -> HttpResponse {
     match db::connect(req).await {
         Ok(pg) => {
-            let returned: Result<Vec<Blog>, Error> =
-                sqlx::query_as!(Blog, "SELECT * from blog WHERE featured = TRUE LIMIT 2;")
-                    .fetch_all(&pg)
-                    .await;
+            let returned: Result<Vec<Blog>, Error> = sqlx::query_as!(
+                Blog,
+                r#"
+                    SELECT *, (SELECT category FROM blog_category WHERE id = category_id)
+                    FROM blog
+                    WHERE featured = TRUE
+                    LIMIT 2;
+                "#
+            )
+            .fetch_all(&pg)
+            .await;
 
             match returned {
                 Ok(record) => HttpResponse::Ok()
@@ -93,10 +115,18 @@ async fn get_blog_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpRe
     if id.id.is_some() {
         match db::connect(req).await {
             Ok(pg) => {
-                let returned: Result<Blog, Error> =
-                    sqlx::query_as!(Blog, "SELECT * FROM blog WHERE id = $1;", id.id)
-                        .fetch_one(&pg)
-                        .await;
+                let returned: Result<Blog, Error> = sqlx::query_as!(
+                    Blog,
+                    "
+                        SELECT *, (SELECT category FROM blog_category WHERE id = category_id)
+                        FROM blog
+                        WHERE id = $1
+                        LIMIT 1;
+                    ",
+                    id.id
+                )
+                .fetch_one(&pg)
+                .await;
 
                 match returned {
                     Ok(record) => HttpResponse::Ok()
@@ -118,10 +148,16 @@ async fn get_blog_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpRe
     } else {
         match db::connect(req).await {
             Ok(pg) => {
-                let returned: Result<Vec<Blog>, Error> =
-                    sqlx::query_as!(Blog, "SELECT * from blog;")
-                        .fetch_all(&pg)
-                        .await;
+                let returned: Result<Vec<Blog>, Error> = sqlx::query_as!(
+                    Blog,
+                    "
+                        SELECT
+                            *, (SELECT category FROM blog_category WHERE id = category_id)
+                        FROM blog;
+                    "
+                )
+                .fetch_all(&pg)
+                .await;
 
                 match returned {
                     Ok(record) => HttpResponse::Ok()
@@ -149,26 +185,32 @@ async fn update_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
         Ok(pg) => {
             let returned: Result<Blog, Error> = sqlx::query_as!(
                 Blog,
-                "
-                    INSERT INTO blog (id, title, slug, category_id, content, image_link, thumbnail_link, featured, publish_date)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-                    ON CONFLICT (id)
-                    DO UPDATE SET 
-                        id = EXCLUDED.id,
-                        title = EXCLUDED.title,
-                        slug = EXCLUDED.slug,
-                        category_id = EXCLUDED.category_id,
-                        content = EXCLUDED.content,
-                        image_link = EXCLUDED.image_link,
-                        thumbnail_link = EXCLUDED.thumbnail_link,
-                        featured = EXCLUDED.featured,
-                        publish_date = EXCLUDED.publish_date
-                    RETURNING *;
-                ",
+                r#"
+                    WITH new_row AS (
+                        INSERT INTO blog (id, title, slug, category_id, content, image_link, thumbnail_link, featured, publish_date)
+                        VALUES ($1, $2, $3, (SELECT id FROM blog_category WHERE category = $4), $5, $6, $7, $8, $9)
+                        ON CONFLICT (id)
+                        DO UPDATE SET
+                            id = EXCLUDED.id,
+                            title = EXCLUDED.title,
+                            slug = EXCLUDED.slug,
+                            category_id = EXCLUDED.category_id,
+                            content = EXCLUDED.content,
+                            image_link = EXCLUDED.image_link,
+                            thumbnail_link = EXCLUDED.thumbnail_link,
+                            featured = EXCLUDED.featured,
+                            publish_date = EXCLUDED.publish_date
+                        RETURNING *
+                    )
+                    SELECT
+                        new_row.*,
+                        (SELECT category FROM blog_category WHERE id = new_row.category_id) AS "category!"
+                    FROM new_row
+                "#,
                 blog.id,
                 blog.title,
                 blog.slug,
-                blog.category_id,
+                blog.category,
                 blog.content,
                 blog.image_link,
                 blog.thumbnail_link,
