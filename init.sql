@@ -8,10 +8,11 @@
 CREATE TABLE api_key (
     id SERIAL PRIMARY KEY,
     key TEXT NOT NULL UNIQUE,
+    security_level SMALLINT NOT NULL,
     name TEXT NOT NULL UNIQUE
 );
 
-INSERT INTO api_key (key, name) VALUES ('test', 'your_name_here');
+INSERT INTO api_key (key, security_level, name) VALUES ('e8eafe91-781e-4d5b-a615-807540518b24', 1, 'admin');
 
 -- Create Team Members Table
 CREATE TABLE employee (
