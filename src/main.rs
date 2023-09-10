@@ -1,7 +1,7 @@
-use actix_web::{App, HttpServer};
-use std::io::Result;
 use actix_cors::Cors;
+use actix_web::{App, HttpServer};
 use std::env;
+use std::io::Result;
 
 pub mod data_types;
 pub mod db;

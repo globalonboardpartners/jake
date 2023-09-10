@@ -30,8 +30,7 @@ pub fn employee() -> impl HttpServiceFactory {
 pub fn blog() -> impl HttpServiceFactory {
     (
         blog::create_blog,
-        blog::get_all_blogs,
-        blog::get_blog_by_id,
+        blog::get_blog_by_id_or_all,
         blog::update_blog,
         blog::delete_blog,
     )

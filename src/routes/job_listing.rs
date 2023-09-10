@@ -3,7 +3,7 @@ use crate::db;
 use crate::utils::handle_sql_error;
 use actix_web::http::StatusCode;
 use actix_web::web::Json;
-use actix_web::{delete, get, http, post, put, HttpResponse, HttpRequest};
+use actix_web::{delete, get, http, post, put, HttpRequest, HttpResponse};
 use sqlx::postgres::PgQueryResult;
 use sqlx::types::chrono::Utc;
 use sqlx::Error;

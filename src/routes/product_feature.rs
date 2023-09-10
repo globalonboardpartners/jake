@@ -3,12 +3,15 @@ use crate::db;
 use crate::utils::handle_sql_error;
 use actix_web::http::StatusCode;
 use actix_web::web::Json;
-use actix_web::{delete, get, http, post, put, HttpResponse, HttpRequest};
+use actix_web::{delete, get, http, post, put, HttpRequest, HttpResponse};
 use sqlx::postgres::PgQueryResult;
 use sqlx::Error;
 
 #[post("/product_feature")]
-async fn create_product_feature(req: HttpRequest, product_feature: Json<ProductFeature>) -> HttpResponse {
+async fn create_product_feature(
+    req: HttpRequest,
+    product_feature: Json<ProductFeature>,
+) -> HttpResponse {
     match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<ProductFeature, Error> = sqlx::query_as!(
@@ -125,7 +128,10 @@ async fn get_product_feature_by_id(req: HttpRequest, id: Json<Id>) -> HttpRespon
 }
 
 #[put("/product_feature")]
-async fn update_product_feature(req: HttpRequest, product_feature: Json<ProductFeature>) -> HttpResponse {
+async fn update_product_feature(
+    req: HttpRequest,
+    product_feature: Json<ProductFeature>,
+) -> HttpResponse {
     match db::connect(req).await {
         Ok(pg) => {
             let returned: Result<ProductFeature, Error> = sqlx::query_as!(
