@@ -9,8 +9,7 @@ pub mod product_feature;
 
 pub fn client() -> impl HttpServiceFactory {
     (
-        client::get_all_clients,
-        client::get_client_by_id,
+        client::get_client_by_id_or_all,
         client::delete_client,
         client::create_client,
         client::update_client,
