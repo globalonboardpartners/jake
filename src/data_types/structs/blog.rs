@@ -11,4 +11,5 @@ pub struct Blog {
     pub thumbnail_link: String,
     pub featured: bool,
     pub created: Option<String>,
+    pub edited: Option<String>,
 }

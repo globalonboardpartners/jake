@@ -14,4 +14,6 @@ pub struct ProductFeature {
     pub quote_author: String,
     pub quote_author_position: String,
     pub order_number: i32,
+    pub created: Option<String>,
+    pub edited: Option<String>,
 }

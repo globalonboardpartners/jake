@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use std::time::SystemTime;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Continent {
@@ -14,6 +13,6 @@ pub struct Continent {
     pub video_link: String,
     pub gallery: Vec<String>,
     pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
+    pub created: Option<String>,
+    pub edited: Option<String>,
 }

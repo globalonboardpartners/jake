@@ -5,7 +5,6 @@ use actix_web::http::StatusCode;
 use actix_web::web::Json;
 use actix_web::{delete, get, http, post, put, web::Query, HttpRequest, HttpResponse};
 use sqlx::postgres::PgQueryResult;
-use sqlx::types::chrono::Utc;
 use sqlx::Error;
 
 #[post("/job_listing")]
@@ -21,18 +20,32 @@ async fn create_job_listing(req: HttpRequest, job_listing: Json<JobListing>) -> 
                             slug,
                             description,
                             location,
-                            employment_basis,
-                            publish_date
+                            employment_basis
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6)
-                    RETURNING *;
+                    VALUES ($1, $2, $3, $4, $5)
+                    RETURNING
+                        id,
+                        title,
+                        slug,
+                        description,
+                        location,
+                        employment_basis,
+                        (
+	                        trim(to_char(created, 'DD')) || ' ' ||
+	                        trim(to_char(created, 'Month')) || ' ' ||
+	                        trim(to_char(created, 'YYYY'))
+                        ) as created,
+                        (
+	                        trim(to_char(edited, 'DD')) || ' ' ||
+	                        trim(to_char(edited, 'Month')) || ' ' ||
+	                        trim(to_char(edited, 'YYYY'))
+                        ) as edited
                 ",
                 job_listing.title,
                 job_listing.slug,
                 job_listing.description,
                 job_listing.location,
                 job_listing.employment_basis,
-                Utc::now().naive_utc(),
             )
             .fetch_one(&pg)
             .await;
@@ -64,7 +77,23 @@ async fn get_job_listing_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) ->
                 let returned: Result<JobListing, Error> = sqlx::query_as!(
                     JobListing,
                     "
-                        SELECT *
+                        SELECT
+                            id,
+                            title,
+                            slug,
+                            description,
+                            location,
+                            employment_basis,
+                            (
+	                            trim(to_char(created, 'DD')) || ' ' ||
+	                            trim(to_char(created, 'Month')) || ' ' ||
+	                            trim(to_char(created, 'YYYY'))
+                            ) as created,
+                            (
+	                            trim(to_char(edited, 'DD')) || ' ' ||
+	                            trim(to_char(edited, 'Month')) || ' ' ||
+	                            trim(to_char(edited, 'YYYY'))
+                            ) as edited
                         FROM job_listing
                         WHERE id = $1
                         LIMIT 1;
@@ -96,7 +125,24 @@ async fn get_job_listing_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) ->
             Ok(pg) => {
                 let returned: Result<Vec<JobListing>, Error> = sqlx::query_as!(
                     JobListing,
-                    "SELECT * FROM job_listing;"
+                    "SELECT
+                        id,
+                        title,
+                        slug,
+                        description,
+                        location,
+                        employment_basis,
+                        (
+	                        trim(to_char(created, 'DD')) || ' ' ||
+	                        trim(to_char(created, 'Month')) || ' ' ||
+	                        trim(to_char(created, 'YYYY'))
+                        ) as created,
+                        (
+	                        trim(to_char(edited, 'DD')) || ' ' ||
+	                        trim(to_char(edited, 'Month')) || ' ' ||
+	                        trim(to_char(edited, 'YYYY'))
+                        ) as edited
+                    FROM job_listing;"
                 )
                 .fetch_all(&pg)
                 .await;
@@ -135,10 +181,9 @@ async fn update_job_listing(req: HttpRequest, job_listing: Json<JobListing>) -> 
                             slug,
                             description,
                             location,
-                            employment_basis,
-                            publish_date
+                            employment_basis
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7)
+                    VALUES ($1, $2, $3, $4, $5, $6)
                     ON CONFLICT (id)
                     DO UPDATE SET 
                         id = EXCLUDED.id,
@@ -146,17 +191,31 @@ async fn update_job_listing(req: HttpRequest, job_listing: Json<JobListing>) -> 
                         slug = EXCLUDED.slug,
                         description = EXCLUDED.description,
                         location = EXCLUDED.location,
-                        employment_basis = EXCLUDED.employment_basis,
-                        publish_date = EXCLUDED.publish_date
-                    RETURNING *;
+                        employment_basis = EXCLUDED.employment_basis
+                    RETURNING
+                        id,
+                        title,
+                        slug,
+                        description,
+                        location,
+                        employment_basis,
+                        (
+	                        trim(to_char(created, 'DD')) || ' ' ||
+	                        trim(to_char(created, 'Month')) || ' ' ||
+	                        trim(to_char(created, 'YYYY'))
+                        ) as created,
+                        (
+	                        trim(to_char(edited, 'DD')) || ' ' ||
+	                        trim(to_char(edited, 'Month')) || ' ' ||
+	                        trim(to_char(edited, 'YYYY'))
+                        ) as edited
                 ",
                 job_listing.id,
                 job_listing.title,
                 job_listing.slug,
                 job_listing.description,
                 job_listing.location,
-                job_listing.employment_basis,
-                Utc::now().naive_utc(),
+                job_listing.employment_basis
             )
             .fetch_one(&pg)
             .await;

@@ -12,4 +12,6 @@ pub struct Employee {
     pub twitter_link: Option<String>,
     pub linkedin_link: Option<String>,
     pub email: Option<String>,
+    pub created: Option<String>,
+    pub edited: Option<String>,
 }

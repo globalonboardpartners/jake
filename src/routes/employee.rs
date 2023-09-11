@@ -26,7 +26,26 @@ async fn create_employee(req: HttpRequest, employee: Json<Employee>) -> HttpResp
                             email
                         )
                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-                    RETURNING *;
+                    RETURNING
+                        id,
+                        name,
+                        slug,
+                        position,
+                        bio,
+                        image_url,
+                        twitter_link,
+                        linkedin_link,
+                        email,
+                        (
+	                        trim(to_char(created, 'DD')) || ' ' ||
+	                        trim(to_char(created, 'Month')) || ' ' ||
+	                        trim(to_char(created, 'YYYY'))
+                        ) as created,
+                        (
+	                        trim(to_char(edited, 'DD')) || ' ' ||
+	                        trim(to_char(edited, 'Month')) || ' ' ||
+	                        trim(to_char(edited, 'YYYY'))
+                        ) as edited
                 ",
                 employee.name,
                 employee.slug,
@@ -67,7 +86,26 @@ async fn get_employee_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> Ht
                 let returned: Result<Employee, Error> = sqlx::query_as!(
                     Employee,
                     "
-                        SELECT *
+                        SELECT
+                            id,
+                            name,
+                            slug,
+                            position,
+                            bio,
+                            image_url,
+                            twitter_link,
+                            linkedin_link,
+                            email,
+                            (
+	                            trim(to_char(created, 'DD')) || ' ' ||
+	                            trim(to_char(created, 'Month')) || ' ' ||
+	                            trim(to_char(created, 'YYYY'))
+                            ) as created,
+                            (
+	                            trim(to_char(edited, 'DD')) || ' ' ||
+	                            trim(to_char(edited, 'Month')) || ' ' ||
+	                            trim(to_char(edited, 'YYYY'))
+                            ) as edited
                         FROM employee
                         WHERE id = $1
                         LIMIT 1;
@@ -99,7 +137,29 @@ async fn get_employee_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> Ht
             Ok(pg) => {
                 let returned: Result<Vec<Employee>, Error> = sqlx::query_as!(
                     Employee,
-                    "SELECT * FROM employee;"
+                    "
+                        SELECT
+                            id,
+                            name,
+                            slug,
+                            position,
+                            bio,
+                            image_url,
+                            twitter_link,
+                            linkedin_link,
+                            email,
+                            (
+	                            trim(to_char(created, 'DD')) || ' ' ||
+	                            trim(to_char(created, 'Month')) || ' ' ||
+	                            trim(to_char(created, 'YYYY'))
+                            ) as created,
+                            (
+	                            trim(to_char(edited, 'DD')) || ' ' ||
+	                            trim(to_char(edited, 'Month')) || ' ' ||
+	                            trim(to_char(edited, 'YYYY'))
+                            ) as edited
+                        FROM employee
+                    "
                 )
                 .fetch_all(&pg)
                 .await;
@@ -155,7 +215,26 @@ async fn update_employee(req: HttpRequest, employee: Json<Employee>) -> HttpResp
                         twitter_link = EXCLUDED.twitter_link,
                         linkedin_link = EXCLUDED.linkedin_link,
                         email = EXCLUDED.email
-                    RETURNING *;
+                    RETURNING
+                        id,
+                        name,
+                        slug,
+                        position,
+                        bio,
+                        image_url,
+                        twitter_link,
+                        linkedin_link,
+                        email,
+                        (
+	                        trim(to_char(created, 'DD')) || ' ' ||
+	                        trim(to_char(created, 'Month')) || ' ' ||
+	                        trim(to_char(created, 'YYYY'))
+                        ) as created,
+                        (
+	                        trim(to_char(edited, 'DD')) || ' ' ||
+	                        trim(to_char(edited, 'Month')) || ' ' ||
+	                        trim(to_char(edited, 'YYYY'))
+                        ) as edited
                 ",
                 employee.id,
                 employee.name,

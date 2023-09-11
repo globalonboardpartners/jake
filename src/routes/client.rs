@@ -30,11 +30,36 @@ async fn create_client(req: HttpRequest, client: Json<Client>) -> HttpResponse {
                             industry,
                             website_link,
                             features_used,
-                            featured,
-                            publish_date
+                            featured
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
-                    RETURNING *;
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+                    RETURNING
+                        id,
+                        name,
+                        slug,
+                        title,
+                        description_short,
+                        description_long,
+                        logo,
+                        image_link,
+                        quote,
+                        quote_author,
+                        quote_author_position,
+                        number_of_employees,
+                        industry,
+                        website_link,
+                        features_used,
+                        featured,
+                        (
+	                        trim(to_char(created, 'DD')) || ' ' ||
+	                        trim(to_char(created, 'Month')) || ' ' ||
+	                        trim(to_char(created, 'YYYY'))
+                        ) as created,
+                        (
+	                        trim(to_char(edited, 'DD')) || ' ' ||
+	                        trim(to_char(edited, 'Month')) || ' ' ||
+	                        trim(to_char(edited, 'YYYY'))
+                        ) as edited
                 ",
                 client.name,
                 client.slug,
@@ -51,7 +76,6 @@ async fn create_client(req: HttpRequest, client: Json<Client>) -> HttpResponse {
                 client.website_link,
                 client.features_used,
                 client.featured,
-                client.publish_date,
             )
             .fetch_one(&pg)
             .await;
@@ -83,7 +107,33 @@ async fn get_client_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> Http
                 let returned: Result<Client, Error> = sqlx::query_as!(
                     Client,
                     "
-                        SELECT *
+                        SELECT
+                            id,
+                            name,
+                            slug,
+                            title,
+                            description_short,
+                            description_long,
+                            logo,
+                            image_link,
+                            quote,
+                            quote_author,
+                            quote_author_position,
+                            number_of_employees,
+                            industry,
+                            website_link,
+                            features_used,
+                            featured,
+                            (
+	                            trim(to_char(created, 'DD')) || ' ' ||
+	                            trim(to_char(created, 'Month')) || ' ' ||
+	                            trim(to_char(created, 'YYYY'))
+                            ) as created,
+                            (
+	                            trim(to_char(edited, 'DD')) || ' ' ||
+	                            trim(to_char(edited, 'Month')) || ' ' ||
+	                            trim(to_char(edited, 'YYYY'))
+                            ) as edited
                         FROM client
                         WHERE id = $1
                         LIMIT 1;
@@ -115,7 +165,36 @@ async fn get_client_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> Http
             Ok(pg) => {
                 let returned: Result<Vec<Client>, Error> = sqlx::query_as!(
                     Client,
-                    "SELECT * FROM client;"
+                    "
+                        SELECT
+                            id,
+                            name,
+                            slug,
+                            title,
+                            description_short,
+                            description_long,
+                            logo,
+                            image_link,
+                            quote,
+                            quote_author,
+                            quote_author_position,
+                            number_of_employees,
+                            industry,
+                            website_link,
+                            features_used,
+                            featured,
+                            (
+	                            trim(to_char(created, 'DD')) || ' ' ||
+	                            trim(to_char(created, 'Month')) || ' ' ||
+	                            trim(to_char(created, 'YYYY'))
+                            ) as created,
+                            (
+	                            trim(to_char(edited, 'DD')) || ' ' ||
+	                            trim(to_char(edited, 'Month')) || ' ' ||
+	                            trim(to_char(edited, 'YYYY'))
+                            ) as edited
+                        FROM client
+                    "
                 )
                 .fetch_all(&pg)
                 .await;
@@ -164,10 +243,9 @@ async fn update_client(req: HttpRequest, client: Json<Client>) -> HttpResponse {
                             industry,
                             website_link,
                             features_used,
-                            featured,
-                            publish_date
+                            featured
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
                     ON CONFLICT (id)
                     DO UPDATE SET 
                         id = EXCLUDED.id,
@@ -185,9 +263,34 @@ async fn update_client(req: HttpRequest, client: Json<Client>) -> HttpResponse {
                         industry = EXCLUDED.industry,
                         website_link = EXCLUDED.website_link,
                         features_used = EXCLUDED.features_used,
-                        featured = EXCLUDED.featured,
-                        publish_date = EXCLUDED.publish_date
-                    RETURNING *;
+                        featured = EXCLUDED.featured
+                    RETURNING
+                        id,
+                        name,
+                        slug,
+                        title,
+                        description_short,
+                        description_long,
+                        logo,
+                        image_link,
+                        quote,
+                        quote_author,
+                        quote_author_position,
+                        number_of_employees,
+                        industry,
+                        website_link,
+                        features_used,
+                        featured,
+                        (
+	                        trim(to_char(created, 'DD')) || ' ' ||
+	                        trim(to_char(created, 'Month')) || ' ' ||
+	                        trim(to_char(created, 'YYYY'))
+                        ) as created,
+                        (
+	                        trim(to_char(edited, 'DD')) || ' ' ||
+	                        trim(to_char(edited, 'Month')) || ' ' ||
+	                        trim(to_char(edited, 'YYYY'))
+                        ) as edited
                 ",
                 client.id,
                 client.name,
@@ -205,7 +308,6 @@ async fn update_client(req: HttpRequest, client: Json<Client>) -> HttpResponse {
                 client.website_link,
                 client.features_used,
                 client.featured,
-                client.publish_date,
             )
             .fetch_one(&pg)
             .await;

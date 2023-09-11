@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use sqlx::types::chrono::NaiveDateTime;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Client {
@@ -19,5 +18,6 @@ pub struct Client {
     pub website_link: Option<String>,
     pub features_used: Option<String>,
     pub featured: Option<bool>,
-    pub publish_date: Option<NaiveDateTime>,
+    pub created: Option<String>,
+    pub edited: Option<String>,
 }

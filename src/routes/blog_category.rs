@@ -20,7 +20,20 @@ async fn create_blog_category(req: HttpRequest, blog_category: Json<BlogCategory
                             slug
                         )
                     VALUES ($1, $2)
-                    RETURNING *;
+                    RETURNING
+                        id,
+                        category,
+                        slug,
+                        (
+	                        trim(to_char(created, 'DD')) || ' ' ||
+	                        trim(to_char(created, 'Month')) || ' ' ||
+	                        trim(to_char(created, 'YYYY'))
+                        ) as created,
+                        (
+	                        trim(to_char(edited, 'DD')) || ' ' ||
+	                        trim(to_char(edited, 'Month')) || ' ' ||
+	                        trim(to_char(edited, 'YYYY'))
+                        ) as edited
                 ",
                 blog_category.category,
                 blog_category.slug
@@ -55,7 +68,20 @@ async fn get_blog_category_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) 
                 let returned: Result<BlogCategory, Error> = sqlx::query_as!(
                     BlogCategory,
                     "
-                        SELECT *
+                        SELECT
+                            id,
+                            category,
+                            slug,
+                            (
+	                            trim(to_char(created, 'DD')) || ' ' ||
+	                            trim(to_char(created, 'Month')) || ' ' ||
+	                            trim(to_char(created, 'YYYY'))
+                            ) as created,
+                            (
+	                            trim(to_char(edited, 'DD')) || ' ' ||
+	                            trim(to_char(edited, 'Month')) || ' ' ||
+	                            trim(to_char(edited, 'YYYY'))
+                            ) as edited
                         FROM blog_category
                         WHERE id = $1
                         LIMIT 1;
@@ -87,7 +113,23 @@ async fn get_blog_category_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) 
             Ok(pg) => {
                 let returned: Result<Vec<BlogCategory>, Error> = sqlx::query_as!(
                     BlogCategory,
-                    "SELECT * FROM blog_category;"
+                    "
+                        SELECT
+                            id,
+                            category,
+                            slug,
+                            (
+	                            trim(to_char(created, 'DD')) || ' ' ||
+	                            trim(to_char(created, 'Month')) || ' ' ||
+	                            trim(to_char(created, 'YYYY'))
+                            ) as created,
+                            (
+	                            trim(to_char(edited, 'DD')) || ' ' ||
+	                            trim(to_char(edited, 'Month')) || ' ' ||
+	                            trim(to_char(edited, 'YYYY'))
+                            ) as edited
+                        FROM blog_category
+                    "
                 )
                 .fetch_all(&pg)
                 .await;
@@ -129,7 +171,20 @@ async fn update_blog_category(req: HttpRequest, blog_category: Json<BlogCategory
                     ON CONFLICT (id)
                     DO UPDATE SET 
                     id = EXCLUDED.id, category = EXCLUDED.category, slug = EXCLUDED.slug
-                    RETURNING *;
+                    RETURNING
+                        id,
+                        category,
+                        slug,
+                        (
+	                        trim(to_char(created, 'DD')) || ' ' ||
+	                        trim(to_char(created, 'Month')) || ' ' ||
+	                        trim(to_char(created, 'YYYY'))
+                        ) as created,
+                        (
+	                        trim(to_char(edited, 'DD')) || ' ' ||
+	                        trim(to_char(edited, 'Month')) || ' ' ||
+	                        trim(to_char(edited, 'YYYY'))
+                        ) as edited
                 ",
                 blog_category.id,
                 blog_category.category,

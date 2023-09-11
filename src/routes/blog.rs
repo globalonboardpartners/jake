@@ -5,7 +5,6 @@ use actix_web::http::StatusCode;
 use actix_web::web::Json;
 use actix_web::{delete, get, http, post, put, web::Query, HttpRequest, HttpResponse};
 use sqlx::postgres::PgQueryResult;
-use sqlx::types::chrono::Utc;
 use sqlx::Error;
 
 #[post("/blog")]
@@ -24,8 +23,7 @@ async fn create_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
                                 content,
                                 image_link,
                                 thumbnail_link,
-                                featured,
-                                created
+                                featured
                             )
                         VALUES (
                             $1,
@@ -34,8 +32,7 @@ async fn create_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
                             $4,
                             $5,
                             $6,
-                            $7,
-                            $8
+                            $7
                         )
                         RETURNING
                             id,
@@ -50,7 +47,12 @@ async fn create_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
 	                            trim(to_char(created, 'YYYY'))
-                            ) as created
+                            ) as created,
+                            (
+	                            trim(to_char(edited, 'DD')) || ' ' ||
+	                            trim(to_char(edited, 'Month')) || ' ' ||
+	                            trim(to_char(edited, 'YYYY'))
+                            ) as edited
                     )
                     SELECT
                         new_row.id,
@@ -61,6 +63,7 @@ async fn create_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
                         new_row.thumbnail_link,
                         new_row.featured,
                         new_row.created,
+                        new_row.edited,
                         (SELECT category FROM blog_category WHERE id = new_row.category_id) AS "category!"
                     FROM new_row
                 "#,
@@ -70,8 +73,7 @@ async fn create_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
                 blog.content,
                 blog.image_link,
                 blog.thumbnail_link,
-                blog.featured,
-                Utc::now().naive_utc(),
+                blog.featured
             )
             .fetch_one(&pg)
             .await;
@@ -115,6 +117,11 @@ async fn get_featured_blogs(req: HttpRequest) -> HttpResponse {
 	                        trim(to_char(created, 'Month')) || ' ' ||
 	                        trim(to_char(created, 'YYYY'))
                         ) as created,
+                        (
+	                        trim(to_char(edited, 'DD')) || ' ' ||
+	                        trim(to_char(edited, 'Month')) || ' ' ||
+	                        trim(to_char(edited, 'YYYY'))
+                        ) as edited,
                         (SELECT category FROM blog_category WHERE id = category_id) AS "category!"
                     FROM blog
                     WHERE featured = TRUE
@@ -164,6 +171,11 @@ async fn get_blog_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpRe
 	                            trim(to_char(created, 'Month')) || ' ' ||
 	                            trim(to_char(created, 'YYYY'))
                             ) as created,
+                            (
+	                            trim(to_char(edited, 'DD')) || ' ' ||
+	                            trim(to_char(edited, 'Month')) || ' ' ||
+	                            trim(to_char(edited, 'YYYY'))
+                            ) as edited,
                             (SELECT category FROM blog_category WHERE id = category_id) AS "category!"
                         FROM blog
                         WHERE id = $1
@@ -210,6 +222,11 @@ async fn get_blog_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpRe
 	                            trim(to_char(created, 'Month')) || ' ' ||
 	                            trim(to_char(created, 'YYYY'))
                             ) as created,
+                            (
+	                            trim(to_char(edited, 'DD')) || ' ' ||
+	                            trim(to_char(edited, 'Month')) || ' ' ||
+	                            trim(to_char(edited, 'YYYY'))
+                            ) as edited,
                             (SELECT category FROM blog_category WHERE id = category_id) AS "category!"
                         FROM blog;
                     "#,
@@ -273,7 +290,12 @@ async fn update_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
 	                            trim(to_char(created, 'YYYY'))
-                            ) as created
+                            ) as created,
+                            (
+	                            trim(to_char(edited, 'DD')) || ' ' ||
+	                            trim(to_char(edited, 'Month')) || ' ' ||
+	                            trim(to_char(edited, 'YYYY'))
+                            ) as edited
                     )
                     SELECT
                         new_row.id,
@@ -284,6 +306,7 @@ async fn update_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
                         new_row.thumbnail_link,
                         new_row.featured,
                         new_row.created,
+                        new_row.edited,
                         (SELECT category FROM blog_category WHERE id = new_row.category_id) AS "category!"
                     FROM new_row
                 "#,

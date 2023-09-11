@@ -5,6 +5,8 @@ pub struct BlogCategory {
     pub id: Option<i32>,
     pub category: String,
     pub slug: String,
+    pub created: Option<String>,
+    pub edited: Option<String>,
 }
 
 impl std::fmt::Debug for BlogCategory {
