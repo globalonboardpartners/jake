@@ -40,8 +40,7 @@ pub fn blog() -> impl HttpServiceFactory {
 pub fn job_listing() -> impl HttpServiceFactory {
     (
         job_listing::create_job_listing,
-        job_listing::get_all_job_listings,
-        job_listing::get_job_listing_by_id,
+        job_listing::get_job_listing_by_id_or_all,
         job_listing::update_job_listing,
         job_listing::delete_job_listing,
     )
