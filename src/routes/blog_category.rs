@@ -27,12 +27,12 @@ async fn create_blog_category(req: HttpRequest, blog_category: Json<BlogCategory
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
-	                        trim(to_char(created, 'YYYY'))
+	                        trim(to_char(created, 'YYYY HH12:MI AM'))
                         ) as created,
                         (
 	                        trim(to_char(edited, 'DD')) || ' ' ||
 	                        trim(to_char(edited, 'Month')) || ' ' ||
-	                        trim(to_char(edited, 'YYYY'))
+	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
                         ) as edited
                 ",
                 blog_category.category,
@@ -75,12 +75,12 @@ async fn get_blog_category_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) 
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
-	                            trim(to_char(created, 'YYYY'))
+	                            trim(to_char(created, 'YYYY HH12:MI AM'))
                             ) as created,
                             (
 	                            trim(to_char(edited, 'DD')) || ' ' ||
 	                            trim(to_char(edited, 'Month')) || ' ' ||
-	                            trim(to_char(edited, 'YYYY'))
+	                            trim(to_char(edited, 'YYYY HH12:MI AM'))
                             ) as edited
                         FROM blog_category
                         WHERE id = $1
@@ -121,12 +121,12 @@ async fn get_blog_category_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) 
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
-	                            trim(to_char(created, 'YYYY'))
+	                            trim(to_char(created, 'YYYY HH12:MI AM'))
                             ) as created,
                             (
 	                            trim(to_char(edited, 'DD')) || ' ' ||
 	                            trim(to_char(edited, 'Month')) || ' ' ||
-	                            trim(to_char(edited, 'YYYY'))
+	                            trim(to_char(edited, 'YYYY HH12:MI AM'))
                             ) as edited
                         FROM blog_category
                     "
@@ -170,7 +170,10 @@ async fn update_blog_category(req: HttpRequest, blog_category: Json<BlogCategory
                     VALUES ($1, $2, $3)
                     ON CONFLICT (id)
                     DO UPDATE SET 
-                    id = EXCLUDED.id, category = EXCLUDED.category, slug = EXCLUDED.slug
+                        id = EXCLUDED.id,
+                        category = EXCLUDED.category,
+                        slug = EXCLUDED.slug,
+                        edited = NOW()
                     RETURNING
                         id,
                         category,
@@ -178,12 +181,12 @@ async fn update_blog_category(req: HttpRequest, blog_category: Json<BlogCategory
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
-	                        trim(to_char(created, 'YYYY'))
+	                        trim(to_char(created, 'YYYY HH12:MI AM'))
                         ) as created,
                         (
 	                        trim(to_char(edited, 'DD')) || ' ' ||
 	                        trim(to_char(edited, 'Month')) || ' ' ||
-	                        trim(to_char(edited, 'YYYY'))
+	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
                         ) as edited
                 ",
                 blog_category.id,

@@ -33,12 +33,12 @@ async fn create_job_listing(req: HttpRequest, job_listing: Json<JobListing>) -> 
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
-	                        trim(to_char(created, 'YYYY'))
+	                        trim(to_char(created, 'YYYY HH12:MI AM'))
                         ) as created,
                         (
 	                        trim(to_char(edited, 'DD')) || ' ' ||
 	                        trim(to_char(edited, 'Month')) || ' ' ||
-	                        trim(to_char(edited, 'YYYY'))
+	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
                         ) as edited
                 ",
                 job_listing.title,
@@ -87,12 +87,12 @@ async fn get_job_listing_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) ->
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
-	                            trim(to_char(created, 'YYYY'))
+	                            trim(to_char(created, 'YYYY HH12:MI AM'))
                             ) as created,
                             (
 	                            trim(to_char(edited, 'DD')) || ' ' ||
 	                            trim(to_char(edited, 'Month')) || ' ' ||
-	                            trim(to_char(edited, 'YYYY'))
+	                            trim(to_char(edited, 'YYYY HH12:MI AM'))
                             ) as edited
                         FROM job_listing
                         WHERE id = $1
@@ -135,12 +135,12 @@ async fn get_job_listing_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) ->
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
-	                        trim(to_char(created, 'YYYY'))
+	                        trim(to_char(created, 'YYYY HH12:MI AM'))
                         ) as created,
                         (
 	                        trim(to_char(edited, 'DD')) || ' ' ||
 	                        trim(to_char(edited, 'Month')) || ' ' ||
-	                        trim(to_char(edited, 'YYYY'))
+	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
                         ) as edited
                     FROM job_listing;"
                 )
@@ -191,7 +191,8 @@ async fn update_job_listing(req: HttpRequest, job_listing: Json<JobListing>) -> 
                         slug = EXCLUDED.slug,
                         description = EXCLUDED.description,
                         location = EXCLUDED.location,
-                        employment_basis = EXCLUDED.employment_basis
+                        employment_basis = EXCLUDED.employment_basis,
+                        edited = NOW()
                     RETURNING
                         id,
                         title,
@@ -202,12 +203,12 @@ async fn update_job_listing(req: HttpRequest, job_listing: Json<JobListing>) -> 
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
-	                        trim(to_char(created, 'YYYY'))
+	                        trim(to_char(created, 'YYYY HH12:MI AM'))
                         ) as created,
                         (
 	                        trim(to_char(edited, 'DD')) || ' ' ||
 	                        trim(to_char(edited, 'Month')) || ' ' ||
-	                        trim(to_char(edited, 'YYYY'))
+	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
                         ) as edited
                 ",
                 job_listing.id,

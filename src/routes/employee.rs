@@ -39,12 +39,12 @@ async fn create_employee(req: HttpRequest, employee: Json<Employee>) -> HttpResp
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
-	                        trim(to_char(created, 'YYYY'))
+	                        trim(to_char(created, 'YYYY HH12:MI AM'))
                         ) as created,
                         (
 	                        trim(to_char(edited, 'DD')) || ' ' ||
 	                        trim(to_char(edited, 'Month')) || ' ' ||
-	                        trim(to_char(edited, 'YYYY'))
+	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
                         ) as edited
                 ",
                 employee.name,
@@ -99,12 +99,12 @@ async fn get_employee_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> Ht
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
-	                            trim(to_char(created, 'YYYY'))
+	                            trim(to_char(created, 'YYYY HH12:MI AM'))
                             ) as created,
                             (
 	                            trim(to_char(edited, 'DD')) || ' ' ||
 	                            trim(to_char(edited, 'Month')) || ' ' ||
-	                            trim(to_char(edited, 'YYYY'))
+	                            trim(to_char(edited, 'YYYY HH12:MI AM'))
                             ) as edited
                         FROM employee
                         WHERE id = $1
@@ -151,12 +151,12 @@ async fn get_employee_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> Ht
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
-	                            trim(to_char(created, 'YYYY'))
+	                            trim(to_char(created, 'YYYY HH12:MI AM'))
                             ) as created,
                             (
 	                            trim(to_char(edited, 'DD')) || ' ' ||
 	                            trim(to_char(edited, 'Month')) || ' ' ||
-	                            trim(to_char(edited, 'YYYY'))
+	                            trim(to_char(edited, 'YYYY HH12:MI AM'))
                             ) as edited
                         FROM employee
                     "
@@ -214,7 +214,8 @@ async fn update_employee(req: HttpRequest, employee: Json<Employee>) -> HttpResp
                         image_url = EXCLUDED.image_url,
                         twitter_link = EXCLUDED.twitter_link,
                         linkedin_link = EXCLUDED.linkedin_link,
-                        email = EXCLUDED.email
+                        email = EXCLUDED.email,
+                        edited = NOW()
                     RETURNING
                         id,
                         name,
@@ -228,12 +229,12 @@ async fn update_employee(req: HttpRequest, employee: Json<Employee>) -> HttpResp
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
-	                        trim(to_char(created, 'YYYY'))
+	                        trim(to_char(created, 'YYYY HH12:MI AM'))
                         ) as created,
                         (
 	                        trim(to_char(edited, 'DD')) || ' ' ||
 	                        trim(to_char(edited, 'Month')) || ' ' ||
-	                        trim(to_char(edited, 'YYYY'))
+	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
                         ) as edited
                 ",
                 employee.id,

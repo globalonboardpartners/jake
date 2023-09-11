@@ -48,12 +48,12 @@ async fn create_product_feature(
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
-	                        trim(to_char(created, 'YYYY'))
+	                        trim(to_char(created, 'YYYY HH12:MI AM'))
                         ) as created,
                         (
 	                        trim(to_char(edited, 'DD')) || ' ' ||
 	                        trim(to_char(edited, 'Month')) || ' ' ||
-	                        trim(to_char(edited, 'YYYY'))
+	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
                         ) as edited
                 ",
                 product_feature.title,
@@ -111,16 +111,16 @@ async fn get_product_feature_by_id_or_all(req: HttpRequest, Query(id): Query<Id>
                             quote_author,
                             quote_author_position,
                             order_number,
-                            (
-	                            trim(to_char(created, 'DD')) || ' ' ||
-	                            trim(to_char(created, 'Month')) || ' ' ||
-	                            trim(to_char(created, 'YYYY'))
-                            ) as created,
-                            (
-	                            trim(to_char(edited, 'DD')) || ' ' ||
-	                            trim(to_char(edited, 'Month')) || ' ' ||
-	                            trim(to_char(edited, 'YYYY'))
-                            ) as edited
+                        (
+	                        trim(to_char(created, 'DD')) || ' ' ||
+	                        trim(to_char(created, 'Month')) || ' ' ||
+	                        trim(to_char(created, 'YYYY HH12:MI AM'))
+                        ) as created,
+                        (
+	                        trim(to_char(edited, 'DD')) || ' ' ||
+	                        trim(to_char(edited, 'Month')) || ' ' ||
+	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
+                        ) as edited
                         FROM product_feature
                         WHERE id = $1
                         LIMIT 1;
@@ -169,12 +169,12 @@ async fn get_product_feature_by_id_or_all(req: HttpRequest, Query(id): Query<Id>
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
-	                            trim(to_char(created, 'YYYY'))
+	                            trim(to_char(created, 'YYYY HH12:MI AM'))
                             ) as created,
                             (
 	                            trim(to_char(edited, 'DD')) || ' ' ||
 	                            trim(to_char(edited, 'Month')) || ' ' ||
-	                            trim(to_char(edited, 'YYYY'))
+	                            trim(to_char(edited, 'YYYY HH12:MI AM'))
                             ) as edited
                         FROM product_feature
                     "
@@ -241,7 +241,8 @@ async fn update_product_feature(
                         quote = EXCLUDED.quote,
                         quote_author = EXCLUDED.quote_author,
                         quote_author_position = EXCLUDED.quote_author_position,
-                        order_number = EXCLUDED.order_number
+                        order_number = EXCLUDED.order_number,
+                        edited = NOW()
                     RETURNING
                         id,
                         title,
@@ -258,12 +259,12 @@ async fn update_product_feature(
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
-	                        trim(to_char(created, 'YYYY'))
+	                        trim(to_char(created, 'YYYY HH12:MI AM'))
                         ) as created,
                         (
 	                        trim(to_char(edited, 'DD')) || ' ' ||
 	                        trim(to_char(edited, 'Month')) || ' ' ||
-	                        trim(to_char(edited, 'YYYY'))
+	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
                         ) as edited
                 ",
                 product_feature.id,

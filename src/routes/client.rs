@@ -53,12 +53,12 @@ async fn create_client(req: HttpRequest, client: Json<Client>) -> HttpResponse {
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
-	                        trim(to_char(created, 'YYYY'))
+	                        trim(to_char(created, 'YYYY HH12:MI AM'))
                         ) as created,
                         (
 	                        trim(to_char(edited, 'DD')) || ' ' ||
 	                        trim(to_char(edited, 'Month')) || ' ' ||
-	                        trim(to_char(edited, 'YYYY'))
+	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
                         ) as edited
                 ",
                 client.name,
@@ -127,12 +127,12 @@ async fn get_client_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> Http
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
-	                            trim(to_char(created, 'YYYY'))
+	                            trim(to_char(created, 'YYYY HH12:MI AM'))
                             ) as created,
                             (
 	                            trim(to_char(edited, 'DD')) || ' ' ||
 	                            trim(to_char(edited, 'Month')) || ' ' ||
-	                            trim(to_char(edited, 'YYYY'))
+	                            trim(to_char(edited, 'YYYY HH12:MI AM'))
                             ) as edited
                         FROM client
                         WHERE id = $1
@@ -186,12 +186,12 @@ async fn get_client_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> Http
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
-	                            trim(to_char(created, 'YYYY'))
+	                            trim(to_char(created, 'YYYY HH12:MI AM'))
                             ) as created,
                             (
 	                            trim(to_char(edited, 'DD')) || ' ' ||
 	                            trim(to_char(edited, 'Month')) || ' ' ||
-	                            trim(to_char(edited, 'YYYY'))
+	                            trim(to_char(edited, 'YYYY HH12:MI AM'))
                             ) as edited
                         FROM client
                     "
@@ -263,7 +263,8 @@ async fn update_client(req: HttpRequest, client: Json<Client>) -> HttpResponse {
                         industry = EXCLUDED.industry,
                         website_link = EXCLUDED.website_link,
                         features_used = EXCLUDED.features_used,
-                        featured = EXCLUDED.featured
+                        featured = EXCLUDED.featured,
+                        edited = NOW()
                     RETURNING
                         id,
                         name,
@@ -284,12 +285,12 @@ async fn update_client(req: HttpRequest, client: Json<Client>) -> HttpResponse {
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
-	                        trim(to_char(created, 'YYYY'))
+	                        trim(to_char(created, 'YYYY HH12:MI AM'))
                         ) as created,
                         (
 	                        trim(to_char(edited, 'DD')) || ' ' ||
 	                        trim(to_char(edited, 'Month')) || ' ' ||
-	                        trim(to_char(edited, 'YYYY'))
+	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
                         ) as edited
                 ",
                 client.id,
