@@ -19,8 +19,7 @@ pub fn client() -> impl HttpServiceFactory {
 
 pub fn employee() -> impl HttpServiceFactory {
     (
-        employee::get_all_employees,
-        employee::get_employee_by_id,
+        employee::get_employee_by_id_or_all,
         employee::delete_employee,
         employee::create_employee,
         employee::update_employee,
