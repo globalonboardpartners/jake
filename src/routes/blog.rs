@@ -37,10 +37,30 @@ async fn create_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
                             $7,
                             $8
                         )
-                        RETURNING *
+                        RETURNING
+                            id,
+                            title,
+                            slug,
+                            category_id,
+                            content,
+                            image_link,
+                            thumbnail_link,
+                            featured,
+                            (
+	                            trim(to_char(created, 'DD')) || ' ' ||
+	                            trim(to_char(created, 'Month')) || ' ' ||
+	                            trim(to_char(created, 'YYYY'))
+                            ) as created
                     )
                     SELECT
-                        new_row.*,
+                        new_row.id,
+                        new_row.title,
+                        new_row.slug,
+                        new_row.content,
+                        new_row.image_link,
+                        new_row.thumbnail_link,
+                        new_row.featured,
+                        new_row.created,
                         (SELECT category FROM blog_category WHERE id = new_row.category_id) AS "category!"
                     FROM new_row
                 "#,
@@ -82,7 +102,20 @@ async fn get_featured_blogs(req: HttpRequest) -> HttpResponse {
             let returned: Result<Vec<Blog>, Error> = sqlx::query_as!(
                 Blog,
                 r#"
-                    SELECT *, (SELECT category FROM blog_category WHERE id = category_id)
+                    SELECT
+                        id,
+                        title,
+                        slug,
+                        content,
+                        image_link,
+                        thumbnail_link,
+                        featured,
+                        (
+	                        trim(to_char(created, 'DD')) || ' ' ||
+	                        trim(to_char(created, 'Month')) || ' ' ||
+	                        trim(to_char(created, 'YYYY'))
+                        ) as created,
+                        (SELECT category FROM blog_category WHERE id = category_id) AS "category!"
                     FROM blog
                     WHERE featured = TRUE
                     LIMIT 2;
@@ -117,12 +150,25 @@ async fn get_blog_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpRe
             Ok(pg) => {
                 let returned: Result<Blog, Error> = sqlx::query_as!(
                     Blog,
-                    "
-                        SELECT *, (SELECT category FROM blog_category WHERE id = category_id)
+                    r#"
+                        SELECT
+                            id,
+                            title,
+                            slug,
+                            content,
+                            image_link,
+                            thumbnail_link,
+                            featured,
+                            (
+	                            trim(to_char(created, 'DD')) || ' ' ||
+	                            trim(to_char(created, 'Month')) || ' ' ||
+	                            trim(to_char(created, 'YYYY'))
+                            ) as created,
+                            (SELECT category FROM blog_category WHERE id = category_id) AS "category!"
                         FROM blog
                         WHERE id = $1
                         LIMIT 1;
-                    ",
+                    "#,
                     id.id
                 )
                 .fetch_one(&pg)
@@ -150,11 +196,23 @@ async fn get_blog_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpRe
             Ok(pg) => {
                 let returned: Result<Vec<Blog>, Error> = sqlx::query_as!(
                     Blog,
-                    "
+                    r#"
                         SELECT
-                            *, (SELECT category FROM blog_category WHERE id = category_id)
+                            id,
+                            title,
+                            slug,
+                            content,
+                            image_link,
+                            thumbnail_link,
+                            featured,
+                            (
+	                            trim(to_char(created, 'DD')) || ' ' ||
+	                            trim(to_char(created, 'Month')) || ' ' ||
+	                            trim(to_char(created, 'YYYY'))
+                            ) as created,
+                            (SELECT category FROM blog_category WHERE id = category_id) AS "category!"
                         FROM blog;
-                    "
+                    "#,
                 )
                 .fetch_all(&pg)
                 .await;
@@ -188,7 +246,9 @@ async fn update_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
                 r#"
                     WITH new_row AS (
                         INSERT INTO blog (id, title, slug, category_id, content, image_link, thumbnail_link, featured, created)
-                        VALUES ($1, $2, $3, (SELECT id FROM blog_category WHERE category = $4), $5, $6, $7, $8, $9)
+                        VALUES (
+                            $1, $2, $3, (SELECT id FROM blog_category WHERE category = $4), $5, $6, $7, $8, NOW()
+                        )
                         ON CONFLICT (id)
                         DO UPDATE SET
                             id = EXCLUDED.id,
@@ -200,10 +260,30 @@ async fn update_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
                             thumbnail_link = EXCLUDED.thumbnail_link,
                             featured = EXCLUDED.featured,
                             created = EXCLUDED.created
-                        RETURNING *
+                        RETURNING
+                            id,
+                            title,
+                            slug,
+                            content,
+                            image_link,
+                            thumbnail_link,
+                            featured,
+                            category_id,
+                            (
+	                            trim(to_char(created, 'DD')) || ' ' ||
+	                            trim(to_char(created, 'Month')) || ' ' ||
+	                            trim(to_char(created, 'YYYY'))
+                            ) as created
                     )
                     SELECT
-                        new_row.*,
+                        new_row.id,
+                        new_row.title,
+                        new_row.slug,
+                        new_row.content,
+                        new_row.image_link,
+                        new_row.thumbnail_link,
+                        new_row.featured,
+                        new_row.created,
                         (SELECT category FROM blog_category WHERE id = new_row.category_id) AS "category!"
                     FROM new_row
                 "#,
@@ -215,7 +295,6 @@ async fn update_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
                 blog.image_link,
                 blog.thumbnail_link,
                 blog.featured,
-                blog.created,
             )
             .fetch_one(&pg)
             .await;

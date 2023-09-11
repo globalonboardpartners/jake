@@ -42,7 +42,7 @@ CREATE TABLE blog (
   image_link TEXT NOT NULL,
   thumbnail_link TEXT NOT NULL,
   featured BOOLEAN NOT NULL,
-  created TIMESTAMP NOT NULL
+  created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 -- Create Job Listings Table
