@@ -57,8 +57,7 @@ pub fn product_feature() -> impl HttpServiceFactory {
 pub fn blog_category() -> impl HttpServiceFactory {
     (
         blog_category::create_blog_category,
-        blog_category::get_all_blog_categories,
-        blog_category::get_blog_category_by_id,
+        blog_category::get_blog_category_by_id_or_all,
         blog_category::update_blog_category,
         blog_category::delete_blog_category,
     )
