@@ -12,5 +12,5 @@ pub struct Blog {
     pub image_link: String,
     pub thumbnail_link: String,
     pub featured: bool,
-    pub publish_date: Option<NaiveDateTime>,
+    pub created: Option<NaiveDateTime>,
 }

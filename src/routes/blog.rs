@@ -25,7 +25,7 @@ async fn create_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
                                 image_link,
                                 thumbnail_link,
                                 featured,
-                                publish_date
+                                created
                             )
                         VALUES (
                             $1,
@@ -187,7 +187,7 @@ async fn update_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
                 Blog,
                 r#"
                     WITH new_row AS (
-                        INSERT INTO blog (id, title, slug, category_id, content, image_link, thumbnail_link, featured, publish_date)
+                        INSERT INTO blog (id, title, slug, category_id, content, image_link, thumbnail_link, featured, created)
                         VALUES ($1, $2, $3, (SELECT id FROM blog_category WHERE category = $4), $5, $6, $7, $8, $9)
                         ON CONFLICT (id)
                         DO UPDATE SET
@@ -199,7 +199,7 @@ async fn update_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
                             image_link = EXCLUDED.image_link,
                             thumbnail_link = EXCLUDED.thumbnail_link,
                             featured = EXCLUDED.featured,
-                            publish_date = EXCLUDED.publish_date
+                            created = EXCLUDED.created
                         RETURNING *
                     )
                     SELECT
@@ -215,7 +215,7 @@ async fn update_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
                 blog.image_link,
                 blog.thumbnail_link,
                 blog.featured,
-                blog.publish_date,
+                blog.created,
             )
             .fetch_one(&pg)
             .await;

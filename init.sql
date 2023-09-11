@@ -42,7 +42,7 @@ CREATE TABLE blog (
   image_link TEXT NOT NULL,
   thumbnail_link TEXT NOT NULL,
   featured BOOLEAN NOT NULL,
-  publish_date TIMESTAMP NOT NULL
+  created TIMESTAMP NOT NULL
 );
 
 -- Create Job Listings Table
@@ -489,7 +489,7 @@ INSERT INTO blog_category (category, slug) VALUES ('Travel Destinations', 'trave
 INSERT INTO blog_category (category, slug) VALUES ('Travel Tips', 'travel-tips');
 
 -- inserts for blog
-INSERT INTO blog (title, slug, category_id, content, image_link, thumbnail_link, featured, publish_date) 
+INSERT INTO blog (title, slug, category_id, content, image_link, thumbnail_link, featured, created)
 VALUES (
 	'A Guide to Solo Travel: How to Stay Safe and Make the Most of Your Adventure', 
 	'a-guide-to-solo-travel-how-to-stay-safe-and-make-the-most-of-your-adventure', 
@@ -501,7 +501,7 @@ VALUES (
 	'2021-08-16 03:35:17 UTC'
 );
 
-INSERT INTO blog (title, slug, category_id, content, image_link, thumbnail_link, featured, publish_date) 
+INSERT INTO blog (title, slug, category_id, content, image_link, thumbnail_link, featured, created)
 VALUES (
   'Exploring the Worlds Most Beautiful Beaches: A Beach Lovers Paradise',
   'exploring-the-worlds-most-beautiful-beaches-a-beach-lovers-paradise',
@@ -513,7 +513,7 @@ VALUES (
 	'2021-08-16 03:35:17 UTC'
 );
 
-INSERT INTO blog (title, slug, category_id, content, image_link, thumbnail_link, featured, publish_date) 
+INSERT INTO blog (title, slug, category_id, content, image_link, thumbnail_link, featured, created)
 VALUES (
   'How to Travel on a Budget: Tips and Tricks for Saving Money on Your Next Trip',
   'how-to-travel-on-a-budget-tips-and-tricks-for-saving-money-on-your-next-trip',
@@ -525,7 +525,7 @@ VALUES (
 	'2021-08-16 03:35:17 UTC'
 );
 
-INSERT INTO blog (title, slug, category_id, content, image_link, thumbnail_link, featured, publish_date) 
+INSERT INTO blog (title, slug, category_id, content, image_link, thumbnail_link, featured, created)
 VALUES (
   'Island Hopping in the Caribbean: A Guide to the Best Islands and Activities',
   'island-hopping-in-the-caribbean-a-guide-to-the-best-islands-and-activities',
@@ -537,7 +537,7 @@ VALUES (
 	'2021-08-16 03:35:17 UTC'
 );
 
-INSERT INTO blog (title, slug, category_id, content, image_link, thumbnail_link, featured, publish_date) 
+INSERT INTO blog (title, slug, category_id, content, image_link, thumbnail_link, featured, created)
 VALUES (
   'The Best Local Cuisine to Try in Asia: A Foodies Guide',
   'the-best-local-cuisine-to-try-in-asia-a-foodies-guide',
@@ -549,7 +549,7 @@ VALUES (
 	'2021-08-16 03:35:17 UTC'
 );
 
-INSERT INTO blog (title, slug, category_id, content, image_link, thumbnail_link, featured, publish_date) 
+INSERT INTO blog (title, slug, category_id, content, image_link, thumbnail_link, featured, created)
 VALUES (
   'The Rise of Sustainable Tourism: How to Travel Responsibly',
   'the-rise-of-sustainable-tourism-how-to-travel-responsibly',
@@ -561,7 +561,7 @@ VALUES (
 	'2021-08-16 03:35:17 UTC'
 );
 
-INSERT INTO blog (title, slug, category_id, content, image_link, thumbnail_link, featured, publish_date) 
+INSERT INTO blog (title, slug, category_id, content, image_link, thumbnail_link, featured, created)
 VALUES (
   'Top 10 Must-Visit Destinations in Europe This Summer',
   'top-10-must-visit-destinations-in-europe-this-summer',
