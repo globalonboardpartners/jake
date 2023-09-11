@@ -3,7 +3,7 @@ use crate::db;
 use crate::utils::handle_sql_error;
 use actix_web::http::StatusCode;
 use actix_web::web::Json;
-use actix_web::{delete, get, http, post, put, HttpRequest, HttpResponse};
+use actix_web::{delete, get, http, post, put, web::Query, HttpRequest, HttpResponse};
 use sqlx::postgres::PgQueryResult;
 use sqlx::Error;
 
@@ -68,62 +68,68 @@ async fn create_product_feature(
     }
 }
 
-#[get("/product_features")]
-async fn get_all_product_features(req: HttpRequest) -> HttpResponse {
-    match db::connect(req).await {
-        Ok(pg) => {
-            let returned: Result<Vec<ProductFeature>, Error> =
-                sqlx::query_as!(ProductFeature, "SELECT * from product_feature;")
-                    .fetch_all(&pg)
-                    .await;
-
-            match returned {
-                Ok(record) => HttpResponse::Ok()
-                    .status(StatusCode::OK)
-                    .content_type("application/json")
-                    .body(
-                        serde_json::to_string(&Json(record))
-                            .unwrap_or_else(|e| format!("JSON serialization error: {}", e)),
-                    ),
-
-                Err(e) => handle_sql_error(e),
-            }
-        }
-        Err(e) => HttpResponse::InternalServerError()
-            .status(http::StatusCode::INTERNAL_SERVER_ERROR)
-            .content_type("application/json")
-            .body(e.message),
-    }
-}
-
 #[get("/product_feature")]
-async fn get_product_feature_by_id(req: HttpRequest, id: Json<Id>) -> HttpResponse {
-    match db::connect(req).await {
-        Ok(pg) => {
-            let returned: Result<ProductFeature, Error> = sqlx::query_as!(
-                ProductFeature,
-                "SELECT * FROM product_feature WHERE id = $1;",
-                id.id
-            )
-            .fetch_one(&pg)
-            .await;
+async fn get_product_feature_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpResponse {
+    if id.id.is_some() {
+        match db::connect(req).await {
+            Ok(pg) => {
+                let returned: Result<ProductFeature, Error> = sqlx::query_as!(
+                    ProductFeature,
+                    "
+                        SELECT *
+                        FROM product_feature
+                        WHERE id = $1
+                        LIMIT 1;
+                    ",
+                    id.id
+                )
+                .fetch_one(&pg)
+                .await;
 
-            match returned {
-                Ok(record) => HttpResponse::Ok()
-                    .status(StatusCode::OK)
-                    .content_type("application/json")
-                    .body(
-                        serde_json::to_string(&Json(record))
-                            .unwrap_or_else(|e| format!("JSON serialization error: {}", e)),
-                    ),
+                match returned {
+                    Ok(record) => HttpResponse::Ok()
+                        .status(StatusCode::OK)
+                        .content_type("application/json")
+                        .body(
+                            serde_json::to_string(&Json(record))
+                                .unwrap_or_else(|e| format!("JSON serialization error: {}", e)),
+                        ),
 
-                Err(e) => handle_sql_error(e),
+                    Err(e) => handle_sql_error(e),
+                }
             }
+            Err(e) => HttpResponse::InternalServerError()
+                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+                .content_type("application/json")
+                .body(e.message),
         }
-        Err(e) => HttpResponse::InternalServerError()
-            .status(http::StatusCode::INTERNAL_SERVER_ERROR)
-            .content_type("application/json")
-            .body(e.message),
+    } else {
+        match db::connect(req).await {
+            Ok(pg) => {
+                let returned: Result<Vec<ProductFeature>, Error> = sqlx::query_as!(
+                    ProductFeature,
+                    "SELECT * FROM product_feature;"
+                )
+                .fetch_all(&pg)
+                .await;
+
+                match returned {
+                    Ok(record) => HttpResponse::Ok()
+                        .status(StatusCode::OK)
+                        .content_type("application/json")
+                        .body(
+                            serde_json::to_string(&Json(record))
+                                .unwrap_or_else(|e| format!("JSON serialization error: {}", e)),
+                        ),
+
+                    Err(e) => handle_sql_error(e),
+                }
+            }
+            Err(e) => HttpResponse::InternalServerError()
+                .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+                .content_type("application/json")
+                .body(e.message),
+        }
     }
 }
 

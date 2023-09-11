@@ -50,8 +50,7 @@ pub fn job_listing() -> impl HttpServiceFactory {
 pub fn product_feature() -> impl HttpServiceFactory {
     (
         product_feature::create_product_feature,
-        product_feature::get_all_product_features,
-        product_feature::get_product_feature_by_id,
+        product_feature::get_product_feature_by_id_or_all,
         product_feature::update_product_feature,
         product_feature::delete_product_feature,
     )
