@@ -15,6 +15,16 @@ pub mod restaurant;
 pub mod hotel;
 pub mod hotel_room;
 pub mod activity;
+pub mod event;
+
+pub fn event() -> impl HttpServiceFactory {
+    (
+        event::get_event_by_id_or_all,
+        event::delete_event,
+        event::create_event,
+        event::update_event,
+    )
+}
 
 pub fn activity() -> impl HttpServiceFactory {
     (

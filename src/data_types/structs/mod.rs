@@ -49,6 +49,9 @@ pub use self::hotel_room::HotelRoom;
 pub mod activity;
 pub use self::activity::Activity;
 
+pub mod event;
+pub use self::event::Event;
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Id {
     pub id: Option<i32>,
@@ -61,36 +64,6 @@ impl std::fmt::Display for Id {
         }
         write!(f, "Id: {}", "None")
     }
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Event {
-    pub id: i32,
-    pub name: String,
-    pub slug: String,
-    pub description_short: String,
-    pub description_long: String,
-    pub video_link: String,
-    pub image_link: String,
-    pub image_link_2: String,
-    pub thumbnail_link: String,
-    pub gallery: Vec<String>,
-    pub featured_event: f32,
-    pub ticket_link: String,
-    pub partner_vendor: i32,
-    pub continent: i32,
-    pub country: i32,
-    pub region: i32,
-    pub city: i32,
-    pub latitude: f32,
-    pub longitude: f32,
-    pub email: String,
-    pub phone: String,
-    pub address: String,
-    pub website_link: String,
-    pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

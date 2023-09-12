@@ -312,7 +312,7 @@ CREATE TABLE event (
   image_link_2 TEXT NOT NULL,
   thumbnail_link TEXT NOT NULL,
   gallery TEXT[] NOT NULL,
-  featured_event BOOLEAN NOT NULL,
+  featured_event FLOAT NOT NULL,
   partner_vendor integer references partner_vendor(id) NOT NULL,
   continent integer references continent(id) NOT NULL,
   country integer references country(id) NOT NULL,
