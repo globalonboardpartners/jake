@@ -33,6 +33,7 @@ async fn main() -> Result<()> {
                 .service(routes::continent())
                 .service(routes::country())
                 .service(routes::region())
+                .service(routes::city())
         )
     })
     .bind(("127.0.0.1", 8080))?

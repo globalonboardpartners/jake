@@ -9,6 +9,16 @@ pub mod product_feature;
 pub mod continent;
 pub mod country;
 pub mod region;
+pub mod city;
+
+pub fn city() -> impl HttpServiceFactory {
+    (
+        city::get_city_by_id_or_all,
+        city::delete_city,
+        city::create_city,
+        city::update_city,
+    )
+}
 
 pub fn region() -> impl HttpServiceFactory {
     (
