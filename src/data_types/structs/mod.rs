@@ -25,6 +25,9 @@ pub use self::client::Client;
 pub mod error_message;
 pub use self::error_message::ErrorMessage;
 
+pub mod country;
+pub use self::country::Country;
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Id {
     pub id: Option<i32>,
@@ -37,23 +40,6 @@ impl std::fmt::Display for Id {
         }
         write!(f, "Id: {}", "None")
     }
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Country {
-    pub id: i32,
-    pub name: String,
-    pub slug: String,
-    pub description_long: String,
-    pub description_short: String,
-    pub image_link: String,
-    pub thumbnail_link: String,
-    pub special_offer_image_link: String,
-    pub video_link: String,
-    pub gallery: String,
-    pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

@@ -31,6 +31,7 @@ async fn main() -> Result<()> {
                 .service(routes::blog_category())
                 .service(routes::product_feature())
                 .service(routes::continent())
+                .service(routes::country())
         )
     })
     .bind(("127.0.0.1", 8080))?

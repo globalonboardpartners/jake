@@ -7,6 +7,16 @@ pub mod employee;
 pub mod job_listing;
 pub mod product_feature;
 pub mod continent;
+pub mod country;
+
+pub fn country() -> impl HttpServiceFactory {
+    (
+        country::get_country_by_id_or_all,
+        country::delete_country,
+        country::create_country,
+        country::update_country,
+    )
+}
 
 pub fn client() -> impl HttpServiceFactory {
     (
