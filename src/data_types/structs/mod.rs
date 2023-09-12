@@ -43,6 +43,9 @@ pub use self::restaurant::Restaurant;
 pub mod hotel;
 pub use self::hotel::Hotel;
 
+pub mod hotel_room;
+pub use self::hotel_room::HotelRoom;
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Id {
     pub id: Option<i32>,
@@ -55,23 +58,6 @@ impl std::fmt::Display for Id {
         }
         write!(f, "Id: {}", "None")
     }
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct HotelRoom {
-    pub id: i32,
-    pub name: String,
-    pub hotel_id: i32,
-    pub description_short: String,
-    pub description_long: String,
-    pub video_link: String,
-    pub image_link: String,
-    pub image_link_2: String,
-    pub thumbnail_link: String,
-    pub gallery: Vec<String>,
-    pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

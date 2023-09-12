@@ -13,6 +13,16 @@ pub mod city;
 pub mod partner_vendor;
 pub mod restaurant;
 pub mod hotel;
+pub mod hotel_room;
+
+pub fn hotel_room() -> impl HttpServiceFactory {
+    (
+        hotel_room::get_hotel_room_by_id_or_all,
+        hotel_room::delete_hotel_room,
+        hotel_room::create_hotel_room,
+        hotel_room::update_hotel_room,
+    )
+}
 
 pub fn hotel() -> impl HttpServiceFactory {
     (
