@@ -16,6 +16,16 @@ pub mod hotel;
 pub mod hotel_room;
 pub mod activity;
 pub mod event;
+pub mod event_details;
+
+pub fn event_details() -> impl HttpServiceFactory {
+    (
+        event_details::get_event_details_by_id_or_all,
+        event_details::delete_event_details,
+        event_details::create_event_details,
+        event_details::update_event_details,
+    )
+}
 
 pub fn event() -> impl HttpServiceFactory {
     (
