@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use std::time::SystemTime;
 
 pub mod blog_category;
 pub use self::blog_category::BlogCategory;
