@@ -12,6 +12,16 @@ pub mod region;
 pub mod city;
 pub mod partner_vendor;
 pub mod restaurant;
+pub mod hotel;
+
+pub fn hotel() -> impl HttpServiceFactory {
+    (
+        hotel::get_hotel_by_id_or_all,
+        hotel::delete_hotel,
+        hotel::create_hotel,
+        hotel::update_hotel,
+    )
+}
 
 pub fn restaurant() -> impl HttpServiceFactory {
     (
