@@ -8,6 +8,16 @@ pub mod job_listing;
 pub mod product_feature;
 pub mod continent;
 pub mod country;
+pub mod region;
+
+pub fn region() -> impl HttpServiceFactory {
+    (
+        region::get_region_by_id_or_all,
+        region::delete_region,
+        region::create_region,
+        region::update_region,
+    )
+}
 
 pub fn country() -> impl HttpServiceFactory {
     (
