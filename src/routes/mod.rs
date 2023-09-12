@@ -11,6 +11,16 @@ pub mod country;
 pub mod region;
 pub mod city;
 pub mod partner_vendor;
+pub mod restaurant;
+
+pub fn restaurant() -> impl HttpServiceFactory {
+    (
+        restaurant::get_restaurant_by_id_or_all,
+        restaurant::delete_restaurant,
+        restaurant::create_restaurant,
+        restaurant::update_restaurant,
+    )
+}
 
 pub fn partner_vendor() -> impl HttpServiceFactory {
     (
