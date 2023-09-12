@@ -14,6 +14,16 @@ pub mod partner_vendor;
 pub mod restaurant;
 pub mod hotel;
 pub mod hotel_room;
+pub mod activity;
+
+pub fn activity() -> impl HttpServiceFactory {
+    (
+        activity::get_activity_by_id_or_all,
+        activity::delete_activity,
+        activity::create_activity,
+        activity::update_activity,
+    )
+}
 
 pub fn hotel_room() -> impl HttpServiceFactory {
     (
