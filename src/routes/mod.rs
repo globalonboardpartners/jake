@@ -10,6 +10,16 @@ pub mod continent;
 pub mod country;
 pub mod region;
 pub mod city;
+pub mod partner_vendor;
+
+pub fn partner_vendor() -> impl HttpServiceFactory {
+    (
+        partner_vendor::get_partner_vendor_by_id_or_all,
+        partner_vendor::delete_partner_vendor,
+        partner_vendor::create_partner_vendor,
+        partner_vendor::update_partner_vendor,
+    )
+}
 
 pub fn city() -> impl HttpServiceFactory {
     (

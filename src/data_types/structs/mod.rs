@@ -34,6 +34,9 @@ pub use self::region::Region;
 pub mod city;
 pub use self::city::City;
 
+pub mod partner_vendor;
+pub use self::partner_vendor::PartnerVendor;
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Id {
     pub id: Option<i32>,
@@ -46,34 +49,6 @@ impl std::fmt::Display for Id {
         }
         write!(f, "Id: {}", "None")
     }
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct PartnerVendor {
-    pub id: i32,
-    pub name: String,
-    pub slug: String,
-    pub description_short: String,
-    pub description_long: String,
-    pub video_link: String,
-    pub image_link: String,
-    pub image_link_2: String,
-    pub thumbnail_link: String,
-    pub gallery: Vec<String>,
-    pub featured_partner_vendor: f32,
-    pub continent: i32,
-    pub country: i32,
-    pub region: i32,
-    pub city: i32,
-    pub latitude: f32,
-    pub longitude: f32,
-    pub email: String,
-    pub phone: String,
-    pub address: String,
-    pub website_link: String,
-    pub tags: String,
-    pub created: SystemTime,
-    pub edited: SystemTime,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

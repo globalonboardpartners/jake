@@ -187,7 +187,7 @@ CREATE TABLE partner_vendor (
   country integer references country(id) NOT NULL,
   region integer references region(id) NOT NULL,
   city integer references city(id) NOT NULL,
-  latatude FLOAT NOT NULL,
+  latitude FLOAT NOT NULL,
   longitude FLOAT NOT NULL,
   email TEXT NOT NULL,
   phone VARCHAR(16) NOT NULL,
@@ -218,7 +218,7 @@ CREATE TABLE restaurant (
   country integer references country(id) NOT NULL,
   region integer references region(id) NOT NULL,
   city integer references city(id) NOT NULL,
-  latatude FLOAT NOT NULL,
+  latitude FLOAT NOT NULL,
   longitude FLOAT NOT NULL,
   email TEXT NOT NULL,
   phone VARCHAR(16) NOT NULL,
@@ -246,7 +246,7 @@ CREATE TABLE hotel (
   country integer references country(id) NOT NULL,
   region integer references region(id) NOT NULL,
   city integer references city(id) NOT NULL,
-  latatude FLOAT NOT NULL,
+  latitude FLOAT NOT NULL,
   longitude FLOAT NOT NULL,
   email TEXT NOT NULL,
   phone VARCHAR(16) NOT NULL,
@@ -290,7 +290,7 @@ CREATE TABLE activity (
   country integer references country(id) NOT NULL,
   region integer references region(id) NOT NULL,
   city integer references city(id) NOT NULL,
-  latatude FLOAT NOT NULL,
+  latitude FLOAT NOT NULL,
   longitude FLOAT NOT NULL,
   email TEXT NOT NULL,
   phone VARCHAR(16) NOT NULL,
@@ -318,7 +318,7 @@ CREATE TABLE event (
   country integer references country(id) NOT NULL,
   region integer references region(id) NOT NULL,
   city integer references city(id) NOT NULL,
-  latatude FLOAT NOT NULL,
+  latitude FLOAT NOT NULL,
   longitude FLOAT NOT NULL,
   email TEXT NOT NULL,
   phone VARCHAR(16) NOT NULL,
@@ -730,7 +730,7 @@ INSERT INTO partner_vendor (
   country,
   region,
   city,
-  latatude,
+  latitude,
   longitude,
   email,
   phone,
@@ -752,7 +752,7 @@ INSERT INTO partner_vendor (
   2,                               -- country
   3,                               -- region
   1,                               -- city
-  40.7128,                         -- latatude
+  40.7128,                         -- latitude
   -74.0060,                        -- longitude
   'email@example.com',             -- email
   '+1-123-456-7890',               -- phone
@@ -776,7 +776,7 @@ INSERT INTO partner_vendor (
   country,
   region,
   city,
-  latatude,
+  latitude,
   longitude,
   email,
   phone,
@@ -822,7 +822,7 @@ INSERT INTO partner_vendor (
   country,
   region,
   city,
-  latatude,
+  latitude,
   longitude,
   email,
   phone,
@@ -844,7 +844,7 @@ INSERT INTO partner_vendor (
   1,                                         -- country (reference)
   1,                                         -- region (reference)
   1,                                         -- city (reference)
-  40.7128,                                     -- latatude
+  40.7128,                                     -- latitude
   -74.0060,                                    -- longitude
   'contact@boondocks.com',                     -- email
   '+1-123-456-7890',                           -- phone
@@ -854,19 +854,19 @@ INSERT INTO partner_vendor (
 );
 
 -- restaurant
-INSERT INTO restaurant (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, menu_gallery, featured_restaurant, partner_vendor, continent, country, region, city, latatude, longitude, email, phone, website_link, tags)
+INSERT INTO restaurant (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, menu_gallery, featured_restaurant, partner_vendor, continent, country, region, city, latitude, longitude, email, phone, website_link, tags)
 VALUES ('Sample Restaurant 1', 'sample-restaurant-1', 'Short description for Sample Restaurant 1', 'Long description for Sample Restaurant 1', 'https://www.youtube.com/watch?v=sample_video', 'https://www.example.com/images/sample1.jpg', 'https://www.example.com/images/sample1_2.jpg', 'https://www.example.com/images/sample1_thumb.jpg', ARRAY['https://www.example.com/gallery/sample1_1.jpg', 'https://www.example.com/gallery/sample1_2.jpg'], ARRAY['https://www.example.com/menu/sample1_1.jpg', 'https://www.example.com/menu/sample1_2.jpg'], TRUE, 1, 1, 1, 1, 1, 40.7128, -74.0060, 'info@sample1.com', '+123456789', 'https://www.sample1.com', 'tag1, tag2, tag3');
-INSERT INTO restaurant (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, menu_gallery, featured_restaurant, partner_vendor, continent, country, region, city, latatude, longitude, email, phone, website_link, tags)
+INSERT INTO restaurant (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, menu_gallery, featured_restaurant, partner_vendor, continent, country, region, city, latitude, longitude, email, phone, website_link, tags)
 VALUES ('Sample Restaurant 2', 'sample-restaurant-2', 'Short description for Sample Restaurant 2', 'Long description for Sample Restaurant 2', 'https://www.youtube.com/watch?v=sample_video_2', 'https://www.example.com/images/sample2.jpg', 'https://www.example.com/images/sample2_2.jpg', 'https://www.example.com/images/sample2_thumb.jpg', ARRAY['https://www.example.com/gallery/sample2_1.jpg', 'https://www.example.com/gallery/sample2_2.jpg'], ARRAY['https://www.example.com/menu/sample2_1.jpg', 'https://www.example.com/menu/sample2_2.jpg'], FALSE, 1, 1, 1, 1, 1, 34.0522, -118.2437, 'info@sample2.com', '+987654321', 'https://www.sample2.com', 'tag4, tag5');
-INSERT INTO restaurant (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, menu_gallery, featured_restaurant, partner_vendor, continent, country, region, city, latatude, longitude, email, phone, website_link, tags)
+INSERT INTO restaurant (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, menu_gallery, featured_restaurant, partner_vendor, continent, country, region, city, latitude, longitude, email, phone, website_link, tags)
 VALUES ('Sample Restaurant 3', 'sample-restaurant-3', 'Short description for Sample Restaurant 3', 'Long description for Sample Restaurant 3', '', '', '', '', ARRAY['https://www.example.com/gallery/sample3_1.jpg', 'https://www.example.com/gallery/sample3_2.jpg'], ARRAY['https://www.example.com/menu/sample3_1.jpg', 'https://www.example.com/menu/sample3_2.jpg'], TRUE, 1, 1, 1, 1, 1, 51.5074, -0.1278, 'info@sample3.com', '+444555666', 'https://www.sample3.com', 'tag6, tag7, tag8');
 
 -- hotel
-INSERT INTO hotel (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_hotel, partner_vendor, continent, country, region, city, latatude, longitude, email, phone, website_link)
+INSERT INTO hotel (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_hotel, partner_vendor, continent, country, region, city, latitude, longitude, email, phone, website_link)
 VALUES ('Hotel ABC', 'hotel-abc', 'A luxury hotel', 'Hotel ABC is a luxurious hotel located...', 'https://www.youtube.com/hotel_abc_video', 'https://example.com/images/hotel_abc.jpg', 'https://example.com/images/hotel_abc_2.jpg', 'https://example.com/images/hotel_abc_thumbnail.jpg', '{"https://example.com/images/hotel_abc_gallery_1.jpg", "https://example.com/images/hotel_abc_gallery_2.jpg"}', TRUE, 1, 1, 1, 1, 1, 40.7128, -74.0060, 'info@hotelabc.com', '+1-123-456-7890', 'https://www.hotelabc.com');
-INSERT INTO hotel (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_hotel, partner_vendor, continent, country, region, city, latatude, longitude, email, phone, website_link, tags)
+INSERT INTO hotel (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_hotel, partner_vendor, continent, country, region, city, latitude, longitude, email, phone, website_link, tags)
 VALUES ('Hotel XYZ', 'hotel-xyz', 'A cozy hotel', 'Hotel XYZ offers a cozy atmosphere...', 'https://www.youtube.com/hotel_xyz_video', 'https://example.com/images/hotel_xyz.jpg', 'https://example.com/images/hotel_xyz_2.jpg', 'https://example.com/images/hotel_xyz_thumbnail.jpg', '{"https://example.com/images/hotel_xyz_gallery_1.jpg", "https://example.com/images/hotel_xyz_gallery_2.jpg", "https://example.com/images/hotel_xyz_gallery_3.jpg"}', FALSE, 1, 1, 1, 1, 1, 34.0522, -118.2437, 'info@hotelxyz.com', '+1-987-654-3210', 'https://www.hotelxyz.com', '{"luxury", "cozy", "view"}');
-INSERT INTO hotel (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_hotel, partner_vendor, continent, country, region, city, latatude, longitude, email, phone, website_link)
+INSERT INTO hotel (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_hotel, partner_vendor, continent, country, region, city, latitude, longitude, email, phone, website_link)
 VALUES ('Seaside Resort', 'seaside-resort', 'Beachfront resort', 'Seaside Resort is a beachfront resort...', 'https://www.youtube.com/seaside_resort_video', 'https://example.com/images/seaside_resort.jpg', 'https://example.com/images/seaside_resort_2.jpg', 'https://example.com/images/seaside_resort_thumbnail.jpg', '{"https://example.com/images/seaside_resort_gallery_1.jpg", "https://example.com/images/seaside_resort_gallery_2.jpg", "https://example.com/images/seaside_resort_gallery_3.jpg"}', TRUE, 1, 1, 1, 1, 1, 25.7617, -80.1918, 'info@seasideresort.com', '+1-555-123-4567', 'https://www.seasideresort.com');
 
 -- hotel_room
@@ -878,11 +878,11 @@ INSERT INTO hotel_room (name, hotel_id, description_short, description_long, vid
 VALUES ('Family Room', 1, 'Perfect for families', 'This family room is designed to accommodate families comfortably, ensuring a pleasant stay for everyone.', 'https://www.example.com/family_video', 'https://www.example.com/family_image.jpg', 'https://www.example.com/family_image2.jpg', 'https://www.example.com/family_thumbnail.jpg', ARRAY[]::TEXT[], 'Family, Spacious, Comfortable');
 
 -- activity
-INSERT INTO activity (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_activity, partner_vendor, continent, country, region, city, latatude, longitude, email, phone, website_link)
+INSERT INTO activity (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_activity, partner_vendor, continent, country, region, city, latitude, longitude, email, phone, website_link)
 VALUES ('Hiking Adventure', 'hiking-adventure', 'Explore nature on foot', 'Join us for an exciting hiking adventure through scenic trails.', 'https://www.youtube.com/watch?v=xyz', 'https://example.com/images/hiking.jpg', 'https://example.com/images/hiking_2.jpg', 'https://example.com/images/hiking_thumb.jpg', ARRAY['https://example.com/gallery/image1.jpg', 'https://example.com/gallery/image2.jpg'], true, 1, 1, 1, 1, 1, 123.456, -78.901, 'contact@example.com', '+1234567890', 'https://www.example.com');
-INSERT INTO activity (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_activity, partner_vendor, continent, country, region, city, latatude, longitude, email, phone, website_link, tags)
+INSERT INTO activity (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_activity, partner_vendor, continent, country, region, city, latitude, longitude, email, phone, website_link, tags)
 VALUES ('Cultural Tour', 'cultural-tour', 'Experience rich cultural heritage', 'Immerse yourself in the local culture and traditions on this guided tour.', 'https://www.youtube.com/watch?v=abc', 'https://example.com/images/cultural.jpg', 'https://example.com/images/cultural_2.jpg', 'https://example.com/images/cultural_thumb.jpg', ARRAY['https://example.com/gallery/image3.jpg', 'https://example.com/gallery/image4.jpg'], false, 1, 1, 1, 1, 1, 12.345, -67.890, 'info@example.com', '+0987654321', 'https://www.tourcompany.com', 'culture, heritage, guided tour');
-INSERT INTO activity (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_activity, partner_vendor, continent, country, region, city, latatude, longitude, email, phone, website_link, tags)
+INSERT INTO activity (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_activity, partner_vendor, continent, country, region, city, latitude, longitude, email, phone, website_link, tags)
 VALUES ('Snorkeling Adventure', 'snorkeling-adventure', 'Discover marine life underwater', 'Explore the beautiful marine life with our snorkeling adventure.', 'https://www.youtube.com/watch?v=pqr', 'https://example.com/images/snorkeling.jpg', 'https://example.com/images/snorkeling_2.jpg', 'https://example.com/images/snorkeling_thumb.jpg', ARRAY['https://example.com/gallery/image5.jpg', 'https://example.com/gallery/image6.jpg'], true, 1, 1, 1, 1, 1, 23.456, -45.678, 'contact@snorkelers.com', '+9876543210', 'https://www.snorkelers.com', 'snorkeling, marine life, water sports');
 
 -- event
@@ -890,7 +890,7 @@ INSERT INTO event (
   name, slug, description_short, description_long, 
   video_link, image_link, image_link_2, thumbnail_link,
   gallery, featured_event, partner_vendor, continent, 
-  country, region, city, latatude, longitude, email,
+  country, region, city, latitude, longitude, email,
   phone, address, website_link, tags
 )
 VALUES (
@@ -907,7 +907,7 @@ INSERT INTO event (
   name, slug, description_short, description_long, 
   video_link, image_link, image_link_2, thumbnail_link,
   gallery, featured_event, partner_vendor, continent, 
-  country, region, city, latatude, longitude, email,
+  country, region, city, latitude, longitude, email,
   phone, address, website_link, tags
 )
 VALUES (
@@ -924,7 +924,7 @@ INSERT INTO event (
   name, slug, description_short, description_long,
   video_link, image_link, image_link_2, thumbnail_link,
   gallery, featured_event, partner_vendor, continent,
-  country, region, city, latatude, longitude, email,
+  country, region, city, latitude, longitude, email,
   phone, address, website_link, tags
 )
 VALUES (
