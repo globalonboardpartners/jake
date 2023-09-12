@@ -6,6 +6,7 @@ pub mod client;
 pub mod employee;
 pub mod job_listing;
 pub mod product_feature;
+pub mod continent;
 
 pub fn client() -> impl HttpServiceFactory {
     (
@@ -59,5 +60,14 @@ pub fn blog_category() -> impl HttpServiceFactory {
         blog_category::get_blog_category_by_id_or_all,
         blog_category::update_blog_category,
         blog_category::delete_blog_category,
+    )
+}
+
+pub fn continent() -> impl HttpServiceFactory {
+    (
+        continent::create_continent,
+        continent::get_continent_by_id_or_all,
+        continent::update_continent,
+        continent::delete_continent,
     )
 }

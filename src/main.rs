@@ -29,7 +29,8 @@ async fn main() -> Result<()> {
                 .service(routes::job_listing())
                 .service(routes::blog())
                 .service(routes::blog_category())
-                .service(routes::product_feature()),
+                .service(routes::product_feature())
+                .service(routes::continent())
         )
     })
     .bind(("127.0.0.1", 8080))?
