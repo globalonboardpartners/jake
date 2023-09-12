@@ -940,38 +940,33 @@ VALUES (
 
 -- event details
 INSERT INTO event_details (
-  name, slug, event_date, event_artist_slug, venue_name,
-  event_time, city, country, region, ticket_link,
-  gallery, tags
+  name,
+  slug,
+  event_date,
+  event_artist_slug,
+  venue_name,
+  event_time,
+  continent,
+  country,
+  region,
+  city,
+  ticket_link,
+  gallery,
+  tags
 )
 VALUES (
-  'Music Festival Day 1', 'music-festival-day-1', '2023-09-15', 'artist-2023',
-  'Madison Square Garden', '19:00:00', 1, 1, 1,
-  'https://example.com/tickets', ARRAY['img1', 'img2', 'img3'], 
-  'rock,pop'
-);
-
-INSERT INTO event_details (
-  name, slug, event_date, event_artist_slug, venue_name,
-  event_time, city, country, region, ticket_link,
-  gallery, tags
-)
-VALUES (
-  'Burning Man 2023', 'burning-man-2023', '2023-08-27', 'various-artists',
-  'Black Rock City', '00:00:00', 1, 1, 1,
-  'https://burningman.com/tickets', ARRAY['img1', 'img2', 'img3'], 
-  'community,art'
-);
-
-INSERT INTO event_details (
-  name, slug, event_date, event_artist_slug, venue_name,
-  event_time, city, country, region, ticket_link,
-  gallery, tags
-)
-VALUES (
-  'Lollapalooza Day 1', 'lollapalooza-day-1', '2023-08-03', 'artist-lolla-day1',
-  'Grant Park', '12:00:00', 1, 1, 1,
-  'https://www.lollapalooza.com/tickets/', ARRAY['lolla1', 'lolla2', 'lolla3'],
-  'rock,pop,hiphop'
+  'Music Festival 2023',
+  'music-festival-2023',
+  '2023-10-01',
+  'various-artists',
+  'Central Park',
+  '18:00:00',
+  1,  -- assuming '1' refers to an existing continent ID
+  1,  -- assuming '1' refers to an existing country ID
+  1,  -- assuming '1' refers to an existing region ID
+  1,  -- assuming '1' refers to an existing city ID
+  'https://ticket-link.com/event/1',
+  ARRAY['image1.jpg', 'image2.jpg'],
+  'music,festival'
 );
 
