@@ -539,7 +539,7 @@ VALUES (
   '123e4567-e89b-12d3-a456-426614174000', -- api_key as UUID
   1,                      -- security_level
   1,                     -- employee_id
-  'active',               -- status
+  'Active',               -- status
   0                      -- failed_login_attempts
 );
 
