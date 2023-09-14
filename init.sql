@@ -29,6 +29,32 @@ CREATE TABLE employee (
   edited TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
+CREATE TYPE status AS ENUM ('Active', 'Inactive', 'Suspended');
+
+CREATE TABLE test_enum (
+  id SERIAL PRIMARY KEY,
+  name TEXT,
+  enum_col status NOT NULL DEFAULT 'Active'
+);
+
+insert into test_enum (name)  values ('test');
+
+CREATE TABLE auth (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  password VARCHAR(128) NOT NULL,
+  salt VARCHAR(32) NOT NULL,
+  api_key UUID NOT NULL UNIQUE,
+  security_level SMALLINT NOT NULL,
+  employee_id INT REFERENCES employee(id),
+  status status DEFAULT 'Active' NOT NULL,
+  last_login TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  failed_login_attempts INT DEFAULT 0,
+  created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  edited TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
 -- Create Blog Categories Table
 CREATE TABLE blog_category (
   id SERIAL PRIMARY KEY,
@@ -491,6 +517,30 @@ INSERT INTO employee(
   NULL,
   'http://www.linkedin.com/in/hackleman',
   NULL
+);
+
+-- insert for auth
+INSERT INTO auth (
+  email, 
+  username, 
+  password, 
+  salt, 
+  api_key, 
+  security_level, 
+  employee_id, 
+  status, 
+  failed_login_attempts
+)
+VALUES (
+  'john.doe@example.com',  -- email
+  'john_doe',             -- username
+  'hashed_password_here', -- password
+  'salt_here',            -- salt
+  '123e4567-e89b-12d3-a456-426614174000', -- api_key as UUID
+  1,                      -- security_level
+  1,                     -- employee_id
+  'active',               -- status
+  0                      -- failed_login_attempts
 );
 
 -- insert blog_category

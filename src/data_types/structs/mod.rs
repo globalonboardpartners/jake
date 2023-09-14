@@ -54,6 +54,10 @@ pub use self::event::Event;
 pub mod event_details;
 pub use self::event_details::EventDetails;
 
+pub mod auth;
+pub use self::auth::Auth;
+pub use self::auth::Status;
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Id {
     pub id: Option<i32>,
