@@ -6,6 +6,9 @@ use actix_web::web::Json;
 use actix_web::{delete, get, http, post, put, web::Query, HttpRequest, HttpResponse};
 use sqlx::postgres::PgQueryResult;
 use sqlx::Error;
+use log::{info, error};
+use actix_session::Session;
+use actix_web::cookie::Cookie;
 
 #[post("/blog")]
 async fn create_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
@@ -151,7 +154,21 @@ async fn get_featured_blogs(req: HttpRequest) -> HttpResponse {
 }
 
 #[get("/blog")]
-async fn get_blog_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpResponse {
+async fn get_blog_by_id_or_all(session: Session, req: HttpRequest, Query(id): Query<Id>) -> HttpResponse {
+
+    let cookie = Cookie::new("cookie-test", "cookie-value");
+
+    match session.get::<String>("my-kata-cookie") {
+        Ok(value) => {
+            dbg!(&value);
+            info!("{}", value.unwrap())
+        },
+        Err(e) => {
+            dbg!(&e);
+            error!("No session data found for key_name: {}", e)
+        },
+    }
+
     if id.id.is_some() {
         match db::connect(req).await {
             Ok(pg) => {
@@ -188,6 +205,7 @@ async fn get_blog_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpRe
 
                 match returned {
                     Ok(record) => HttpResponse::Ok()
+                        .cookie(Cookie::new("my_cookie", "cookie_value"))
                         .status(StatusCode::OK)
                         .content_type("application/json")
                         .body(
@@ -201,6 +219,7 @@ async fn get_blog_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpRe
             Err(e) => HttpResponse::InternalServerError()
                 .status(http::StatusCode::INTERNAL_SERVER_ERROR)
                 .content_type("application/json")
+                .cookie(cookie)
                 .body(e.message),
         }
     } else {
