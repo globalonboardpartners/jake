@@ -2,6 +2,14 @@ use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
 use std::env;
 use std::io::Result;
+use actix_session::{storage::CookieSessionStore, Session, SessionMiddleware};
+use actix_web::{
+    cookie::{Key, SameSite},
+    error::InternalError,
+    middleware, Error, HttpResponse, Responder,
+};
+use serde::{Deserialize, Serialize};
+use std::result::Result as StdResult;
 
 pub mod data_types;
 pub mod db;
@@ -10,7 +18,10 @@ pub mod utils;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    HttpServer::new(|| {
+    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
+    let signing_key = Key::generate();
+    log::info!("starting HTTP server at http://localhost:8080");
+    HttpServer::new(move || {
         dotenv::dotenv().ok();
         let mut allowed_origin = env::var("FRONTEND_URL").expect("FRONTEND_URL is not set");
 
@@ -22,7 +33,21 @@ async fn main() -> Result<()> {
             .allowed_origin(allowed_origin.as_str())
             .allow_any_method()
             .allow_any_header();
-        App::new().wrap(cors).service(
+        App::new()
+            .wrap(middleware::Logger::default())
+            // cookie session middleware
+            .wrap(
+                SessionMiddleware::builder(
+                    CookieSessionStore::default(),
+                    signing_key.clone(),
+                )
+                // allow the cookie to be accessed from javascript
+                .cookie_http_only(false)
+                // allow the cookie only from the current domain
+                .cookie_same_site(SameSite::Strict)
+                .build(),
+            )
+            .wrap(cors).service(
             web::scope("/api/v1")
                 .service(routes::employee())
                 .service(routes::client())
@@ -41,7 +66,7 @@ async fn main() -> Result<()> {
                 .service(routes::activity())
                 .service(routes::event())
                 .service(routes::event_details())
-                // .service(routes::auth())
+                .service(routes::auth())
         )
     })
     .bind(("127.0.0.1", 8080))?

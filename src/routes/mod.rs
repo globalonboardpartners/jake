@@ -17,6 +17,11 @@ pub mod hotel_room;
 pub mod activity;
 pub mod event;
 pub mod event_details;
+pub mod auth;
+
+pub fn auth() -> impl HttpServiceFactory {
+    auth::login
+}
 
 pub fn event_details() -> impl HttpServiceFactory {
     (

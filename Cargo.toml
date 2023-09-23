@@ -4,12 +4,11 @@ version = "1.0.1"
 edition = "2021"
 authors = ["Harrison Hemstreet"]
 description = "Jake runs everything Exploro."
-repository = "https://github.com/globalonboardpartners/exploro-group-webservice"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix-web = "4.3.1"
+actix-web = { version = "4.3.1", features = ["cookies"] }
 dotenv = "0.15.0"
 serde = {version = "1.0.160", features = ["derive"]}
 serde_json = "1.0.96"
@@ -18,5 +17,8 @@ chrono = {version = "0.4.28", features = ["serde"]}
 sqlx = {version = "0.7.1", features = ["postgres", "runtime-tokio", "chrono", "uuid", "macros"]}
 actix-cors = "0.6.4"
 uuid = { version = "1.4.1", features = ["serde"] }
-# argon2 = "0.5.2"
-# jsonwebtoken = "8.3.0"
+argon2 = "0.5.2"
+actix-session = { version = "0.8.0", features = ["cookie-session"] }
+log = "0.4.20"
+cookie = {version = "0.17.0", features = ["secure", "percent-encode", "signed", "private", "key-expansion"] }
+env_logger = "0.10.0"

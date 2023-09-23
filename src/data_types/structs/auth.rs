@@ -9,6 +9,7 @@ pub struct Auth {
     pub password: String,
     pub salt: Option<String>,
     pub api_key: Option<Uuid>,
+    pub token: Option<Uuid>,
     pub security_level: Option<i16>,
     pub employee_id: Option<i32>,
     pub status: Option<Status>,

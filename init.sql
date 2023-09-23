@@ -46,6 +46,7 @@ CREATE TABLE auth (
   password VARCHAR(128) NOT NULL,
   salt VARCHAR(32) NOT NULL,
   api_key UUID NOT NULL UNIQUE,
+  token UUID UNIQUE,
   security_level SMALLINT NOT NULL,
   employee_id INT REFERENCES employee(id),
   status status DEFAULT 'Active' NOT NULL,
@@ -526,6 +527,7 @@ INSERT INTO auth (
   password, 
   salt, 
   api_key, 
+  token,
   security_level, 
   employee_id, 
   status, 
@@ -537,6 +539,7 @@ VALUES (
   'hashed_password_here', -- password
   'salt_here',            -- salt
   '123e4567-e89b-12d3-a456-426614174000', -- api_key as UUID
+  NULL,
   1,                      -- security_level
   1,                     -- employee_id
   'Active',               -- status
