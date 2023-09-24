@@ -1,6 +1,4 @@
-use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
-use std::env;
 use std::io::Result;
 
 pub mod data_types;
@@ -12,21 +10,9 @@ pub mod middleware;
 #[tokio::main]
 async fn main() -> Result<()> {
     HttpServer::new(move || {
-        dotenv::dotenv().ok();
-        let mut allowed_origin = env::var("FRONTEND_URL").expect("FRONTEND_URL is not set");
-
-        if cfg!(debug_assertions) {
-            allowed_origin = env::var("DEV_FRONTEND_URL").expect("DEV_FRONTEND_URL is not set");
-        }
-
-        let cors = Cors::permissive()
-            .allowed_origin(allowed_origin.as_str())
-            .allow_any_method()
-            .allow_any_header();
 
         App::new()
-            .wrap(cors)
-            // Apply Auth middleware only to the scope "/api/v1/secure"
+            .wrap(middleware::handle_cors())
             .service(
                 web::scope("/api/v1/s")
                     .wrap(middleware::JWTAuth)
