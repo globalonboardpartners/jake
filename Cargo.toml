@@ -18,5 +18,5 @@ chrono = {version = "0.4.28", features = ["serde"]}
 sqlx = {version = "0.7.1", features = ["postgres", "runtime-tokio", "chrono", "uuid", "macros"]}
 actix-cors = "0.6.4"
 uuid = { version = "1.4.1", features = ["serde"] }
-# argon2 = "0.5.2"
-# jsonwebtoken = "8.3.0"
+argon2 = "0.5.2"
+jsonwebtoken = "8.3.0"
