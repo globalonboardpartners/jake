@@ -24,11 +24,9 @@ pub async fn connect(req: HttpRequest) -> Result<PgPool, ErrorMessage> {
 
     let api_key: &str = bearer_token[1];
 
-    dbg!(&api_key);
-
     match pool_result {
         Ok(db) => {
-            let row = sqlx::query("SELECT COUNT(*) FROM auth WHERE api_key = $1::UUID;")
+            let row = sqlx::query("SELECT COUNT(*) FROM api_key WHERE key = $1")
                 .bind(api_key)
                 .fetch_one(&db)
                 .await;
@@ -41,7 +39,7 @@ pub async fn connect(req: HttpRequest) -> Result<PgPool, ErrorMessage> {
                     }
                     Ok(db)
                 }
-                Err(e) => Err(ErrorMessage::new(format!("Database query failed: {}", e).as_str())),
+                Err(_) => Err(ErrorMessage::new("Database query failed")),
             }
         }
         Err(e) => {
