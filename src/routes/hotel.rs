@@ -3,13 +3,13 @@ use crate::db;
 use crate::utils::handle_sql_error;
 use actix_web::http::StatusCode;
 use actix_web::web::Json;
-use actix_web::{delete, get, http, post, put, web::Query, HttpRequest, HttpResponse};
+use actix_web::{delete, get, http, post, put, web::Query, HttpResponse};
 use sqlx::postgres::PgQueryResult;
 use sqlx::Error;
 
 #[post("/hotel")]
-async fn create_hotel(req: HttpRequest, hotel: Json<Hotel>) -> HttpResponse {
-    match db::connect(req).await {
+async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<Hotel, Error> = sqlx::query_as!(
                 Hotel,
@@ -121,9 +121,9 @@ async fn create_hotel(req: HttpRequest, hotel: Json<Hotel>) -> HttpResponse {
 }
 
 #[get("/hotel")]
-async fn get_hotel_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpResponse {
+async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
     if id.id.is_some() {
-        match db::connect(req).await {
+        match db::connect().await {
             Ok(pg) => {
                 let returned: Result<Hotel, Error> = sqlx::query_as!(
                     Hotel,
@@ -189,7 +189,7 @@ async fn get_hotel_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpR
                 .body(e.message),
         }
     } else {
-        match db::connect(req).await {
+        match db::connect().await {
             Ok(pg) => {
                 let returned: Result<Vec<Hotel>, Error> = sqlx::query_as!(
                     Hotel,
@@ -255,8 +255,8 @@ async fn get_hotel_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpR
 }
 
 #[put("/hotel")]
-async fn update_hotel(req: HttpRequest, hotel: Json<Hotel>) -> HttpResponse {
-    match db::connect(req).await {
+async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<Hotel, Error> = sqlx::query_as!(
                 Hotel,
@@ -396,8 +396,8 @@ async fn update_hotel(req: HttpRequest, hotel: Json<Hotel>) -> HttpResponse {
 }
 
 #[delete("/hotel")]
-async fn delete_hotel(req: HttpRequest, id: Json<Id>) -> HttpResponse {
-    match db::connect(req).await {
+async fn delete_hotel(id: Json<Id>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<PgQueryResult, Error> = sqlx::query_as!(
                 Hotel,

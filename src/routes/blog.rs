@@ -3,13 +3,13 @@ use crate::db;
 use crate::utils::handle_sql_error;
 use actix_web::http::StatusCode;
 use actix_web::web::Json;
-use actix_web::{delete, get, http, post, put, web::Query, HttpRequest, HttpResponse};
+use actix_web::{delete, get, http, post, put, web::Query, HttpResponse};
 use sqlx::postgres::PgQueryResult;
 use sqlx::Error;
 
 #[post("/blog")]
-async fn create_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
-    match db::connect(req).await {
+async fn create_blog(blog: Json<Blog>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<Blog, Error> = sqlx::query_as!(
                 Blog,
@@ -98,8 +98,8 @@ async fn create_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
 }
 
 #[get("/blog/featured")]
-async fn get_featured_blogs(req: HttpRequest) -> HttpResponse {
-    match db::connect(req).await {
+async fn get_featured_blogs() -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<Vec<Blog>, Error> = sqlx::query_as!(
                 Blog,
@@ -151,9 +151,9 @@ async fn get_featured_blogs(req: HttpRequest) -> HttpResponse {
 }
 
 #[get("/blog")]
-async fn get_blog_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpResponse {
+async fn get_blog_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
     if id.id.is_some() {
-        match db::connect(req).await {
+        match db::connect().await {
             Ok(pg) => {
                 let returned: Result<Blog, Error> = sqlx::query_as!(
                     Blog,
@@ -204,7 +204,7 @@ async fn get_blog_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpRe
                 .body(e.message),
         }
     } else {
-        match db::connect(req).await {
+        match db::connect().await {
             Ok(pg) => {
                 let returned: Result<Vec<Blog>, Error> = sqlx::query_as!(
                     Blog,
@@ -255,8 +255,8 @@ async fn get_blog_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpRe
 }
 
 #[put("/blog")]
-async fn update_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
-    match db::connect(req).await {
+async fn update_blog(blog: Json<Blog>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<Blog, Error> = sqlx::query_as!(
                 Blog,
@@ -342,8 +342,8 @@ async fn update_blog(req: HttpRequest, blog: Json<Blog>) -> HttpResponse {
 }
 
 #[delete("/blog")]
-async fn delete_blog(req: HttpRequest, id: Json<Id>) -> HttpResponse {
-    match db::connect(req).await {
+async fn delete_blog(id: Json<Id>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<PgQueryResult, Error> =
                 sqlx::query_as!(Blog, "DELETE FROM blog WHERE id = $1;", id.id)

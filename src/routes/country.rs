@@ -3,30 +3,13 @@ use crate::db;
 use crate::utils::handle_sql_error;
 use actix_web::http::StatusCode;
 use actix_web::web::Json;
-use actix_web::{delete, get, http, post, put, web::Query, HttpRequest, HttpResponse};
+use actix_web::{delete, get, http, post, put, web::Query, HttpResponse};
 use sqlx::postgres::PgQueryResult;
 use sqlx::Error;
 
-/*
-
-  id,
-  name,
-  slug,
-  description_long,
-  description_short,
-  image_link,
-  thumbnail_link,
-  special_offer_image_link,
-  video_link,
-  gallery,
-  tags,
-  created,
-  edited
-*/
-
 #[post("/country")]
-async fn create_country(req: HttpRequest, country: Json<Country>) -> HttpResponse {
-    match db::connect(req).await {
+async fn create_country(country: Json<Country>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<Country, Error> = sqlx::query_as!(
                 Country,
@@ -102,9 +85,9 @@ async fn create_country(req: HttpRequest, country: Json<Country>) -> HttpRespons
 }
 
 #[get("/country")]
-async fn get_country_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpResponse {
+async fn get_country_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
     if id.id.is_some() {
-        match db::connect(req).await {
+        match db::connect().await {
             Ok(pg) => {
                 let returned: Result<Country, Error> = sqlx::query_as!(
                     Country,
@@ -158,7 +141,7 @@ async fn get_country_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> Htt
                 .body(e.message),
         }
     } else {
-        match db::connect(req).await {
+        match db::connect().await {
             Ok(pg) => {
                 let returned: Result<Vec<Country>, Error> = sqlx::query_as!(
                     Country,
@@ -212,8 +195,8 @@ async fn get_country_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> Htt
 }
 
 #[put("/country")]
-async fn update_country(req: HttpRequest, country: Json<Country>) -> HttpResponse {
-    match db::connect(req).await {
+async fn update_country(country: Json<Country>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<Country, Error> = sqlx::query_as!(
                 Country,
@@ -305,8 +288,8 @@ async fn update_country(req: HttpRequest, country: Json<Country>) -> HttpRespons
 }
 
 #[delete("/country")]
-async fn delete_country(req: HttpRequest, id: Json<Id>) -> HttpResponse {
-    match db::connect(req).await {
+async fn delete_country(id: Json<Id>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<PgQueryResult, Error> = sqlx::query_as!(
                 Country,

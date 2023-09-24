@@ -4,7 +4,7 @@ use crate::db;
 use crate::utils::handle_sql_error;
 use actix_web::http::{StatusCode, header};
 use actix_web::web::Json;
-use actix_web::{http, post, HttpRequest, HttpResponse};
+use actix_web::{http, post, HttpResponse};
 use sqlx::Row;
 use jsonwebtoken::{encode, decode, Header, Algorithm, Validation, EncodingKey, DecodingKey};
 use serde::{Serialize, Deserialize};
@@ -26,7 +26,7 @@ use argon2::{
 };
 
 #[post("/auth")]
-async fn login(req: HttpRequest, auth: Json<Auth>) -> HttpResponse {
+async fn login(auth: Json<Auth>) -> HttpResponse {
     dotenv::dotenv().ok();
 
     let start = SystemTime::now();
@@ -72,7 +72,7 @@ async fn login(req: HttpRequest, auth: Json<Auth>) -> HttpResponse {
     // `Argon2` instance.
     let parsed_hash = PasswordHash::new(&password_hash).unwrap();
     dbg!(parsed_hash);
-    match db::connect(req).await {
+    match db::connect().await {
         Ok(pg) => {
             let returned = sqlx::query(
                 "

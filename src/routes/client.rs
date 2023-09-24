@@ -3,13 +3,13 @@ use crate::db;
 use crate::utils::handle_sql_error;
 use actix_web::http::StatusCode;
 use actix_web::web::Json;
-use actix_web::{delete, get, http, post, put, web::Query, HttpRequest, HttpResponse};
+use actix_web::{delete, get, http, post, put, web::Query, HttpResponse};
 use sqlx::postgres::PgQueryResult;
 use sqlx::Error;
 
 #[post("/client")]
-async fn create_client(req: HttpRequest, client: Json<Client>) -> HttpResponse {
-    match db::connect(req).await {
+async fn create_client(client: Json<Client>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<Client, Error> = sqlx::query_as!(
                 Client,
@@ -100,9 +100,9 @@ async fn create_client(req: HttpRequest, client: Json<Client>) -> HttpResponse {
 }
 
 #[get("/client")]
-async fn get_client_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpResponse {
+async fn get_client_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
     if id.id.is_some() {
-        match db::connect(req).await {
+        match db::connect().await {
             Ok(pg) => {
                 let returned: Result<Client, Error> = sqlx::query_as!(
                     Client,
@@ -161,7 +161,7 @@ async fn get_client_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> Http
                 .body(e.message),
         }
     } else {
-        match db::connect(req).await {
+        match db::connect().await {
             Ok(pg) => {
                 let returned: Result<Vec<Client>, Error> = sqlx::query_as!(
                     Client,
@@ -220,8 +220,8 @@ async fn get_client_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> Http
 }
 
 #[put("/client")]
-async fn update_client(req: HttpRequest, client: Json<Client>) -> HttpResponse {
-    match db::connect(req).await {
+async fn update_client(client: Json<Client>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<Client, Error> = sqlx::query_as!(
                 Client,
@@ -333,8 +333,8 @@ async fn update_client(req: HttpRequest, client: Json<Client>) -> HttpResponse {
 }
 
 #[delete("/client")]
-async fn delete_client(req: HttpRequest, id: Json<Id>) -> HttpResponse {
-    match db::connect(req).await {
+async fn delete_client(id: Json<Id>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<PgQueryResult, Error> =
                 sqlx::query_as!(Client, "DELETE FROM client WHERE id = $1;", id.id)

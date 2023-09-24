@@ -3,13 +3,13 @@ use crate::db;
 use crate::utils::handle_sql_error;
 use actix_web::http::StatusCode;
 use actix_web::web::Json;
-use actix_web::{delete, get, http, post, put, web::Query, HttpRequest, HttpResponse};
+use actix_web::{delete, get, http, post, put, web::Query, HttpResponse};
 use sqlx::postgres::PgQueryResult;
 use sqlx::Error;
 
 #[post("/job_listing")]
-async fn create_job_listing(req: HttpRequest, job_listing: Json<JobListing>) -> HttpResponse {
-    match db::connect(req).await {
+async fn create_job_listing(job_listing: Json<JobListing>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<JobListing, Error> = sqlx::query_as!(
                 JobListing,
@@ -70,9 +70,9 @@ async fn create_job_listing(req: HttpRequest, job_listing: Json<JobListing>) -> 
 }
 
 #[get("/job_listing")]
-async fn get_job_listing_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) -> HttpResponse {
+async fn get_job_listing_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
     if id.id.is_some() {
-        match db::connect(req).await {
+        match db::connect().await {
             Ok(pg) => {
                 let returned: Result<JobListing, Error> = sqlx::query_as!(
                     JobListing,
@@ -121,7 +121,7 @@ async fn get_job_listing_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) ->
                 .body(e.message),
         }
     } else {
-        match db::connect(req).await {
+        match db::connect().await {
             Ok(pg) => {
                 let returned: Result<Vec<JobListing>, Error> = sqlx::query_as!(
                     JobListing,
@@ -168,8 +168,8 @@ async fn get_job_listing_by_id_or_all(req: HttpRequest, Query(id): Query<Id>) ->
 }
 
 #[put("/job_listing")]
-async fn update_job_listing(req: HttpRequest, job_listing: Json<JobListing>) -> HttpResponse {
-    match db::connect(req).await {
+async fn update_job_listing(job_listing: Json<JobListing>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<JobListing, Error> = sqlx::query_as!(
                 JobListing,
@@ -241,8 +241,8 @@ async fn update_job_listing(req: HttpRequest, job_listing: Json<JobListing>) -> 
 }
 
 #[delete("/job_listing")]
-async fn delete_job_listing(req: HttpRequest, id: Json<Id>) -> HttpResponse {
-    match db::connect(req).await {
+async fn delete_job_listing(id: Json<Id>) -> HttpResponse {
+    match db::connect().await {
         Ok(pg) => {
             let returned: Result<PgQueryResult, Error> =
                 sqlx::query_as!(JobListing, "DELETE FROM employee WHERE id = $1;", id.id)
