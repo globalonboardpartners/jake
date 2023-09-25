@@ -49,7 +49,7 @@ struct Claims2 {
     exp: u64
 }
 
-#[post("/create_user")]
+#[post("/auth/create_user")]
 async fn create_user(auth: Json<Auth>) -> HttpResponse {
     match db::connect().await {
         Ok(pg) => {
@@ -132,7 +132,7 @@ async fn create_user(auth: Json<Auth>) -> HttpResponse {
     }
 }
 
-#[post("/login")]
+#[post("/auth/login")]
 async fn login(auth: Json<Auth>) -> HttpResponse {
     match db::connect().await {
         Ok(pg) => {

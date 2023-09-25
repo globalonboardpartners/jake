@@ -56,6 +56,18 @@ where
     }
 
     fn call(&self, req: Req) -> Self::Future  {
+        let should_skip: bool = {
+            if let Some(uri) = req.extensions().get::<String>() {
+                uri.contains("/api/v1/auth")
+            } else {
+                false
+            }
+        };
+
+        if should_skip {
+            return Box::pin(self.service.call(req));
+        }
+
         let headers = req.headers().clone();
 
         let fut = self.service.call(req);
@@ -76,7 +88,6 @@ where
                                 let validation = Validation::new(Algorithm::HS256);
                                 match decode::<Claims>(token, &decoding_key, &validation) {
                                     Ok(t) => {
-                                        dbg!(t);
                                         return fut.await;
                                     },
                                     Err(_) => {
