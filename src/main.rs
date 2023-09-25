@@ -15,7 +15,8 @@ async fn main() -> Result<()> {
             .wrap(middleware::handle_cors())
             .service(
                 web::scope("/api/v1/s")
-                    // .wrap(middleware::JWTAuth)
+                    .wrap(middleware::CaptureUri)
+                    .wrap(middleware::JWTAuth)
                     .service(routes::employee())
                     .service(routes::client())
                     .service(routes::job_listing())
@@ -36,6 +37,7 @@ async fn main() -> Result<()> {
             )
             .service(
                 web::scope("/api/v1")
+                    .wrap(middleware::CaptureUri)
                     .service(routes::auth())
             )
     })

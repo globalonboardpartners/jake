@@ -56,6 +56,16 @@ where
     }
 
     fn call(&self, req: Req) -> Self::Future  {
+        println!("in here at call in jwt_auth");
+        dbg!(req.extensions());
+        if let Some(uri) = req.extensions().get::<String>() {
+            println!("in Some at call in jwt_auth");
+            dbg!(uri);
+        }
+        else {
+            println!("NOT in Some at call in jwt_auth");
+        }
+
         let headers = req.headers().clone();
 
         let fut = self.service.call(req);
