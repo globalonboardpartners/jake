@@ -34,7 +34,6 @@ async fn main() -> Result<()> {
                     .service(routes::event())
                     .service(routes::event_details())
             )
-            // No Auth middleware applied to this route
             .service(
                 web::scope("/api/v1")
                     .service(routes::auth())

@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 
 #[derive(sqlx::FromRow, Serialize, Deserialize, Debug)]
 pub struct Auth {
@@ -7,8 +6,6 @@ pub struct Auth {
     pub email: Option<String>,
     pub username: String,
     pub password: String,
-    pub salt: Option<String>,
-    pub api_key: Option<Uuid>,
     pub security_level: Option<i16>,
     pub employee_id: Option<i32>,
     pub status: Option<Status>,

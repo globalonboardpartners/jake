@@ -1,118 +1,232 @@
-use crate::data_types::structs::Auth;
 use std::env;
 use crate::db;
-use crate::utils::handle_sql_error;
 use actix_web::http::{StatusCode, header};
 use actix_web::web::Json;
 use actix_web::{http, post, HttpResponse};
-use sqlx::Row;
-use jsonwebtoken::{encode, decode, Header, Algorithm, Validation, EncodingKey, DecodingKey};
+use jsonwebtoken::{encode, Header, Algorithm, EncodingKey};
 use serde::{Serialize, Deserialize};
 use std::time::{SystemTime, UNIX_EPOCH};
-
-#[derive(Debug, Serialize, Deserialize)]
-struct Claims {
-    sub: String,
-    company: String,
-    exp: u64
-}
-
+use crate::utils::handle_sql_error;
 use argon2::{
     password_hash::{
         rand_core::OsRng,
-        PasswordHash, PasswordHasher, SaltString
+        PasswordHash, PasswordHasher, PasswordVerifier, SaltString
     },
     Argon2
 };
 
-#[post("/auth")]
-async fn login(auth: Json<Auth>) -> HttpResponse {
-    dotenv::dotenv().ok();
+use sqlx::Error;
 
-    let start = SystemTime::now();
-    let since_the_epoch = start.duration_since(UNIX_EPOCH)
-        .expect("Time went backwards");
-    
-    // Add 1 hour (3600 seconds) to the current Unix timestamp
-    let exp = since_the_epoch.as_secs() + 3600;
+use crate::data_types::structs::{Auth, Id, Status};
 
-    let jwt_secret = env::var("JWT_SECRET").expect("JWT_SECRET is not set");
+#[derive(Debug, Serialize, Deserialize)]
+struct LoginMessage {
+    message: String,
+    redirect_url: String
+}
 
-    let my_claims = Claims { sub: "b@b.com".to_owned(), company: "ACME".to_owned(), exp };
+#[derive(Debug, Serialize, Deserialize)]
+struct Claims {
+    sub: String,
+    iss: String,
+    aud: String,
+    email: Option<String>,
+    security_level: Option<i16>,
+    employee_id: Option<i32>,
+    status: Option<Status>,
+    last_login: Option<String>,
+    failed_login_attempts: Option<i32>,
+    exp: u64
+}
 
-    let encoding_key = EncodingKey::from_base64_secret(&jwt_secret)
-        .expect("Failed to decode base64 secret");
+#[derive(Debug, Serialize, Deserialize)]
+struct Claims2 {
+    sub: String,
+    iss: String,
+    aud: String,
+    email: Option<String>,
+    security_level: Option<i16>,
+    exp: u64
+}
 
-    let decoding_key = DecodingKey::from_base64_secret(&jwt_secret)
-        .expect("Failed to decode base64 secret");
-
-    // Encoding
-    let token = encode(&Header::new(Algorithm::HS256), &my_claims, &encoding_key).unwrap();
-
-    // Decoding
-    let validation = Validation::new(Algorithm::HS256);
-    let token_data = decode::<Claims>(&token, &decoding_key, &validation).unwrap();
-
-    println!("{:?}", token_data.claims);
-    println!("{:?}", token_data.header);
-    /////////////////////////////////////////////////////////////////
-    let password = b"hunter42"; // Bad password; don't actually use!
-    let salt = SaltString::generate(&mut OsRng);
-    
-    // Argon2 with default params (Argon2id v19)
-    let argon2 = Argon2::default();
-    
-    // Hash password to PHC string ($argon2id$v=19$...)
-    let password_hash = argon2.hash_password(password, &salt).unwrap().to_string();
-    dbg!(&password_hash);
-    
-    // Verify password against PHC string.
-    //
-    // NOTE: hash params from `parsed_hash` are used instead of what is configured in the
-    // `Argon2` instance.
-    let parsed_hash = PasswordHash::new(&password_hash).unwrap();
-    dbg!(parsed_hash);
+#[post("/create_user")]
+async fn create_user(auth: Json<Auth>) -> HttpResponse {
     match db::connect().await {
         Ok(pg) => {
-            let returned = sqlx::query(
-                "
-                    SELECT EXISTS (
-                        SELECT 1
-                        FROM auth
-                        WHERE username = $1 AND password = $2
-                        LIMIT 1
-                    );
-                "
+            dotenv::dotenv().ok();
+
+            let start = SystemTime::now();
+            let since_the_epoch = start.duration_since(UNIX_EPOCH)
+                .expect("Time went backwards");
+
+            let jwt_hours_active_var = env::var("JWT_hours_active").expect("JWT_hours_active is not set");
+            let jwt_hours_active: u64 = jwt_hours_active_var.parse().expect("Failed to convert JWT_hours_active env var to u64");
+                    
+            // Add (1 hour (3600 seconds) * however many hours) to the current Unix timestamp
+            let exp: u64 = since_the_epoch.as_secs() + (3600 * jwt_hours_active);
+
+            let jwt_secret = env::var("JWT_SECRET").expect("JWT_SECRET is not set");
+
+            let encoding_key = EncodingKey::from_base64_secret(&jwt_secret).expect("Failed to decode base64 secret");
+
+            let user_claims = Claims2 {
+                sub: auth.username.clone(),
+                iss: "ExploroGroup".to_string(),
+                aud: "user".to_string(),
+                email: auth.email.clone(),
+                security_level: Some(10),
+                exp,
+            };
+
+            let token = encode(&Header::new(Algorithm::HS256), &user_claims, &encoding_key).unwrap();
+
+            let salt = SaltString::generate(&mut OsRng);
+
+            let password_hash_str: String = Argon2::default().hash_password(&auth.password.as_bytes(), &salt).unwrap().to_string();
+
+            let result = sqlx::query_as!(
+                Id,
+                r#"
+                    INSERT INTO auth
+                        (
+                            email,
+                            username,
+                            password,
+                            security_level
+                        )
+                    VALUES (
+                        $1,
+                        $2,
+                        $3,
+                        $4
+                    )
+                    RETURNING id
+                "#,
+                auth.email,
+                auth.username,
+                password_hash_str,
+                auth.security_level
             )
-            .bind(&auth.username)
-            .bind(&auth.password)
             .fetch_one(&pg)
             .await;
 
-            /*
-
-            NOTE FOR WHEN I RETURN:
-            I think I send the JWT back via an auth header. I need to next turn this JWT portion of code into it's own middleware (just the reading part).
-            I also need to allow every single route to be protected by the JWT middleware except for the login route.
-            IF the user's auth token is invalid (or does not exist), return the user back to the login page
-            
-            gonna have to think about how I'll return the user to the login page
-
-            */
-
-            match returned {
-                Ok(record) => {
+            match result {
+                Ok(id) => {
                     HttpResponse::Created()
-                    .status(StatusCode::CREATED)
-                    .content_type("application/json")
-                    .append_header((header::AUTHORIZATION, format!("Bearer {}", token)))
-                    .body(
-                        serde_json::to_string(&Json(record.get::<bool, usize>(0)))
-                            .unwrap_or_else(|e| format!("JSON serialization error: {}", e)),
-                    )},
+                        .status(StatusCode::CREATED)
+                        .content_type("application/json")
+                        .append_header((header::AUTHORIZATION, format!("Bearer {}", token)))
+                        .body(
+                            serde_json::to_string(&Json(id))
+                                .unwrap_or_else(|e| format!("JSON serialization error: {}", e)),
+                        )
+                },
 
-                Err(e) => {
-                    handle_sql_error(e)
+                Err(e) => handle_sql_error(e),
+            }
+        }
+        Err(e) => HttpResponse::InternalServerError()
+            .status(http::StatusCode::INTERNAL_SERVER_ERROR)
+            .content_type("application/json")
+            .body(e.message),
+    }
+}
+
+#[post("/login")]
+async fn login(auth: Json<Auth>) -> HttpResponse {
+    match db::connect().await {
+        Ok(pg) => {
+            let user: Result<Auth, Error> = sqlx::query_as!(
+                Auth,
+                r#"
+                    SELECT
+                        id,
+                        email,
+                        username,
+                        password,
+                        security_level,
+                        employee_id,
+                        status as "status: _",
+                        (
+	                        trim(to_char(last_login, 'DD')) || ' ' ||
+	                        trim(to_char(last_login, 'Month')) || ' ' ||
+	                        trim(to_char(last_login, 'YYYY HH12:MI AM'))
+                        ) as last_login,
+                        failed_login_attempts,
+                        (
+	                        trim(to_char(created, 'DD')) || ' ' ||
+	                        trim(to_char(created, 'Month')) || ' ' ||
+	                        trim(to_char(created, 'YYYY HH12:MI AM'))
+                        ) as created,
+                        (
+	                        trim(to_char(edited, 'DD')) || ' ' ||
+	                        trim(to_char(edited, 'Month')) || ' ' ||
+	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
+                        ) as edited
+                    FROM auth
+                    WHERE username = $1
+                    LIMIT 1;
+                "#,
+                &auth.username
+            )
+            .fetch_one(&pg)
+            .await;
+
+            match user {
+                Ok(record) => {
+                    dotenv::dotenv().ok();
+
+                    let start = SystemTime::now();
+                    let since_the_epoch = start.duration_since(UNIX_EPOCH)
+                        .expect("Time went backwards");
+
+                    let jwt_hours_active_var = env::var("JWT_hours_active").expect("JWT_hours_active is not set");
+                    let jwt_hours_active: u64 = jwt_hours_active_var.parse().expect("Failed to convert JWT_hours_active env var to u64");
+                    
+                    // Add (1 hour (3600 seconds) * however many hours) to the current Unix timestamp
+                    let exp: u64 = since_the_epoch.as_secs() + (3600 * jwt_hours_active);
+
+                    let jwt_secret = env::var("JWT_SECRET").expect("JWT_SECRET is not set");
+
+                    let encoding_key = EncodingKey::from_base64_secret(&jwt_secret).expect("Failed to decode base64 secret");
+                    let stored_hash: String = record.password;
+                    let parsed_hash = match PasswordHash::new(&stored_hash) {
+                        Ok(hash) => hash,
+                        Err(_) => {
+                            return HttpResponse::InternalServerError().finish();
+                        }
+                    };
+
+                    let user_claims = Claims {
+                        sub: record.username,
+                        iss: "ExploroGroup".to_string(),
+                        aud: "user".to_string(),
+                        email: record.email,
+                        security_level: record.security_level,
+                        employee_id: record.employee_id,
+                        status: record.status,
+                        last_login: record.last_login,
+                        failed_login_attempts: record.failed_login_attempts,
+                        exp,
+                    };
+
+                    let token = encode(&Header::new(Algorithm::HS256), &user_claims, &encoding_key).unwrap();
+
+                    if Argon2::default().verify_password(auth.password.as_bytes(), &parsed_hash).is_ok() {
+                        HttpResponse::Ok()
+                            .status(StatusCode::OK)
+                            .content_type("application/json")
+                            .append_header((header::AUTHORIZATION, format!("Bearer {}", token)))
+                            .json(LoginMessage {
+                                message: "Logged in successfully".to_owned(),
+                                redirect_url: "/dashboard".to_owned()
+                            })
+                    } else {
+                        return HttpResponse::Unauthorized().finish();
+                    }
+                },
+                Err(_) => {
+                    return HttpResponse::InternalServerError().finish();
                 }
             }
         }

@@ -20,7 +20,10 @@ pub mod event_details;
 pub mod auth;
 
 pub fn auth() -> impl HttpServiceFactory {
-    auth::login
+    (
+        auth::login,
+        auth::create_user
+    )
 }
 
 pub fn event_details() -> impl HttpServiceFactory {

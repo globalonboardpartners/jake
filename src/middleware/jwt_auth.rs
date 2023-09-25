@@ -8,6 +8,11 @@ use std::task::{Context, Poll};
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Claims {
+    id: Option<i32>,
+    email: Option<String>,
+    username: Option<String>,
+    security_level: Option<i16>,
+    employee_id: Option<i32>,
     sub: String,
     exp: usize,
 }
@@ -50,8 +55,7 @@ where
         self.service.poll_ready(cx)
     }
 
-    fn call(&self, req: Req) -> Self::Future {
-        // Clone the headers from the request
+    fn call(&self, req: Req) -> Self::Future  {
         let headers = req.headers().clone();
 
         let fut = self.service.call(req);
@@ -71,7 +75,8 @@ where
                             Ok(decoding_key) => {
                                 let validation = Validation::new(Algorithm::HS256);
                                 match decode::<Claims>(token, &decoding_key, &validation) {
-                                    Ok(_) => {
+                                    Ok(t) => {
+                                        dbg!(t);
                                         return fut.await;
                                     },
                                     Err(_) => {
