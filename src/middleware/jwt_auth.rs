@@ -87,7 +87,7 @@ where
                             Ok(decoding_key) => {
                                 let validation = Validation::new(Algorithm::HS256);
                                 match decode::<Claims>(token, &decoding_key, &validation) {
-                                    Ok(t) => {
+                                    Ok(_) => {
                                         return fut.await;
                                     },
                                     Err(_) => {
