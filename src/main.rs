@@ -14,9 +14,10 @@ async fn main() -> Result<()> {
         App::new()
             .wrap(middleware::handle_cors())
             .service(
-                web::scope("/api/v1/s")
-                    .wrap(middleware::CaptureUri)
+                web::scope("/api/v1")
                     .wrap(middleware::JWTAuth)
+                    .wrap(middleware::CaptureUri)
+                    .service(routes::auth())
                     .service(routes::employee())
                     .service(routes::client())
                     .service(routes::job_listing())
@@ -34,11 +35,6 @@ async fn main() -> Result<()> {
                     .service(routes::activity())
                     .service(routes::event())
                     .service(routes::event_details())
-            )
-            .service(
-                web::scope("/api/v1")
-                    .wrap(middleware::CaptureUri)
-                    .service(routes::auth())
             )
     })
     .bind(("127.0.0.1", 8080))?

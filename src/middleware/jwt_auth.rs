@@ -56,14 +56,16 @@ where
     }
 
     fn call(&self, req: Req) -> Self::Future  {
-        println!("in here at call in jwt_auth");
-        dbg!(req.extensions());
-        if let Some(uri) = req.extensions().get::<String>() {
-            println!("in Some at call in jwt_auth");
-            dbg!(uri);
-        }
-        else {
-            println!("NOT in Some at call in jwt_auth");
+        let should_skip: bool = {
+            if let Some(uri) = req.extensions().get::<String>() {
+                uri.contains("/api/v1/auth")
+            } else {
+                false
+            }
+        };
+
+        if should_skip {
+            return Box::pin(self.service.call(req));
         }
 
         let headers = req.headers().clone();
@@ -86,7 +88,6 @@ where
                                 let validation = Validation::new(Algorithm::HS256);
                                 match decode::<Claims>(token, &decoding_key, &validation) {
                                     Ok(t) => {
-                                        dbg!(t);
                                         return fut.await;
                                     },
                                     Err(_) => {

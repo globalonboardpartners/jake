@@ -1,7 +1,8 @@
 use actix_web::dev::{Transform, Service, ServiceResponse, ServiceRequest};
+use actix_web::HttpMessage;
 use actix_web::Result;
 use core::future::Ready;
-use actix_web::{Error, HttpMessage};
+use actix_web::Error;
 use std::pin::Pin;
 use std::task::{Context, Poll};
 
@@ -23,28 +24,24 @@ where
 
     fn call(&self, req: ServiceRequest) -> Self::Future {
         let uri = req.uri().to_string();
-        // let conn_info = req.connection_info().clone();
-
-        println!("capture_uri: uri: {}", &uri);
-
         req.extensions_mut().insert(uri);
-        // req.extensions_mut().insert(conn_info);
-
         Box::pin(self.service.call(req))
     }
 }
 
 pub struct CaptureUri;
 
-impl<S: Service<Req>, Req> Transform<S, Req> for CaptureUri {
-    type Response = S::Response;
-    type Error = S::Error;
+impl<S> Transform<S, ServiceRequest> for CaptureUri
+where
+    S: Service<ServiceRequest, Response = ServiceResponse, Error = Error> + 'static,
+{
+    type Response = ServiceResponse;
+    type Error = Error;
     type InitError = ();
-    type Transform = S;
+    type Transform = CaptureUriMiddleware<S>;
     type Future = Ready<Result<Self::Transform, Self::InitError>>;
 
     fn new_transform(&self, service: S) -> Self::Future {
-        std::future::ready(Ok(service))
+        std::future::ready(Ok(CaptureUriMiddleware { service }))
     }
 }
-
