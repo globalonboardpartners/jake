@@ -56,9 +56,17 @@ where
     }
 
     fn call(&self, req: Req) -> Self::Future  {
+        dotenv::dotenv().ok();
+
+        let skip_auth_str = env::var("SKIP_AUTH").expect("SKIP_AUTH is not set");
+
+        let skip_auth: bool = skip_auth_str.parse().unwrap_or_else(|_| {
+            panic!("SKIP_AUTH should be a boolean and set to either 'true' or 'false'")
+        });
+
         let should_skip: bool = {
             if let Some(uri) = req.extensions().get::<String>() {
-                uri.contains("/api/v1/auth")
+                skip_auth || uri.contains("/api/v1/auth")
             } else {
                 false
             }
@@ -72,7 +80,6 @@ where
 
         let fut = self.service.call(req);
 
-        dotenv::dotenv().ok();
         let jwt_secret = env::var("JWT_SECRET").expect("JWT_SECRET is not set");
 
         Box::pin(async move {
