@@ -1,8 +1,8 @@
 -- for states/provinences/regions/teritory/reservation/military base/etc basically for anything that is the next largest division of a country
 CREATE TABLE region (
   id SERIAL PRIMARY KEY,
-  name varchar(50) NOT NULL,
-  slug varchar(50) NOT NULL,
+  name varchar(50) UNIQUE NOT NULL,
+  slug varchar(50) UNIQUE NOT NULL,
   description_long varchar(100) NOT NULL,
   description_short varchar(200) NOT NULL,
   image_link TEXT NOT NULL,

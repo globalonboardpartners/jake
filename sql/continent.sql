@@ -1,8 +1,8 @@
 -- formally known as "Region"
 CREATE TABLE continent (
   id SERIAL PRIMARY KEY,
-  name varchar(50) NOT NULL,
-  slug varchar(50) NOT NULL,
+  name varchar(50) UNIQUE NOT NULL,
+  slug varchar(50) UNIQUE NOT NULL,
   description_long varchar(100) NOT NULL,
   description_short varchar(200) NOT NULL,
   image_link TEXT NOT NULL,
@@ -20,27 +20,11 @@ BEFORE UPDATE ON continent
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_on();
 
-INSERT INTO continent (
-  name, 
-  slug, 
-  description_long, 
-  description_short, 
-  image_link, 
-  thumbnail_link, 
-  gallery
-) VALUES (
-  'MISSING DATA', 
-  'missing-data', 
-  'This is a placeholder for missing data.', 
-  'Placeholder for missing data.', 
-  'https://i.imgur.com/hfM1J8s.png', 
-  'https://i.imgur.com/hfM1J8s.png', 
-  ARRAY['https://i.imgur.com/hfM1J8s.png']
-);
-
-INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery)
-VALUES ('Asia', 'asia', 'Long description of Asia', 'Short description of Asia', 'image_asia.jpg', 'thumbnail_asia.jpg', 'special_offer_asia.jpg', 'video_asia.mp4', ARRAY['image1.jpg', 'image2.jpg']);
-INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, special_offer_image_link, video_link, gallery, tags)
-VALUES ('Europe', 'europe', 'Long description of Europe', 'Short description of Europe', 'image_europe.jpg', 'thumbnail_europe.jpg', 'special_offer_europe.jpg', 'video_europe.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'travel, culture');
-INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, video_link, gallery, tags)
-VALUES ('Africa', 'africa', 'Long description of Africa', 'Short description of Africa', 'image_africa.jpg', 'thumbnail_africa.jpg', 'video_africa.mp4', ARRAY['image1.jpg', 'image2.jpg'], 'safari, nature');
+-- Insert for Continent
+INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, gallery, created, edited)
+VALUES ('Middle East', 'middle-east', 'Long description for Middle East', 'Short description for Middle East', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('Europe', 'europe', 'Long description for Europe', 'Short description for Europe', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('North America', 'north-america', 'Long description for North America', 'Short description for North America', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('Asia', 'asia', 'Long description for Asia', 'Short description for Asia', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('Caribbean', 'caribbean', 'Long description for Caribbean', 'Short description for Caribbean', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('Australia', 'australia', 'Long description for Australia', 'Short description for Australia', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
