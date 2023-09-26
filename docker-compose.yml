@@ -13,6 +13,7 @@ services:
       - "5440:5432"
     volumes: 
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./sql:/docker-entrypoint-initdb.d/sql
     
   pgadmin-compose:
     image: dpage/pgadmin4
