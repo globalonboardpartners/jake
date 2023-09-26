@@ -32,62 +32,6 @@ BEFORE UPDATE ON activity
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_on();
 
--- INSERT INTO activity (
---   name,
---   slug,
---   description_short,
---   description_long,
---   video_link,
---   image_link,
---   image_link_2,
---   thumbnail_link,
---   featured_activity,
---   gallery,
---   continent,
---   country,
---   region,
---   city,
---   latitude,
---   longitude,
---   email,
---   phone,
---   address,
---   website_link,
---   tags,
---   partner_vendor
--- ) VALUES (
---   '48 Blocks AC',
---   '48-blocks-ac',
---   'MISSING DATA',
---   '<p>Atlantic City’s art work currently has more than 50 murals lining the streets. The 48 Blocks AC initiative aims to create artistic freedom and expression. Local artists are encouraged artists to infuse the city walls with personal style and content. This is a great way to experience the city’s culture beyond the busy boardwalk.</p>',
---   'MISSING DATA',
---   'https://uploads-ssl.webflow.com/63be358a2ba7e25fed479661/63c8fa1a616f6d4e985823ba_48-blocks-ac-mural-denton-burrows-1024x683.jpeg',
---   'https://uploads-ssl.webflow.com/63be358a2ba7e25fed479661/63c8fa1a616f6d4e985823ba_48-blocks-ac-mural-denton-burrows-1024x683.jpeg',
---   'https://uploads-ssl.webflow.com/63be358a2ba7e25fed479661/63c8fa1a616f6d4e985823ba_48-blocks-ac-mural-denton-burrows-1024x683.jpeg',
---   2.0,
---   '{x}',
---   1,
---   1,
---   1,
---   1,
---   39,
---   74,
---   'MISSING DATA',
---   'MISSING DATA',
---   'MISSING DATA',
---   'MISSING DATA',
---   'MISSING DATA',
---   1
--- );
-
--- -- activity
--- INSERT INTO activity (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_activity, partner_vendor, continent, country, region, city, latitude, longitude, email, phone, website_link)
--- VALUES ('Hiking Adventure', 'hiking-adventure', 'Explore nature on foot', 'Join us for an exciting hiking adventure through scenic trails.', 'https://www.youtube.com/watch?v=xyz', 'https://example.com/images/hiking.jpg', 'https://example.com/images/hiking_2.jpg', 'https://example.com/images/hiking_thumb.jpg', ARRAY['https://example.com/gallery/image1.jpg', 'https://example.com/gallery/image2.jpg'], 1.0, 1, 1, 1, 1, 1, 123.456, -78.901, 'contact@example.com', '+1234567890', 'https://www.example.com');
--- INSERT INTO activity (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_activity, partner_vendor, continent, country, region, city, latitude, longitude, email, phone, website_link, tags)
--- VALUES ('Cultural Tour', 'cultural-tour', 'Experience rich cultural heritage', 'Immerse yourself in the local culture and traditions on this guided tour.', 'https://www.youtube.com/watch?v=abc', 'https://example.com/images/cultural.jpg', 'https://example.com/images/cultural_2.jpg', 'https://example.com/images/cultural_thumb.jpg', ARRAY['https://example.com/gallery/image3.jpg', 'https://example.com/gallery/image4.jpg'], 1.0, 1, 1, 1, 1, 1, 12.345, -67.890, 'info@example.com', '+0987654321', 'https://www.tourcompany.com', 'culture, heritage, guided tour');
--- INSERT INTO activity (name, slug, description_short, description_long, video_link, image_link, image_link_2, thumbnail_link, gallery, featured_activity, partner_vendor, continent, country, region, city, latitude, longitude, email, phone, website_link, tags)
--- VALUES ('Snorkeling Adventure', 'snorkeling-adventure', 'Discover marine life underwater', 'Explore the beautiful marine life with our snorkeling adventure.', 'https://www.youtube.com/watch?v=pqr', 'https://example.com/images/snorkeling.jpg', 'https://example.com/images/snorkeling_2.jpg', 'https://example.com/images/snorkeling_thumb.jpg', ARRAY['https://example.com/gallery/image5.jpg', 'https://example.com/gallery/image6.jpg'], 1.0, 1, 1, 1, 1, 1, 23.456, -45.678, 'contact@snorkelers.com', '+9876543210', 'https://www.snorkelers.com', 'snorkeling, marine life, water sports');
-
 INSERT INTO activity (name, slug, description_short, description_long, video_link, image_link, country, region, city, latitude, longitude, email, phone, address, website_link, tags, partner_vendor, image_link_2, thumbnail_link, continent, gallery, featured_activity) VALUES ('48 Blocks AC', '48-blocks-ac', '', '<p>Atlantic City’s art work currently has more than 50 murals lining the streets. The 48 Blocks AC initiative aims to create artistic freedom and expression. Local artists are encouraged artists to infuse the city walls with personal style and content. This is a great way to experience the city’s culture beyond the busy boardwalk.</p>', '', 'https://uploads-ssl.webflow.com/63be358a2ba7e25fed479661/63c8fa1a616f6d4e985823ba_48-blocks-ac-mural-denton-burrows-1024x683.jpeg', 1, 1, 1, 39, 74, '', '', '', '', '', 1, 'https://i.imgur.com/hfM1J8s.png', 'https://i.imgur.com/hfM1J8s.png', 1, ARRAY['https://i.imgur.com/hfM1J8s.png'], 999.9);
 
 INSERT INTO activity (name, slug, description_short, description_long, video_link, image_link, country, region, city, latitude, longitude, email, phone, address, website_link, tags, partner_vendor, image_link_2, thumbnail_link, continent, gallery, featured_activity) VALUES ('5th Maine Museum', '5th-maine-museum', '', '<p>This museum focuses on the role Portland had in the Civil War. It boasts many exhibits, displays, and equipment used in the Civil War.</p>', '', 'https://uploads-ssl.webflow.com/63be358a2ba7e25fed479661/63c8fa21b3a4cb182a286bd4_portland-maine-5th-museum.jpeg', 1, 1, 1, 44, 70, '', '', '', '', '', 1, 'https://i.imgur.com/hfM1J8s.png', 'https://i.imgur.com/hfM1J8s.png', 1, ARRAY['https://i.imgur.com/hfM1J8s.png'], 999.9);
