@@ -24,7 +24,6 @@ $$ LANGUAGE plpgsql;
 \i /docker-entrypoint-initdb.d/sql/api_key.sql
 \i /docker-entrypoint-initdb.d/sql/employee.sql
 \i /docker-entrypoint-initdb.d/sql/auth.sql
-\i /docker-entrypoint-initdb.d/sql/activity.sql
 \i /docker-entrypoint-initdb.d/sql/blog_category.sql
 \i /docker-entrypoint-initdb.d/sql/blog.sql
 \i /docker-entrypoint-initdb.d/sql/client.sql
@@ -33,3 +32,4 @@ $$ LANGUAGE plpgsql;
 \i /docker-entrypoint-initdb.d/sql/job_listing.sql
 \i /docker-entrypoint-initdb.d/sql/product_feature.sql
 \i /docker-entrypoint-initdb.d/sql/restaurant.sql
+\i /docker-entrypoint-initdb.d/sql/activity.sql

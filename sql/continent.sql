@@ -20,9 +20,19 @@ BEFORE UPDATE ON continent
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_on();
 
+-- -- Insert for Continent
+-- INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, gallery, created, edited)
+-- VALUES ('Middle East', 'middle-east', 'Long description for Middle East', 'Short description for Middle East', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+--        ('Europe', 'europe', 'Long description for Europe', 'Short description for Europe', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+--        ('North America', 'north-america', 'Long description for North America', 'Short description for North America', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+--        ('Asia', 'asia', 'Long description for Asia', 'Short description for Asia', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+--        ('Caribbean', 'caribbean', 'Long description for Caribbean', 'Short description for Caribbean', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+--        ('Australia', 'australia', 'Long description for Australia', 'Short description for Australia', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
 -- Insert for Continent
 INSERT INTO continent (name, slug, description_long, description_short, image_link, thumbnail_link, gallery, created, edited)
-VALUES ('Middle East', 'middle-east', 'Long description for Middle East', 'Short description for Middle East', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+VALUES ('MISSING DATA', 'missing-data', 'Long description for MISSING DATA', 'Short description for MISSING DATA', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('Middle East', 'middle-east', 'Long description for Middle East', 'Short description for Middle East', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
        ('Europe', 'europe', 'Long description for Europe', 'Short description for Europe', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
        ('North America', 'north-america', 'Long description for North America', 'Short description for North America', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
        ('Asia', 'asia', 'Long description for Asia', 'Short description for Asia', 'image_link_here', 'thumbnail_link_here', ARRAY['gallery1', 'gallery2'], CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
