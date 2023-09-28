@@ -25,7 +25,7 @@ async fn create_hotel_room(hotel_room: Json<HotelRoom>) -> HttpResponse {
                             image_link_2,
                             thumbnail_link,
                             gallery,
-                            tags
+                            amenities
                         )
                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
                     RETURNING
@@ -39,7 +39,7 @@ async fn create_hotel_room(hotel_room: Json<HotelRoom>) -> HttpResponse {
                         image_link_2,
                         thumbnail_link,
                         gallery,
-                        tags,
+                        amenities,
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
@@ -60,7 +60,7 @@ async fn create_hotel_room(hotel_room: Json<HotelRoom>) -> HttpResponse {
                 hotel_room.image_link_2,
                 hotel_room.thumbnail_link,
                 hotel_room.gallery.as_slice(),
-                hotel_room.tags
+                hotel_room.amenities
             )
             .fetch_one(&pg)
             .await;
@@ -103,7 +103,7 @@ async fn get_hotel_room_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             image_link_2,
                             thumbnail_link,
                             gallery,
-                            tags,
+                            amenities,
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
@@ -157,7 +157,7 @@ async fn get_hotel_room_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             image_link_2,
                             thumbnail_link,
                             gallery,
-                            tags,
+                            amenities,
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
@@ -213,7 +213,7 @@ async fn update_hotel_room(hotel_room: Json<HotelRoom>) -> HttpResponse {
                             image_link_2,
                             thumbnail_link,
                             gallery,
-                            tags
+                            amenities
                         )
                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
                     ON CONFLICT (id)
@@ -228,7 +228,7 @@ async fn update_hotel_room(hotel_room: Json<HotelRoom>) -> HttpResponse {
                         video_link = EXCLUDED.video_link,
                         thumbnail_link = EXCLUDED.thumbnail_link,
                         gallery = EXCLUDED.gallery,
-                        tags = EXCLUDED.tags,
+                        amenities = EXCLUDED.amenities,
                         edited = NOW()
                     RETURNING
                         id,
@@ -241,7 +241,7 @@ async fn update_hotel_room(hotel_room: Json<HotelRoom>) -> HttpResponse {
                         image_link_2,
                         thumbnail_link,
                         gallery,
-                        tags,
+                        amenities,
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
@@ -263,7 +263,7 @@ async fn update_hotel_room(hotel_room: Json<HotelRoom>) -> HttpResponse {
                 hotel_room.image_link_2,
                 hotel_room.thumbnail_link,
                 hotel_room.gallery.as_slice(),
-                hotel_room.tags
+                hotel_room.amenities
             )
             .fetch_one(&pg)
             .await;

@@ -26,9 +26,21 @@ async fn create_city(city: Json<City>) -> HttpResponse {
                             video_link,
                             gallery,
                             featured_city,
+                            getting_around,
+                            food_and_drink,
+                            facts,
+                            hotel,
+                            restaurant,
+                            attraction,
+                            shopping,
+                            continent,
+                            country,
+                            region,
+                            latitude,
+                            longitude,
                             tags
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
                     RETURNING
                         id,
                         name,
@@ -41,6 +53,18 @@ async fn create_city(city: Json<City>) -> HttpResponse {
                         video_link,
                         gallery,
                         featured_city,
+                        getting_around,
+                        food_and_drink,
+                        facts,
+                        hotel,
+                        restaurant,
+                        attraction,
+                        shopping,
+                        continent,
+                        country,
+                        region,
+                        latitude,
+                        longitude,
                         tags,
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
@@ -63,6 +87,18 @@ async fn create_city(city: Json<City>) -> HttpResponse {
                 city.video_link,
                 city.gallery.as_slice(),
                 city.featured_city,
+                city.getting_around.as_slice(),
+                city.food_and_drink.as_slice(),
+                city.facts.as_slice(),
+                city.hotel.as_ref().map_or(&[][..], |v| v.as_slice()),
+                city.restaurant.as_ref().map_or(&[][..], |v| v.as_slice()),
+                city.attraction.as_ref().map_or(&[][..], |v| v.as_slice()),
+                city.shopping.as_ref().map_or(&[][..], |v| v.as_slice()),
+                city.continent,
+                city.country,
+                city.region,
+                city.latitude,
+                city.longitude,
                 city.tags
             )
             .fetch_one(&pg)
@@ -107,6 +143,18 @@ async fn get_city_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             video_link,
                             gallery,
                             featured_city,
+                            getting_around,
+                            food_and_drink,
+                            facts,
+                            hotel,
+                            restaurant,
+                            attraction,
+                            shopping,
+                            continent,
+                            country,
+                            region,
+                            latitude,
+                            longitude,
                             tags,
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
@@ -162,6 +210,18 @@ async fn get_city_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             video_link,
                             gallery,
                             featured_city,
+                            getting_around,
+                            food_and_drink,
+                            facts,
+                            hotel,
+                            restaurant,
+                            attraction,
+                            shopping,
+                            continent,
+                            country,
+                            region,
+                            latitude,
+                            longitude,
                             tags,
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
@@ -219,9 +279,21 @@ async fn update_city(city: Json<City>) -> HttpResponse {
                             video_link,
                             gallery,
                             featured_city,
+                            getting_around,
+                            food_and_drink,
+                            facts,
+                            hotel,
+                            restaurant,
+                            attraction,
+                            shopping,
+                            continent,
+                            country,
+                            region,
+                            latitude,
+                            longitude,
                             tags
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
                     ON CONFLICT (id)
                     DO UPDATE SET 
                         id = EXCLUDED.id,
@@ -235,6 +307,18 @@ async fn update_city(city: Json<City>) -> HttpResponse {
                         video_link = EXCLUDED.video_link,
                         gallery = EXCLUDED.gallery,
                         featured_city = EXCLUDED.featured_city,
+                        getting_around = EXCLUDED.getting_around,
+                        food_and_drink = EXCLUDED.food_and_drink,
+                        facts = EXCLUDED.facts,
+                        hotel = EXCLUDED.hotel,
+                        restaurant = EXCLUDED.restaurant,
+                        attraction = EXCLUDED.attraction,
+                        shopping = EXCLUDED.shopping,
+                        continent = EXCLUDED.continent,
+                        country = EXCLUDED.country,
+                        region = EXCLUDED.region,
+                        latitude = EXCLUDED.latitude,
+                        longitude = EXCLUDED.longitude,
                         tags = EXCLUDED.tags,
                         edited = NOW()
                     RETURNING
@@ -249,6 +333,18 @@ async fn update_city(city: Json<City>) -> HttpResponse {
                         video_link,
                         gallery,
                         featured_city,
+                        getting_around,
+                        food_and_drink,
+                        facts,
+                        hotel,
+                        restaurant,
+                        attraction,
+                        shopping,
+                        continent,
+                        country,
+                        region,
+                        latitude,
+                        longitude,
                         tags,
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
@@ -272,6 +368,18 @@ async fn update_city(city: Json<City>) -> HttpResponse {
                 city.video_link,
                 city.gallery.as_slice(),
                 city.featured_city,
+                city.getting_around.as_slice(),
+                city.food_and_drink.as_slice(),
+                city.facts.as_slice(),
+                city.hotel.as_ref().map_or(&[][..], |v| v.as_slice()),
+                city.restaurant.as_ref().map_or(&[][..], |v| v.as_slice()),
+                city.attraction.as_ref().map_or(&[][..], |v| v.as_slice()),
+                city.shopping.as_ref().map_or(&[][..], |v| v.as_slice()),
+                city.continent,
+                city.country,
+                city.region,
+                city.latitude,
+                city.longitude,
                 city.tags
             )
             .fetch_one(&pg)

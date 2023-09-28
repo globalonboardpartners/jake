@@ -12,7 +12,7 @@ pub struct HotelRoom {
     pub image_link_2: String,
     pub thumbnail_link: String,
     pub gallery: Vec<String>,
-    pub tags: Option<String>,
+    pub amenities: Option<String>,
     pub created: Option<String>,
     pub edited: Option<String>,
 }
