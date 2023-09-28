@@ -14,10 +14,10 @@ END;
 $$ LANGUAGE plpgsql;
 
 --------------MUST BE FIRST IN THIS ORDER!-----------
-\i /docker-entrypoint-initdb.d/sql/city.sql
 \i /docker-entrypoint-initdb.d/sql/continent.sql
 \i /docker-entrypoint-initdb.d/sql/country.sql
 \i /docker-entrypoint-initdb.d/sql/region.sql
+\i /docker-entrypoint-initdb.d/sql/city.sql
 \i /docker-entrypoint-initdb.d/sql/partner_vendor.sql
 -----------------------------------------------------
 
