@@ -31,7 +31,7 @@ async fn main() -> Result<()> {
                     .service(routes::partner_vendor())
                     .service(routes::restaurant())
                     .service(routes::hotel())
-                    .service(routes::hotel_room())
+                    // .service(routes::hotel_room())
                     .service(routes::activity())
                     .service(routes::event())
                     .service(routes::event_details())

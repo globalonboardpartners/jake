@@ -13,7 +13,7 @@ async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
         Ok(pg) => {
             let returned: Result<Hotel, Error> = sqlx::query_as!(
                 Hotel,
-                "
+                r#"
                     INSERT INTO hotel
                         (
                             name,
@@ -44,6 +44,7 @@ async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
                         id,
                         name,
                         slug,
+                        hotel_category as "hotel_category: _",
                         description_short,
                         description_long,
                         video_link,
@@ -57,6 +58,7 @@ async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
                         country,
                         region,
                         city,
+                        postal_code,
                         latitude,
                         longitude,
                         email,
@@ -73,8 +75,36 @@ async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
 	                        trim(to_char(edited, 'DD')) || ' ' ||
 	                        trim(to_char(edited, 'Month')) || ' ' ||
 	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
-                        ) as edited
-                ",
+                        ) as edited,
+                        (
+                            SELECT json_agg(hr)
+                            FROM (
+                                SELECT
+                                    id,
+                                    name,
+                                    hotel_id,
+                                    description_short,
+                                    description_long,
+                                    video_link,
+                                    image_link,
+                                    image_link_2,
+                                    thumbnail_link,
+                                    gallery,
+                                    amenities,
+                                    (
+	                                    trim(to_char(created, 'DD')) || ' ' ||
+	                                    trim(to_char(created, 'Month')) || ' ' ||
+	                                    trim(to_char(created, 'YYYY HH12:MI AM'))
+                                    ) as created,
+                                    (
+	                                    trim(to_char(edited, 'DD')) || ' ' ||
+	                                    trim(to_char(edited, 'Month')) || ' ' ||
+	                                    trim(to_char(edited, 'YYYY HH12:MI AM'))
+                                    ) as edited
+                                FROM hotel_room WHERE hotel_id = hotel.id
+                            ) AS hr
+                        ) AS hotel_room
+                "#,
                 hotel.name,
                 hotel.slug,
                 hotel.description_short,
@@ -96,7 +126,7 @@ async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
                 hotel.phone,
                 hotel.address,
                 hotel.website_link,
-                hotel.tags
+                hotel.tags.as_ref().map_or(&[][..], |v| v.as_slice()),
             )
             .fetch_one(&pg)
             .await;
@@ -127,10 +157,11 @@ async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
             Ok(pg) => {
                 let returned: Result<Hotel, Error> = sqlx::query_as!(
                     Hotel,
-                    "
+                    r#"
                         SELECT
                             id,
                             name,
+                            hotel_category as "hotel_category: _",
                             slug,
                             description_short,
                             description_long,
@@ -145,6 +176,7 @@ async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             country,
                             region,
                             city,
+                            postal_code,
                             latitude,
                             longitude,
                             email,
@@ -153,19 +185,47 @@ async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             website_link,
                             tags,
                             (
-	                            trim(to_char(created, 'DD')) || ' ' ||
-	                            trim(to_char(created, 'Month')) || ' ' ||
-	                            trim(to_char(created, 'YYYY HH12:MI AM'))
+                                trim(to_char(created, 'DD')) || ' ' ||
+                                trim(to_char(created, 'Month')) || ' ' ||
+                                trim(to_char(created, 'YYYY HH12:MI AM'))
                             ) as created,
                             (
-	                            trim(to_char(edited, 'DD')) || ' ' ||
-	                            trim(to_char(edited, 'Month')) || ' ' ||
-	                            trim(to_char(edited, 'YYYY HH12:MI AM'))
-                            ) as edited
+                                trim(to_char(edited, 'DD')) || ' ' ||
+                                trim(to_char(edited, 'Month')) || ' ' ||
+                                trim(to_char(edited, 'YYYY HH12:MI AM'))
+                            ) as edited,
+                            (
+                                SELECT json_agg(hr)
+                                FROM (
+                                    SELECT
+                                        id,
+                                        name,
+                                        hotel_id,
+                                        description_short,
+                                        description_long,
+                                        video_link,
+                                        image_link,
+                                        image_link_2,
+                                        thumbnail_link,
+                                        gallery,
+                                        amenities,
+                                        (
+	                                        trim(to_char(created, 'DD')) || ' ' ||
+	                                        trim(to_char(created, 'Month')) || ' ' ||
+	                                        trim(to_char(created, 'YYYY HH12:MI AM'))
+                                        ) as created,
+                                        (
+	                                        trim(to_char(edited, 'DD')) || ' ' ||
+	                                        trim(to_char(edited, 'Month')) || ' ' ||
+	                                        trim(to_char(edited, 'YYYY HH12:MI AM'))
+                                        ) as edited
+                                    FROM hotel_room WHERE hotel_id = hotel.id
+                                ) AS hr
+                            ) AS hotel_room
                         FROM hotel
                         WHERE id = $1
                         LIMIT 1;
-                    ",
+                    "#,
                     id.id
                 )
                 .fetch_one(&pg)
@@ -193,10 +253,11 @@ async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
             Ok(pg) => {
                 let returned: Result<Vec<Hotel>, Error> = sqlx::query_as!(
                     Hotel,
-                    "
+                    r#"
                         SELECT
                             id,
                             name,
+                            hotel_category as "hotel_category: _",
                             slug,
                             description_short,
                             description_long,
@@ -211,6 +272,7 @@ async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             country,
                             region,
                             city,
+                            postal_code,
                             latitude,
                             longitude,
                             email,
@@ -227,9 +289,37 @@ async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
 	                            trim(to_char(edited, 'DD')) || ' ' ||
 	                            trim(to_char(edited, 'Month')) || ' ' ||
 	                            trim(to_char(edited, 'YYYY HH12:MI AM'))
-                            ) as edited
+                            ) as edited,
+                        (
+                            SELECT json_agg(hr)
+                            FROM (
+                                SELECT
+                                    id,
+                                    name,
+                                    hotel_id,
+                                    description_short,
+                                    description_long,
+                                    video_link,
+                                    image_link,
+                                    image_link_2,
+                                    thumbnail_link,
+                                    gallery,
+                                    amenities,
+                                    (
+	                                    trim(to_char(created, 'DD')) || ' ' ||
+	                                    trim(to_char(created, 'Month')) || ' ' ||
+	                                    trim(to_char(created, 'YYYY HH12:MI AM'))
+                                    ) as created,
+                                    (
+	                                    trim(to_char(edited, 'DD')) || ' ' ||
+	                                    trim(to_char(edited, 'Month')) || ' ' ||
+	                                    trim(to_char(edited, 'YYYY HH12:MI AM'))
+                                    ) as edited
+                                FROM hotel_room WHERE hotel_id = hotel.id
+                            ) AS hr
+                        ) AS hotel_room
                         FROM hotel
-                    "
+                    "#
                 )
                 .fetch_all(&pg)
                 .await;
@@ -260,7 +350,7 @@ async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
         Ok(pg) => {
             let returned: Result<Hotel, Error> = sqlx::query_as!(
                 Hotel,
-                "
+                r#"
                     INSERT INTO hotel
                         (
                             id,
@@ -317,6 +407,7 @@ async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
                     RETURNING
                         id,
                         name,
+                        hotel_category as "hotel_category: _",
                         slug,
                         description_short,
                         description_long,
@@ -331,6 +422,7 @@ async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
                         country,
                         region,
                         city,
+                        postal_code,
                         latitude,
                         longitude,
                         email,
@@ -347,8 +439,36 @@ async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
 	                        trim(to_char(edited, 'DD')) || ' ' ||
 	                        trim(to_char(edited, 'Month')) || ' ' ||
 	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
-                        ) as edited
-                ",
+                        ) as edited,
+                        (
+                            SELECT json_agg(hr)
+                            FROM (
+                                SELECT
+                                    id,
+                                    name,
+                                    hotel_id,
+                                    description_short,
+                                    description_long,
+                                    video_link,
+                                    image_link,
+                                    image_link_2,
+                                    thumbnail_link,
+                                    gallery,
+                                    amenities,
+                                    (
+	                                    trim(to_char(created, 'DD')) || ' ' ||
+	                                    trim(to_char(created, 'Month')) || ' ' ||
+	                                    trim(to_char(created, 'YYYY HH12:MI AM'))
+                                    ) as created,
+                                    (
+	                                    trim(to_char(edited, 'DD')) || ' ' ||
+	                                    trim(to_char(edited, 'Month')) || ' ' ||
+	                                    trim(to_char(edited, 'YYYY HH12:MI AM'))
+                                    ) as edited
+                                FROM hotel_room WHERE hotel_id = hotel.id
+                            ) AS hr
+                        ) AS hotel_room
+                "#,
                 hotel.id,
                 hotel.name,
                 hotel.slug,
@@ -371,7 +491,7 @@ async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
                 hotel.phone,
                 hotel.address,
                 hotel.website_link,
-                hotel.tags
+                hotel.tags.as_ref().map_or(&[][..], |v| v.as_slice()),
             )
             .fetch_one(&pg)
             .await;

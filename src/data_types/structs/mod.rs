@@ -41,9 +41,7 @@ pub use self::restaurant::Restaurant;
 
 pub mod hotel;
 pub use self::hotel::Hotel;
-
-pub mod hotel_room;
-pub use self::hotel_room::HotelRoom;
+pub use self::hotel::HotelRoom;
 
 pub mod activity;
 pub use self::activity::Activity;
