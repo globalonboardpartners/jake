@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use serde_json::Value as JsonValue;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Activity {
@@ -24,7 +25,7 @@ pub struct Activity {
     pub phone: String,
     pub address: Option<String>,
     pub website_link: String,
-    pub tags: Option<String>,
+    pub tags: Option<JsonValue>,
     pub created: Option<String>,
     pub edited: Option<String>,
 }

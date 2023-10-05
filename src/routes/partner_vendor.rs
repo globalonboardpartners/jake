@@ -13,7 +13,7 @@ async fn create_partner_vendor(partner_vendor: Json<PartnerVendor>) -> HttpRespo
         Ok(pg) => {
             let returned: Result<PartnerVendor, Error> = sqlx::query_as!(
                 PartnerVendor,
-                "
+                r#"
                     INSERT INTO partner_vendor
                         (
                             name,
@@ -35,10 +35,9 @@ async fn create_partner_vendor(partner_vendor: Json<PartnerVendor>) -> HttpRespo
                             email,
                             phone,
                             address,
-                            website_link,
-                            tags
+                            website_link
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
                     RETURNING
                         id,
                         name,
@@ -60,8 +59,8 @@ async fn create_partner_vendor(partner_vendor: Json<PartnerVendor>) -> HttpRespo
                         email,
                         phone,
                         address,
-                        website_link,
                         tags,
+                        website_link,
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
@@ -72,7 +71,7 @@ async fn create_partner_vendor(partner_vendor: Json<PartnerVendor>) -> HttpRespo
 	                        trim(to_char(edited, 'Month')) || ' ' ||
 	                        trim(to_char(edited, 'YYYY HH12:MI AM'))
                         ) as edited
-                ",
+                "#,
                 partner_vendor.name,
                 partner_vendor.slug,
                 partner_vendor.description_short,
@@ -93,7 +92,6 @@ async fn create_partner_vendor(partner_vendor: Json<PartnerVendor>) -> HttpRespo
                 partner_vendor.phone,
                 partner_vendor.address,
                 partner_vendor.website_link,
-                partner_vendor.tags
             )
             .fetch_one(&pg)
             .await;
@@ -278,10 +276,9 @@ async fn update_partner_vendor(partner_vendor: Json<PartnerVendor>) -> HttpRespo
                             email,
                             phone,
                             address,
-                            website_link,
-                            tags
+                            website_link
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
                     ON CONFLICT (id)
                     DO UPDATE SET 
                         id = EXCLUDED.id,
@@ -305,7 +302,6 @@ async fn update_partner_vendor(partner_vendor: Json<PartnerVendor>) -> HttpRespo
                         phone = EXCLUDED.phone,
                         address = EXCLUDED.address,
                         website_link = EXCLUDED.website_link,
-                        tags = EXCLUDED.tags,
                         edited = NOW()
                     RETURNING
                         id,
@@ -362,7 +358,6 @@ async fn update_partner_vendor(partner_vendor: Json<PartnerVendor>) -> HttpRespo
                 partner_vendor.phone,
                 partner_vendor.address,
                 partner_vendor.website_link,
-                partner_vendor.tags
             )
             .fetch_one(&pg)
             .await;

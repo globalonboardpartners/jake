@@ -24,10 +24,9 @@ async fn create_continent(continent: Json<Continent>) -> HttpResponse {
                             thumbnail_link,
                             special_offer_image_link,
                             video_link,
-                            gallery,
-                            tags
+                            gallery
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                     RETURNING
                         id,
                         name,
@@ -39,7 +38,17 @@ async fn create_continent(continent: Json<Continent>) -> HttpResponse {
                         special_offer_image_link,
                         video_link,
                         gallery,
-                        tags,
+                        (
+                            SELECT json_agg(tg)
+                            FROM (
+                                SELECT
+                                    t.name,
+                                    t.description
+                                FROM tag t
+                                INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                WHERE trt.assoc_table_row_id = continent.id AND trt.assoc_table = 'continent'
+                            ) as tg
+                        ) as tags,
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
@@ -60,7 +69,6 @@ async fn create_continent(continent: Json<Continent>) -> HttpResponse {
                 continent.special_offer_image_link,
                 continent.video_link,
                 continent.gallery.as_slice(),
-                continent.tags,
             )
             .fetch_one(&pg)
             .await;
@@ -103,7 +111,17 @@ async fn get_continent_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             special_offer_image_link,
                             video_link,
                             gallery,
-                            tags,
+                            (
+                                SELECT json_agg(tg)
+                                FROM (
+                                    SELECT
+                                        t.name,
+                                        t.description
+                                    FROM tag t
+                                    INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                    WHERE trt.assoc_table_row_id = continent.id AND trt.assoc_table = 'continent'
+                                ) as tg
+                            ) as tags,
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
@@ -157,7 +175,17 @@ async fn get_continent_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             special_offer_image_link,
                             video_link,
                             gallery,
-                            tags,
+                            (
+                                SELECT json_agg(tg)
+                                FROM (
+                                    SELECT
+                                        t.name,
+                                        t.description
+                                    FROM tag t
+                                    INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                    WHERE trt.assoc_table_row_id = continent.id AND trt.assoc_table = 'continent'
+                                ) as tg
+                            ) as tags,
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
@@ -212,10 +240,9 @@ async fn update_continent(continent: Json<Continent>) -> HttpResponse {
                             thumbnail_link,
                             special_offer_image_link,
                             video_link,
-                            gallery,
-                            tags
+                            gallery
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
                     ON CONFLICT (id)
                     DO UPDATE SET 
                         name = EXCLUDED.name,
@@ -226,8 +253,7 @@ async fn update_continent(continent: Json<Continent>) -> HttpResponse {
                         thumbnail_link = EXCLUDED.thumbnail_link,
                         special_offer_image_link = EXCLUDED.special_offer_image_link,
                         video_link = EXCLUDED.video_link,
-                        gallery = EXCLUDED.gallery,
-                        tags = EXCLUDED.tags
+                        gallery = EXCLUDED.gallery
                     RETURNING
                         id,
                         name,
@@ -239,7 +265,17 @@ async fn update_continent(continent: Json<Continent>) -> HttpResponse {
                         special_offer_image_link,
                         video_link,
                         gallery,
-                        tags,
+                        (
+                            SELECT json_agg(tg)
+                            FROM (
+                                SELECT
+                                    t.name,
+                                    t.description
+                                FROM tag t
+                                INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                WHERE trt.assoc_table_row_id = continent.id AND trt.assoc_table = 'continent'
+                            ) as tg
+                        ) as tags,
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
@@ -261,7 +297,6 @@ async fn update_continent(continent: Json<Continent>) -> HttpResponse {
                 continent.special_offer_image_link,
                 continent.video_link,
                 continent.gallery.as_slice(),
-                continent.tags,
             )
             .fetch_one(&pg)
             .await;

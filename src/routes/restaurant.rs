@@ -37,10 +37,9 @@ async fn create_restaurant(restaurant: Json<Restaurant>) -> HttpResponse {
                             email,
                             phone,
                             address,
-                            website_link,
-                            tags
+                            website_link
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
                     RETURNING
                         id,
                         name,
@@ -65,7 +64,17 @@ async fn create_restaurant(restaurant: Json<Restaurant>) -> HttpResponse {
                         phone,
                         address,
                         website_link,
-                        tags,
+                        (
+                            SELECT json_agg(tg)
+                            FROM (
+                                SELECT
+                                    t.name,
+                                    t.description
+                                FROM tag t
+                                INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                WHERE trt.assoc_table_row_id = restaurant.id AND trt.assoc_table = 'restaurant'
+                            ) as tg
+                        ) as tags,
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
@@ -99,7 +108,6 @@ async fn create_restaurant(restaurant: Json<Restaurant>) -> HttpResponse {
                 restaurant.phone,
                 restaurant.address,
                 restaurant.website_link,
-                restaurant.tags
             )
             .fetch_one(&pg)
             .await;
@@ -155,7 +163,17 @@ async fn get_restaurant_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             phone,
                             address,
                             website_link,
-                            tags,
+                            (
+                                SELECT json_agg(tg)
+                                FROM (
+                                    SELECT
+                                        t.name,
+                                        t.description
+                                    FROM tag t
+                                    INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                    WHERE trt.assoc_table_row_id = restaurant.id AND trt.assoc_table = 'restaurant'
+                                ) as tg
+                            ) as tags,
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
@@ -222,7 +240,17 @@ async fn get_restaurant_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             phone,
                             address,
                             website_link,
-                            tags,
+                            (
+                                SELECT json_agg(tg)
+                                FROM (
+                                    SELECT
+                                        t.name,
+                                        t.description
+                                    FROM tag t
+                                    INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                    WHERE trt.assoc_table_row_id = restaurant.id AND trt.assoc_table = 'restaurant'
+                                ) as tg
+                            ) as tags,
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
@@ -290,10 +318,9 @@ async fn update_restaurant(restaurant: Json<Restaurant>) -> HttpResponse {
                             email,
                             phone,
                             address,
-                            website_link,
-                            tags
+                            website_link
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
                     ON CONFLICT (id)
                     DO UPDATE SET 
                         id = EXCLUDED.id,
@@ -319,7 +346,6 @@ async fn update_restaurant(restaurant: Json<Restaurant>) -> HttpResponse {
                         phone = EXCLUDED.phone,
                         address = EXCLUDED.address,
                         website_link = EXCLUDED.website_link,
-                        tags = EXCLUDED.tags,
                         edited = NOW()
                     RETURNING
                         id,
@@ -345,7 +371,17 @@ async fn update_restaurant(restaurant: Json<Restaurant>) -> HttpResponse {
                         phone,
                         address,
                         website_link,
-                        tags,
+                        (
+                            SELECT json_agg(tg)
+                            FROM (
+                                SELECT
+                                    t.name,
+                                    t.description
+                                FROM tag t
+                                INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                WHERE trt.assoc_table_row_id = restaurant.id AND trt.assoc_table = 'restaurant'
+                            ) as tg
+                        ) as tags,
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
@@ -380,7 +416,6 @@ async fn update_restaurant(restaurant: Json<Restaurant>) -> HttpResponse {
                 restaurant.phone,
                 restaurant.address,
                 restaurant.website_link,
-                restaurant.tags
             )
             .fetch_one(&pg)
             .await;
