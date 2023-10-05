@@ -1,6 +1,6 @@
 use crate::data_types::structs::{Hotel, Id};
 use crate::db;
-use crate::utils::handle_sql_error;
+use crate::utils::{handle_sql_error, set_table_row_tags};
 use actix_web::http::StatusCode;
 use actix_web::web::Json;
 use actix_web::{delete, get, http, post, put, web::Query, HttpResponse};
@@ -9,6 +9,9 @@ use sqlx::Error;
 
 #[post("/hotel")]
 async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
+    let tags = set_table_row_tags(&hotel.tags);
+    let deref_tags = tags.as_deref();
+
     match db::connect().await {
         Ok(pg) => {
             let returned: Result<Hotel, Error> = sqlx::query_as!(
@@ -65,7 +68,17 @@ async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
                         phone,
                         address,
                         website_link,
-                        tags,
+                        (
+                            SELECT json_agg(tg)
+                            FROM (
+                                SELECT
+                                    t.name,
+                                    t.description
+                                FROM tag t
+                                INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                WHERE trt.assoc_table_row_id = hotel.id AND trt.assoc_table = 'hotel'
+                            ) as tg
+                        ) as tags,
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
@@ -126,7 +139,7 @@ async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
                 hotel.phone,
                 hotel.address,
                 hotel.website_link,
-                hotel.tags.as_ref().map_or(&[][..], |v| v.as_slice()),
+                deref_tags,
             )
             .fetch_one(&pg)
             .await;
@@ -183,7 +196,17 @@ async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             phone,
                             address,
                             website_link,
-                            tags,
+                            (
+                                SELECT json_agg(tg)
+                                FROM (
+                                    SELECT
+                                        t.name,
+                                        t.description
+                                    FROM tag t
+                                    INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                    WHERE trt.assoc_table_row_id = hotel.id AND trt.assoc_table = 'hotel'
+                                ) as tg
+                            ) as tags,
                             (
                                 trim(to_char(created, 'DD')) || ' ' ||
                                 trim(to_char(created, 'Month')) || ' ' ||
@@ -279,7 +302,17 @@ async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             phone,
                             address,
                             website_link,
-                            tags,
+                            (
+                                SELECT json_agg(tg)
+                                FROM (
+                                    SELECT
+                                        t.name,
+                                        t.description
+                                    FROM tag t
+                                    INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                    WHERE trt.assoc_table_row_id = hotel.id AND trt.assoc_table = 'hotel'
+                                ) as tg
+                            ) as tags,
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
@@ -346,6 +379,9 @@ async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
 
 #[put("/hotel")]
 async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
+    let tags = set_table_row_tags(&hotel.tags);
+    let deref_tags = tags.as_deref();
+
     match db::connect().await {
         Ok(pg) => {
             let returned: Result<Hotel, Error> = sqlx::query_as!(
@@ -429,7 +465,17 @@ async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
                         phone,
                         address,
                         website_link,
-                        tags,
+                        (
+                            SELECT json_agg(tg)
+                            FROM (
+                                SELECT
+                                    t.name,
+                                    t.description
+                                FROM tag t
+                                INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                WHERE trt.assoc_table_row_id = hotel.id AND trt.assoc_table = 'hotel'
+                            ) as tg
+                        ) as tags,
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
@@ -491,7 +537,7 @@ async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
                 hotel.phone,
                 hotel.address,
                 hotel.website_link,
-                hotel.tags.as_ref().map_or(&[][..], |v| v.as_slice()),
+                deref_tags,
             )
             .fetch_one(&pg)
             .await;

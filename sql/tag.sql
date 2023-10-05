@@ -28,11 +28,11 @@ BEFORE UPDATE ON tag
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_on();
 
-CREATE TABLE entity_tag (
-    assoc_table_id INTEGER,
+CREATE TABLE table_row_tags (
+    assoc_table_row_id INTEGER,
     assoc_table assoc_table,
     tag_id INTEGER REFERENCES tag(id),
-    PRIMARY KEY (assoc_table_id, assoc_table, tag_id)
+    PRIMARY KEY (assoc_table_row_id, assoc_table, tag_id)
 );
 
 -- CREATE TABLE activity_tags (

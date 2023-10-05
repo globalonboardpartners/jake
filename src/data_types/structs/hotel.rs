@@ -51,7 +51,7 @@ pub struct Hotel {
     pub phone: String,
     pub address: Option<String>,
     pub website_link: String,
-    pub tags: Option<Vec<String>>,
+    pub tags: Option<JsonValue>,
     pub created: Option<String>,
     pub edited: Option<String>,
     pub hotel_room: Option<JsonValue>,
