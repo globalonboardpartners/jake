@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use serde_json::Value as JsonValue;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct City {
@@ -25,7 +26,7 @@ pub struct City {
     pub region: i32,
     pub latitude: f64,
     pub longitude: f64,
-    pub tags: Option<String>,
+    pub tags: Option<JsonValue>,
     pub created: Option<String>,
     pub edited: Option<String>,
 }
