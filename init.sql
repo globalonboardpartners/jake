@@ -33,3 +33,4 @@ $$ LANGUAGE plpgsql;
 \i /docker-entrypoint-initdb.d/sql/product_feature.sql
 \i /docker-entrypoint-initdb.d/sql/restaurant.sql
 \i /docker-entrypoint-initdb.d/sql/activity.sql
+\i /docker-entrypoint-initdb.d/sql/tag.sql
