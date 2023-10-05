@@ -104,7 +104,12 @@ async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
                                     image_link_2,
                                     thumbnail_link,
                                     gallery,
+                                    price,
                                     amenities,
+                                    inclusions,
+                                    guest_services,
+                                    amenities,
+                                    room_category,
                                     (
 	                                    trim(to_char(created, 'DD')) || ' ' ||
 	                                    trim(to_char(created, 'Month')) || ' ' ||
@@ -232,7 +237,12 @@ async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                                         image_link_2,
                                         thumbnail_link,
                                         gallery,
+                                        price,
                                         amenities,
+                                        inclusions,
+                                        guest_services,
+                                        amenities,
+                                        room_category,
                                         (
 	                                        trim(to_char(created, 'DD')) || ' ' ||
 	                                        trim(to_char(created, 'Month')) || ' ' ||
@@ -338,7 +348,12 @@ async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                                     image_link_2,
                                     thumbnail_link,
                                     gallery,
+                                    price,
                                     amenities,
+                                    inclusions,
+                                    guest_services,
+                                    amenities,
+                                    room_category,
                                     (
 	                                    trim(to_char(created, 'DD')) || ' ' ||
 	                                    trim(to_char(created, 'Month')) || ' ' ||
@@ -501,7 +516,12 @@ async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
                                     image_link_2,
                                     thumbnail_link,
                                     gallery,
+                                    price,
                                     amenities,
+                                    inclusions,
+                                    guest_services,
+                                    amenities,
+                                    room_category,
                                     (
 	                                    trim(to_char(created, 'DD')) || ' ' ||
 	                                    trim(to_char(created, 'Month')) || ' ' ||
