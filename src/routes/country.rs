@@ -24,10 +24,9 @@ async fn create_country(country: Json<Country>) -> HttpResponse {
                             thumbnail_link,
                             special_offer_image_link,
                             video_link,
-                            gallery,
-                            tags
+                            gallery
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                     RETURNING
                         id,
                         name,
@@ -39,7 +38,17 @@ async fn create_country(country: Json<Country>) -> HttpResponse {
                         special_offer_image_link,
                         video_link,
                         gallery,
-                        tags,
+                        (
+                            SELECT json_agg(tg)
+                            FROM (
+                                SELECT
+                                    t.name,
+                                    t.description
+                                FROM tag t
+                                INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                WHERE trt.assoc_table_row_id = country.id AND trt.assoc_table = 'country'
+                            ) as tg
+                        ) as tags,
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
@@ -60,7 +69,6 @@ async fn create_country(country: Json<Country>) -> HttpResponse {
                 country.special_offer_image_link,
                 country.video_link,
                 country.gallery.as_slice(),
-                country.tags
             )
             .fetch_one(&pg)
             .await;
@@ -103,7 +111,17 @@ async fn get_country_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             special_offer_image_link,
                             video_link,
                             gallery,
-                            tags,
+                            (
+                                SELECT json_agg(tg)
+                                FROM (
+                                    SELECT
+                                        t.name,
+                                        t.description
+                                    FROM tag t
+                                    INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                    WHERE trt.assoc_table_row_id = country.id AND trt.assoc_table = 'country'
+                                ) as tg
+                            ) as tags,
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
@@ -157,7 +175,17 @@ async fn get_country_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                             special_offer_image_link,
                             video_link,
                             gallery,
-                            tags,
+                            (
+                                SELECT json_agg(tg)
+                                FROM (
+                                    SELECT
+                                        t.name,
+                                        t.description
+                                    FROM tag t
+                                    INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                    WHERE trt.assoc_table_row_id = country.id AND trt.assoc_table = 'country'
+                                ) as tg
+                            ) as tags,
                             (
 	                            trim(to_char(created, 'DD')) || ' ' ||
 	                            trim(to_char(created, 'Month')) || ' ' ||
@@ -212,10 +240,9 @@ async fn update_country(country: Json<Country>) -> HttpResponse {
                             thumbnail_link,
                             special_offer_image_link,
                             video_link,
-                            gallery,
-                            tags
+                            gallery
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
                     ON CONFLICT (id)
                     DO UPDATE SET 
                         id = EXCLUDED.id,
@@ -228,7 +255,6 @@ async fn update_country(country: Json<Country>) -> HttpResponse {
                         special_offer_image_link = EXCLUDED.special_offer_image_link,
                         video_link = EXCLUDED.video_link,
                         gallery = EXCLUDED.gallery,
-                        tags = EXCLUDED.tags,
                         edited = NOW()
                     RETURNING
                         id,
@@ -241,7 +267,17 @@ async fn update_country(country: Json<Country>) -> HttpResponse {
                         special_offer_image_link,
                         video_link,
                         gallery,
-                        tags,
+                        (
+                            SELECT json_agg(tg)
+                            FROM (
+                                SELECT
+                                    t.name,
+                                    t.description
+                                FROM tag t
+                                INNER JOIN table_row_tags trt ON t.id = trt.tag_id
+                                WHERE trt.assoc_table_row_id = country.id AND trt.assoc_table = 'country'
+                            ) as tg
+                        ) as tags,
                         (
 	                        trim(to_char(created, 'DD')) || ' ' ||
 	                        trim(to_char(created, 'Month')) || ' ' ||
@@ -263,7 +299,6 @@ async fn update_country(country: Json<Country>) -> HttpResponse {
                 country.special_offer_image_link,
                 country.video_link,
                 country.gallery.as_slice(),
-                country.tags
             )
             .fetch_one(&pg)
             .await;
