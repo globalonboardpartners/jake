@@ -1,6 +1,6 @@
 use crate::data_types::structs::{Hotel, Id};
 use crate::db;
-use crate::utils::{handle_sql_error, set_table_row_tags};
+use crate::utils::handle_sql_error;
 use actix_web::http::StatusCode;
 use actix_web::web::Json;
 use actix_web::{delete, get, http, post, put, web::Query, HttpResponse};
@@ -10,9 +10,6 @@ use crate::data_types::structs::hotel::HotelCategory;
 
 #[post("/hotel")]
 async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
-    let tags = set_table_row_tags(&hotel.tags);
-    let deref_tags = tags.as_deref();
-
     match db::connect().await {
         Ok(pg) => {
             let returned: Result<Hotel, Error> = sqlx::query_as!(
@@ -40,10 +37,9 @@ async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
                             email,
                             phone,
                             address,
-                            website_link,
-                            tags
+                            website_link
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
                     RETURNING
                         id,
                         name,
@@ -145,7 +141,6 @@ async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
                 hotel.phone,
                 hotel.address,
                 hotel.website_link,
-                deref_tags,
             )
             .fetch_one(&pg)
             .await;
@@ -395,9 +390,6 @@ async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
 
 #[put("/hotel")]
 async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
-    let tags = set_table_row_tags(&hotel.tags);
-    let deref_tags = tags.as_deref();
-
     match db::connect().await {
         Ok(pg) => {
             let returned: Result<Hotel, Error> = sqlx::query_as!(
@@ -426,10 +418,9 @@ async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
                             email,
                             phone,
                             address,
-                            website_link,
-                            tags
+                            website_link
                         )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
                     ON CONFLICT (id)
                     DO UPDATE SET 
                         id = EXCLUDED.id,
@@ -454,7 +445,6 @@ async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
                         phone = EXCLUDED.phone,
                         address = EXCLUDED.address,
                         website_link = EXCLUDED.website_link,
-                        tags = EXCLUDED.tags,
                         edited = NOW()
                     RETURNING
                         id,
@@ -558,7 +548,6 @@ async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
                 hotel.phone,
                 hotel.address,
                 hotel.website_link,
-                deref_tags,
             )
             .fetch_one(&pg)
             .await;
