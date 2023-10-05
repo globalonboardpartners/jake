@@ -6,6 +6,7 @@ use actix_web::web::Json;
 use actix_web::{delete, get, http, post, put, web::Query, HttpResponse};
 use sqlx::postgres::PgQueryResult;
 use sqlx::Error;
+use crate::data_types::structs::hotel::HotelCategory;
 
 #[post("/hotel")]
 async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
@@ -47,7 +48,7 @@ async fn create_hotel(hotel: Json<Hotel>) -> HttpResponse {
                         id,
                         name,
                         slug,
-                        hotel_category as "hotel_category: _",
+                        hotel_category as "hotel_category: HotelCategory",
                         description_short,
                         description_long,
                         video_link,
@@ -174,7 +175,7 @@ async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                         SELECT
                             id,
                             name,
-                            hotel_category as "hotel_category: _",
+                            hotel_category as "hotel_category: HotelCategory",
                             slug,
                             description_short,
                             description_long,
@@ -280,7 +281,7 @@ async fn get_hotel_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                         SELECT
                             id,
                             name,
-                            hotel_category as "hotel_category: _",
+                            hotel_category as "hotel_category: HotelCategory",
                             slug,
                             description_short,
                             description_long,
@@ -443,7 +444,7 @@ async fn update_hotel(hotel: Json<Hotel>) -> HttpResponse {
                     RETURNING
                         id,
                         name,
-                        hotel_category as "hotel_category: _",
+                        hotel_category as "hotel_category: HotelCategory",
                         slug,
                         description_short,
                         description_long,
