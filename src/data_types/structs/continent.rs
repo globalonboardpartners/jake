@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use serde_json::Value as JsonValue;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Continent {
@@ -12,7 +13,7 @@ pub struct Continent {
     pub special_offer_image_link: Option<String>,
     pub video_link: Option<String>,
     pub gallery: Vec<String>,
-    pub tags: Option<String>,
+    pub tags: Option<JsonValue>,
     pub created: Option<String>,
     pub edited: Option<String>,
 }
