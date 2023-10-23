@@ -59,8 +59,8 @@ async fn create_user(auth: Json<Auth>) -> HttpResponse {
             let since_the_epoch = start.duration_since(UNIX_EPOCH)
                 .expect("Time went backwards");
 
-            let jwt_hours_active_var = env::var("JWT_hours_active").expect("JWT_hours_active is not set");
-            let jwt_hours_active: u64 = jwt_hours_active_var.parse().expect("Failed to convert JWT_hours_active env var to u64");
+            let jwt_hours_active_var = env::var("JWT_HOURS_ACTIVE").expect("JWT_HOURS_ACTIVE is not set");
+            let jwt_hours_active: u64 = jwt_hours_active_var.parse().expect("Failed to convert JWT_HOURS_ACTIVE env var to u64");
                     
             // Add (1 hour (3600 seconds) * however many hours) to the current Unix timestamp
             let exp: u64 = since_the_epoch.as_secs() + (3600 * jwt_hours_active);
@@ -180,8 +180,8 @@ async fn login(auth: Json<Auth>) -> HttpResponse {
                     let since_the_epoch = start.duration_since(UNIX_EPOCH)
                         .expect("Time went backwards");
 
-                    let jwt_hours_active_var = env::var("JWT_hours_active").expect("JWT_hours_active is not set");
-                    let jwt_hours_active: u64 = jwt_hours_active_var.parse().expect("Failed to convert JWT_hours_active env var to u64");
+                    let jwt_hours_active_var = env::var("JWT_HOURS_ACTIVE").expect("JWT_HOURS_ACTIVE is not set");
+                    let jwt_hours_active: u64 = jwt_hours_active_var.parse().expect("Failed to convert JWT_HOURS_ACTIVE env var to u64");
                     
                     // Add (1 hour (3600 seconds) * however many hours) to the current Unix timestamp
                     let exp: u64 = since_the_epoch.as_secs() + (3600 * jwt_hours_active);

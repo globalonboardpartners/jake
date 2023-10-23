@@ -69,7 +69,7 @@ async fn create_restaurant(restaurant: Json<Restaurant>) -> HttpResponse {
                             FROM (
                                 SELECT
                                     t.name,
-                                    t.description
+                                    t.assoc_table
                                 FROM tag t
                                 INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                 WHERE trt.assoc_table_row_id = restaurant.id AND trt.assoc_table = 'restaurant'
@@ -168,7 +168,7 @@ async fn get_restaurant_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                                 FROM (
                                     SELECT
                                         t.name,
-                                        t.description
+                                        t.assoc_table
                                     FROM tag t
                                     INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                     WHERE trt.assoc_table_row_id = restaurant.id AND trt.assoc_table = 'restaurant'
@@ -245,7 +245,7 @@ async fn get_restaurant_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                                 FROM (
                                     SELECT
                                         t.name,
-                                        t.description
+                                        t.assoc_table
                                     FROM tag t
                                     INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                     WHERE trt.assoc_table_row_id = restaurant.id AND trt.assoc_table = 'restaurant'
@@ -376,7 +376,7 @@ async fn update_restaurant(restaurant: Json<Restaurant>) -> HttpResponse {
                             FROM (
                                 SELECT
                                     t.name,
-                                    t.description
+                                    t.assoc_table
                                 FROM tag t
                                 INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                 WHERE trt.assoc_table_row_id = restaurant.id AND trt.assoc_table = 'restaurant'

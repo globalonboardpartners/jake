@@ -67,7 +67,7 @@ async fn create_activity(activity: Json<Activity>) -> HttpResponse {
                             FROM (
                                 SELECT
                                     t.name,
-                                    t.description
+                                    t.assoc_table
                                 FROM tag t
                                 INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                 WHERE trt.assoc_table_row_id = activity.id AND trt.assoc_table = 'activity'
@@ -164,7 +164,7 @@ async fn get_activity_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                                 FROM (
                                     SELECT
                                         t.name,
-                                        t.description
+                                        t.assoc_table
                                     FROM tag t
                                     INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                     WHERE trt.assoc_table_row_id = activity.id AND trt.assoc_table = 'activity'
@@ -240,7 +240,7 @@ async fn get_activity_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                                 FROM (
                                     SELECT
                                         t.name,
-                                        t.description
+                                        t.assoc_table
                                     FROM tag t
                                     INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                     WHERE trt.assoc_table_row_id = activity.id AND trt.assoc_table = 'activity'
@@ -368,7 +368,7 @@ async fn update_activity(activity: Json<Activity>) -> HttpResponse {
                             FROM (
                                 SELECT
                                     t.name,
-                                    t.description
+                                    t.assoc_table
                                 FROM tag t
                                 INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                 WHERE trt.assoc_table_row_id = activity.id AND trt.assoc_table = 'activity'

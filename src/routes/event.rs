@@ -67,7 +67,7 @@ async fn create_event(event: Json<Event>) -> HttpResponse {
                             FROM (
                                 SELECT
                                     t.name,
-                                    t.description
+                                    t.assoc_table
                                 FROM tag t
                                 INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                 WHERE trt.assoc_table_row_id = event.id AND trt.assoc_table = 'event'
@@ -164,7 +164,7 @@ async fn get_event_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                                 FROM (
                                     SELECT
                                         t.name,
-                                        t.description
+                                        t.assoc_table
                                     FROM tag t
                                     INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                     WHERE trt.assoc_table_row_id = event.id AND trt.assoc_table = 'event'
@@ -240,7 +240,7 @@ async fn get_event_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                                 FROM (
                                     SELECT
                                         t.name,
-                                        t.description
+                                        t.assoc_table
                                     FROM tag t
                                     INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                     WHERE trt.assoc_table_row_id = event.id AND trt.assoc_table = 'event'
@@ -368,7 +368,7 @@ async fn update_event(event: Json<Event>) -> HttpResponse {
                             FROM (
                                 SELECT
                                     t.name,
-                                    t.description
+                                    t.assoc_table
                                 FROM tag t
                                 INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                 WHERE trt.assoc_table_row_id = event.id AND trt.assoc_table = 'event'

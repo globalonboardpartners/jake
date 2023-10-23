@@ -43,7 +43,7 @@ async fn create_continent(continent: Json<Continent>) -> HttpResponse {
                             FROM (
                                 SELECT
                                     t.name,
-                                    t.description
+                                    t.assoc_table
                                 FROM tag t
                                 INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                 WHERE trt.assoc_table_row_id = continent.id AND trt.assoc_table = 'continent'
@@ -116,7 +116,7 @@ async fn get_continent_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                                 FROM (
                                     SELECT
                                         t.name,
-                                        t.description
+                                        t.assoc_table
                                     FROM tag t
                                     INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                     WHERE trt.assoc_table_row_id = continent.id AND trt.assoc_table = 'continent'
@@ -180,7 +180,7 @@ async fn get_continent_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                                 FROM (
                                     SELECT
                                         t.name,
-                                        t.description
+                                        t.assoc_table
                                     FROM tag t
                                     INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                     WHERE trt.assoc_table_row_id = continent.id AND trt.assoc_table = 'continent'
@@ -270,7 +270,7 @@ async fn update_continent(continent: Json<Continent>) -> HttpResponse {
                             FROM (
                                 SELECT
                                     t.name,
-                                    t.description
+                                    t.assoc_table
                                 FROM tag t
                                 INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                 WHERE trt.assoc_table_row_id = continent.id AND trt.assoc_table = 'continent'

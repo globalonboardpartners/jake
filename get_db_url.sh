@@ -18,9 +18,17 @@ fi
 # Copy the example env file to .env if it doesn't exist
 [ ! -f .env ] && cp env.example .env
 
-# Remove the existing DATABASE_URL line
-if [ "$os" == "Linux" ]; then
-  sed -i '/^DATABASE_URL/d' .env
-elif [ "$os" == "Darwin" ]; then
-  sed -i '' '/^DATABASE_URL/d' .env
+# Check if DATABASE_URL is set in .env, if not, set it
+if ! grep -q "^DATABASE_URL" .env; then
+  # Remove the existing DATABASE_URL line
+  if [ "$os" == "Linux" ]; then
+    sed -i '/^DATABASE_URL/d' .env
+  elif [ "$os" == "Darwin" ]; then
+    sed -i '' '/^DATABASE_URL/d' .env
+  fi
+
+  # Append the new DATABASE_URL line to a new line
+  echo -e "\nDATABASE_URL=postgres://root:root@$ip_address:5440/exploro" >> .env
+else
+  echo "DATABASE_URL is already set in .env"
 fi

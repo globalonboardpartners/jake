@@ -43,7 +43,7 @@ async fn create_region(region: Json<Region>) -> HttpResponse {
                             FROM (
                                 SELECT
                                     t.name,
-                                    t.description
+                                    t.assoc_table
                                 FROM tag t
                                 INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                 WHERE trt.assoc_table_row_id = region.id AND trt.assoc_table = 'region'
@@ -116,7 +116,7 @@ async fn get_region_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                                 FROM (
                                     SELECT
                                         t.name,
-                                        t.description
+                                        t.assoc_table
                                     FROM tag t
                                     INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                     WHERE trt.assoc_table_row_id = region.id AND trt.assoc_table = 'region'
@@ -180,7 +180,7 @@ async fn get_region_by_id_or_all(Query(id): Query<Id>) -> HttpResponse {
                                 FROM (
                                     SELECT
                                         t.name,
-                                        t.description
+                                        t.assoc_table
                                     FROM tag t
                                     INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                     WHERE trt.assoc_table_row_id = region.id AND trt.assoc_table = 'region'
@@ -272,7 +272,7 @@ async fn update_region(region: Json<Region>) -> HttpResponse {
                             FROM (
                                 SELECT
                                     t.name,
-                                    t.description
+                                    t.assoc_table
                                 FROM tag t
                                 INNER JOIN table_row_tags trt ON t.id = trt.tag_id
                                 WHERE trt.assoc_table_row_id = region.id AND trt.assoc_table = 'region'

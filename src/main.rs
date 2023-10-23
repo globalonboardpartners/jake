@@ -35,6 +35,7 @@ async fn main() -> Result<()> {
                     .service(routes::activity())
                     .service(routes::event())
                     .service(routes::event_details())
+                    .service(routes::tag())
             )
     })
     .bind(("127.0.0.1", 8080))?

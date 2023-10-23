@@ -2,30 +2,36 @@ use actix_web::dev::HttpServiceFactory;
 
 pub mod blog;
 pub mod blog_category;
+pub mod city;
 pub mod client;
-pub mod employee;
-pub mod job_listing;
-pub mod product_feature;
 pub mod continent;
 pub mod country;
-pub mod region;
-pub mod city;
-pub mod partner_vendor;
-pub mod restaurant;
+pub mod employee;
 pub mod hotel;
+pub mod job_listing;
+pub mod partner_vendor;
+pub mod product_feature;
+pub mod region;
+pub mod restaurant;
 // pub mod hotel_room;
 pub mod activity;
+pub mod auth;
 pub mod event;
 pub mod event_details;
-pub mod auth;
+mod tag;
 
 pub fn auth() -> impl HttpServiceFactory {
-    (
-        auth::login,
-        auth::create_user
-    )
+    (auth::login, auth::create_user)
 }
 
+pub fn tag() -> impl HttpServiceFactory {
+    (
+        tag::get_tag_by_id_or_all,
+        tag::delete_tag,
+        tag::create_tag,
+        tag::update_tag,
+    )
+}
 pub fn event_details() -> impl HttpServiceFactory {
     (
         event_details::get_event_details_by_id_or_all,

@@ -53,6 +53,12 @@ pub mod event_details;
 pub use self::event_details::EventDetails;
 
 pub mod auth;
+
+mod tag;
+pub use self::tag::Tag;
+pub use self::tag::AssocTable;
+pub use self::tag::TagQueryParams;
+
 pub use self::auth::Auth;
 pub use self::auth::Status;
 
@@ -69,4 +75,3 @@ impl std::fmt::Display for Id {
         write!(f, "Id: {}", "None")
     }
 }
-
